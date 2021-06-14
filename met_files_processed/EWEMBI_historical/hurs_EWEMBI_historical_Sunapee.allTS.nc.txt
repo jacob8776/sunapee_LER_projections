@@ -1,0 +1,54 @@
+File vas_EWEMBI_historical_Sunapee.allTS.nc (NC_FORMAT_NETCDF4_CLASSIC):
+
+     1 variables (excluding dimension variables):
+        float vas[lon,lat,time]   
+            standard_name: northward_wind
+            long_name: Northward Near-Surface Wind
+            units: m s-1
+            _FillValue: 1.00000002004088e+20
+            missing_value: 1.00000002004088e+20
+            comment: over land and ocean: daily mean of bilinearly interpolated ERAI v10 at 0,3,6,9,12,15,18,21 UTC
+
+     3 dimensions:
+        lon  Size:1
+            standard_name: longitude
+            long_name: longitude
+            units: degrees_east
+            axis: X
+        lat  Size:1
+            standard_name: latitude
+            long_name: latitude
+            units: degrees_north
+            axis: Y
+        time  Size:13880   *** is unlimited ***
+            standard_name: time
+            long_name: time
+            units: days since 1979-1-1 00:00:00
+            calendar: standard
+            axis: T
+
+    14 global attributes:
+        CDI: Climate Data Interface version 1.8.0 (http://mpimet.mpg.de/cdi)
+        history: Thu Nov 15 13:17:56 2018: cdo -s cat /p/tmp/buechner/ISIMIP/extract_lakes_isimip2b_ewembi_full/nc_data/vas/vas_EWEMBI_historical_Sunapee.nc /p/tmp/buechner/ISIMIP/extract_lakes_isimip2b_ewembi_full/nc_data/vas/vas_EWEMBI_historical_Sunapee.allTS.nc
+        CDO: Climate Data Operators version 1.8.0 (http://mpimet.mpg.de/cdo)
+        source: EartH2Observe data (E2OBS, Calton et al., 2016)
+WATCH Forcing Data methodology applied to ERA-Interim reanalysis data (WFDEI, Weedon et al., 2014)
+ERA-Interim reanalysis data (ERAI, Dee et al., 2011)
+NASA/GEWEX Surface Radiation Budget data (SRB, Stackhouse Jr. et al., 2011)
+        institution: Potsdam Institute for Climate Impact Research, Research Domain Climate Impacts and Vulnerability, Potsdam, Germany
+        Conventions: CF-1.6
+        title: EartH2Observe, WFDEI and ERA-Interim data Merged and Bias-corrected for ISIMIP (EWEMBI)
+        references: Calton et al. (2016) Zenodo, doi:10.5281/zenodo.57760
+Weedon et al. (2014) Water Resources Research 50, 7505-7514, doi:10.1002/2014WR015638
+Dee et al. (2011) Quarterly Journal of the Royal Meteorological Society 137, 553-597, doi:10.1002/qj.828
+Stackhouse Jr. et al. (2011) GEWEX News 21, 10-12, url:www.gewex.org/resources/gewex-news
+Frieler et al. (2016) Geoscientific Model Development Discussions 2016, 1-59, doi:10.5194/gmd-2016-229
+Lange et al. (2016) in preparation
+        project: Coordinated Research in Earth Systems and Climate: Experiments, kNowledge, Dissemination and Outreach (CRESCENDO)
+        acknowledgment: This project has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No 641816; thanks go to Emanuel Dutra and Graham Weedon for their support and feedback during the creation of the EWEMBI dataset; the E2OBS data were accessed from the EartH2Observe server
+        version: 1 (04 Nov 2016)
+        license: This dataset is freely available under the Creative Commons Attribution 4.0 International (CC BY 4.0)
+        cite_as: Stefan Lange (2016) EartH2Observe, WFDEI and ERA-Interim data Merged and Bias-corrected for ISIMIP (EWEMBI), GFZ Data Services, doi:10.5880/pik.2016.004
+        creator: Stefan Lange (EWEMBI, slange@pik-potsdam.de)
+Emanuel Dutra (E2OBS, emanuel.dutra@ecmwf.int)
+Graham Weedon (WFDEI, graham.weedon@metoffice.gov.uk)
