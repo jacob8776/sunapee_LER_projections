@@ -1,0 +1,126 @@
+location:
+  name: Sunapee
+  latitude: 43.3808278
+  longitude: -72.0541359
+  elevation: 333
+  depth: 33
+  hypsograph: Data/sunapee_hypso.csv
+  init_depth: 33
+time:
+  start: 2006-05-30 00:00:00
+  stop: 2007-01-01 00:00:00
+  time_step: 3600
+config_files:
+  GOTM: GOTM/gotm.yaml
+  GLM: GLM/glm3.nml
+  Simstrat: Simstrat/simstrat.par
+  FLake: FLake/flake.nml
+  MyLake: MyLake/mylake.Rdata
+observations:
+  temperature:
+    file: Data/mantemptime.csv
+  ice_height:
+    file: ~
+input:
+  init_temp_profile:
+    file: ~
+  meteo:
+    file: Data/GFDL_piControl.csv
+  light:
+    Kw: 0.74
+  ice:
+    use: false
+inflows:
+  use: false
+  file: Data/infens.csv
+  scale_param: 1.0
+  mass-balance: false
+output:
+  file: ensemble_output
+  format: netcdf
+  depths: 0.5
+  compression: 4
+  time_unit: hour
+  time_step: 1.0
+  time_method: mean
+  variables:
+  - temp
+  - ice_height
+scaling_factors:
+  all:
+    wind_speed: 1
+    swr: 1
+  Simstrat:
+    wind_speed: 1.0
+  FLake:
+    wind_speed: 1.5
+    swr: 1.1
+  GLM:
+    wind_speed: 1.4914
+    swr: 1.1247
+model_parameters:
+  FLake:
+    depth_w_lk: 33
+    fetch_lk: 2000.0
+    c_relax_C: 1.0
+  GLM:
+    bsn_len: 12870
+    bsn_wid: 3000
+    sediment/sed_temp_mean:
+    - 7
+    - 14
+  GOTM:
+    k_min: 3.6e-06
+  Simstrat: ~
+  MyLake:
+    Phys.par/C_shelter: 0.15
+calibration:
+  met:
+    wind_speed:
+      lower: 0.5
+      upper: 1.5
+      initial: 1.0
+      log: false
+    swr:
+      lower: 0.5
+      upper: 1.5
+      initial: 1.0
+      log: false
+  FLake:
+    c_relax_C:
+      lower: 0.0041
+      upper: 0.006
+      initial: 0.00505
+      log: false
+  GLM:
+    sediment/sed_temp_mean:
+      lower:
+      - 0.4
+      - 0.4
+      upper:
+      - 20
+      - 20
+      initial:
+      - 7
+      - 14
+      log:
+      - false
+      - false
+  GOTM:
+    turb_param/k_min:
+      lower: 2.1e-05
+      upper: 5E-5
+      initial: 2.2203e-05
+      log: false
+  Simstrat:
+    a_seiche:
+      lower: 1.0e-12
+      upper: 0.003
+      initial: 1.0e-07
+      log: false
+  MyLake:
+    Phys.par/C_shelter:
+      lower: 0.14
+      upper: 0.16
+      initial: 0.15
+      log: false
