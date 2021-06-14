@@ -40,3 +40,7 @@ vignettes/*.pdf
 
 # Output files
 **output.nc
+
+**.DS_Store
+
+**.Rproj
