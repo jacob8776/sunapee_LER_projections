@@ -41,6 +41,8 @@ vignettes/*.pdf
 # Output files
 **output.nc
 
-**.DS_Store
+**/.DS_Store
+
+/LER_calibration/.DS_Store
 
 **.Rproj
