@@ -11,11 +11,11 @@ library(LakeEnsemblR)
 library(ggpubr)
 # Set working directory
 getwd()
-setwd("~/Dropbox/JHW_thesis/sunapee_ensemble_v2")
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("FLake")
+model <- c("GLM")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -28,9 +28,9 @@ yaml$output$time_step <- 1
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_v5"
+out_f <- "calibration_results_GLM"
 cmethod <- "LHC"
-model <- c("FLake")
+model <- c("GLM")
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
 

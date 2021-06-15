@@ -1,6 +1,3 @@
-#
-
-
 library(gotmtools)
 library(LakeEnsemblR)
 library(ggplot2)
@@ -14,67 +11,61 @@ library(LakeEnsemblR)
 
 
 # Set working directory to the parent folder of all GCM/RCP combinations
-setwd("~/Dropbox/JHW_thesis/Draft1/LER/")
+setwd("~/Dropbox/sunapee_LER_projections/LER_projections/")
 
 # List of GCM's to run 
-gcm <- c("GFDL", "HADGEM", "IPSL", "MIROC5")
+# gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR",
+#          "MIROC5")
+gcm <- c("GFDL-ESM2M")
 
 # List of RCP's to run 
-rcp <- c("piControl", "rcp85")
+rcp <- c("rcp26", "rcp85")
 
 # set config file for all simulations
-config_file <- 'LakeEnsemblRsun.yaml'
+config_file <- 'LakeEnsemblR.yaml'
 
 # Set which models for all simulations
 model <- c("GLM", "FLake", "Simstrat", "GOTM")
 
-# Looping through each GCM with specified RCP scenarios
+
+yaml <- read_yaml(config_file)
+yaml$time$start <- "2006-05-30 00:00:00"
+yaml$time$stop <- "2007-01-01 00:00:00"
+yaml$output$time_step <- "hour"
+yaml$output$time_step <- 24
+yaml$observations$temperature$file <- c(file.path("../../../LER_inputs/manual_temp.csv"))
+yaml$location$hypsograph <- c(file.path("../../../LER_inputs/sunapee_hypso.csv"))
+# meteo file is changed to the GCM/RCP combination placed in the file structure
+
+
 for(i in 1:length(gcm)){
   # Sets working directory to each gcm 
-  setwd(file.path("~/Dropbox/JHW_thesis/Draft1/LER/", gcm[[i]]))
+  setwd(file.path("~/Dropbox/sunapee_LER_projections/LER_projections/", gcm[[i]]))
   # Nested for loop goes into RCP scenarios for GCMs 
   for(l in 1:length(rcp)){
     # Sets working directory specifying GCM and RCP scenario
-    setwd(file.path("~/Dropbox/JHW_thesis/Draft1/LER/", gcm[[i]], rcp[[l]]))
+      setwd(file.path("~/Dropbox/sunapee_LER_projections/LER_projections/", gcm[[i]], rcp[[l]]))
     # Ensure working directory is switching
     print(getwd())
-    
-    ## yaml inputs are changed for all simulations
-    yaml <- read_yaml(config_file)
-    yaml$time$start <- "2006-05-30 00:00:00"
-    yaml$time$stop <- "2007-01-01 00:00:00"
-    yaml$output$time_step <- "hour"
-    yaml$output$time_step <- 24
-    # meteo file is changed to the GCM/RCP combination placed in the file structure
-    yaml$input$meteo$file <- c(list.files("Data", full.names = TRUE, pattern = "piControl|rcp85"))
-    # Double checking working directory and meteo file match up
-    print(yaml$input$meteo$file)
+    yaml$input$meteo$file <- c(list.files(file.path("../../../met_files_processed/", gcm[[i]]), full.names = TRUE, pattern = rcp[[l]]))
     write_yaml(yaml, config_file)
+    print(yaml$observations$temperature$file)
+    print(yaml$location$hypsograph)
+    
     # 1. Export settings - creates directories with all model setups and exports settings from the LER configuration file for all simulations
     export_config(config_file = config_file, model = model)
 
     # 2. Run ensemble lake models for all simulations
     run_ensemble(config_file = config_file, model = model)
-
+    
   }
 }
 
 
-pdf("test.pdf")
-for(i in 1:length(gcm)){
-  setwd(file.path("~/Dropbox/JHW_thesis/Draft1/LER/", gcm[[i]]))
-  for(l in 1:length(rcp)){
-    setwd(file.path("~/Dropbox/JHW_thesis/Draft1/LER/", gcm[[i]], rcp[[l]]))
-    ncdf <- 'output/ensemble_output.nc'
-    print(plot_heatmap(ncdf))
-
-  }
-}
-dev.off()
 
 
 
-#file.rename
+
 
 
 

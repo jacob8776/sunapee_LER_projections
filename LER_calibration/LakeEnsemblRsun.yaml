@@ -4,7 +4,7 @@ location:
   longitude: -72.0541359
   elevation: 333
   depth: 33
-  hypsograph: sunapee_hypso.csv
+  hypsograph: Data/sunapee_hypso.csv
   init_depth: 33
 time:
   start: 2005-06-26 00:00:00
@@ -18,14 +18,14 @@ config_files:
   MyLake: MyLake/mylake.Rdata
 observations:
   temperature:
-    file: mantemptime.csv
+    file: Data/buoy_manual.csv
   ice_height:
     file: ~
 input:
   init_temp_profile:
     file: ~
   meteo:
-    file: ewembimet.csv
+    file: Data/ewembimet.csv
   light:
     Kw: 0.74
   ice:
