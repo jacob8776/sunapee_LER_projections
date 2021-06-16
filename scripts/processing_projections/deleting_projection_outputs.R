@@ -18,8 +18,14 @@ for(i in 1:length(gcm)){
     # Sets working directory specifying GCM and RCP scenario
     setwd(file.path("~/Dropbox/sunapee_LER_projections/LER_projections/", gcm[[i]], rcp[[l]]))
     # Ensure working directory is switching
-    print(getwd())
+    current_folder <- (file.path(paste0(getwd(), "/output/")))
+    new_folder <- file.path("../../output")
+    list_of_files <- list.files(current_folder)
+    file.copy(list_of_files, new_folder)
     do.call(file.remove, list(list.files("output/", full.names = TRUE)))
-    
   }
 }
+
+
+
+

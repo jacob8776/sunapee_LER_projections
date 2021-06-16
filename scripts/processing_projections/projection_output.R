@@ -13,28 +13,25 @@ library(LakeEnsemblR)
 # Set working directory to the parent folder of all GCM/RCP combinations
 setwd("~/Dropbox/sunapee_LER_projections/LER_projections/")
 
-# List of GCM's to run 
-gcm <- c("GFDL", "HADGEM", "IPSL", "MIROC5")
+gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR",
+         "MIROC5")
 
 # List of RCP's to run 
-rcp <- c("piControl", "rcp85")
+rcp <- c("historical", "rcp26", "rcp85")
 
 
 
-
-
-
-
-
-pdf("test.pdf")
 for(i in 1:length(gcm)){
-  setwd(file.path("~/Dropbox/JHW_thesis/Draft1/LER/", gcm[[i]]))
+  # Sets working directory to each gcm 
+  setwd(file.path("~/Dropbox/sunapee_LER_projections/LER_projections/", gcm[[i]]))
+  # Nested for loop goes into RCP scenarios for GCMs 
   for(l in 1:length(rcp)){
-    setwd(file.path("~/Dropbox/JHW_thesis/Draft1/LER/", gcm[[i]], rcp[[l]]))
-    ncdf <- 'output/ensemble_output.nc'
-    print(plot_heatmap(ncdf))
+    # Sets working directory specifying GCM and RCP scenario
+    setwd(file.path("~/Dropbox/sunapee_LER_projections/LER_projections/", gcm[[i]], rcp[[l]]))
+    # Ensure working directory is switching
+    print(getwd())
+    
     
   }
 }
-dev.off()
 
