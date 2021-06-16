@@ -21,9 +21,12 @@ ncdf <- "output/ensemble_output.nc"
 config_file
 
 # LHC - Calibration ----
+b <- read.csv("Data/buoy_manual.csv")
+str(b)
+
 yaml <- read_yaml(config_file)
-# yaml$time$start <- "2013-05-16 00:00:00"
-# yaml$time$stop <- "2015-01-01 00:00:00"
+yaml$time$start <- "2005-06-26 00:00:00"
+yaml$time$stop <- "2010-01-01 00:00:00"
 yaml$output$time_step <- 1
 write_yaml(yaml, config_file)
 num <- 500

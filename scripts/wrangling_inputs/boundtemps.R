@@ -19,11 +19,12 @@ newtemp$source <- "buoy"
 boundtemps <- rbind(mantemptime, newtemp)
 str(boundtemps)
 
+boundtemp2 <- filter(boundtemps, duplicated(boundtemps$datetime, boundtemps$Depth_meter) == FALSE)
+
 boundtemp2 <- boundtemps %>% 
   group_by(datetime, Depth_meter) %>% 
-  mutate(mean_temp = mean(Water_Temperature_celsius, na.rm = TRUE)) %>% 
-  mutate(unique_temp = ifelse(duplicated(Water_Temperature_celsius), filter(boundtemps, source == "buoy"),
-                              boundtemps))
+  mutate(mean_temp = mean(Water_Temperature_celsius, na.rm = TRUE))
+
 
 table(duplicated(boundtemps))
 
