@@ -23,14 +23,6 @@ for(i in 1:length(gcm)){
     fil <- list.files(path = "output")
     # Ensure working directory is switching
     file.rename(paste0(getwd(), "/output/" ,fil), paste0("~/Dropbox/sunapee_LER_projections/LER_projections/output/", fil))
-    
-    
-    
-    # current_folder <- (file.path(paste0(getwd(), "/output/")))
-    # new_folder <- file.path("~/Dropbox/sunapee_LER_projections/LER_projections/output/")
-    # list_of_files <- list.files(current_folder)
-    # file.copy(list_of_files, new_folder)
-    # do.call(file.remove, list(list.files("output/", full.names = TRUE)))
   }
 }
 
