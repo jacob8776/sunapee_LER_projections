@@ -48,9 +48,12 @@ for(i in 1:length(gcm)){
     # Ensure working directory is switching
     print(getwd())
     yaml$input$meteo$file <- c(list.files(file.path("../../../met_files_processed/", gcm[[i]]), full.names = TRUE, pattern = rcp[[l]]))
+    # yaml$output$file <- c(file.path("../../output", paste0(gcm[[i]], "_", rcp[[l]], "_", "output.nc")))
+    yaml$output$file <- c(paste0(gcm[[i]], "_", rcp[[l]], "_", "output"))
     write_yaml(yaml, config_file)
     print(yaml$observations$temperature$file)
     print(yaml$location$hypsograph)
+    print(yaml$output$file)
     
     # 1. Export settings - creates directories with all model setups and exports settings from the LER configuration file for all simulations
     export_config(config_file = config_file, model = model)

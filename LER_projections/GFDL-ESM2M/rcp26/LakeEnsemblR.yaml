@@ -36,7 +36,7 @@ inflows:
   scale_param: 1.0
   mass-balance: false
 output:
-  file: ensemble_output
+  file: GFDL-ESM2M_rcp26_output
   format: netcdf
   depths: 0.5
   compression: 4
