@@ -18,7 +18,7 @@ config_files:
   MyLake: MyLake/mylake.Rdata
 observations:
   temperature:
-    file: Data/buoy_manual.csv
+    file: Data/mantemptime.csv
   ice_height:
     file: ~
 input:
@@ -53,16 +53,20 @@ scaling_factors:
   Simstrat:
     wind_speed: 1.0
   FLake:
-    wind_speed: 1.5
-    swr: 1.1
+    wind_speed: 1.3029
+    swr: 1.2354
   GLM:
     wind_speed: 1.4914
     swr: 1.1247
+  GOTM:
+    wind_speed: 1.5
+    swr: 1.13
 model_parameters:
   FLake:
-    depth_w_lk: 33
-    fetch_lk: 2000.0
-    c_relax_C: 1.0
+    LAKE_PARAMS/depth_w_lk: 33
+    LAKE_PARAMS/fetch_lk: 9100.0
+    LAKE_PARAMS/c_relax_C: 0.005013
+    TRANSPARENCY/extincoef_optic: 1.2829
   GLM:
     bsn_len: 12870
     bsn_wid: 3000
@@ -70,7 +74,7 @@ model_parameters:
     - 7
     - 14
   GOTM:
-    k_min: 3.6e-06
+    turbulence/turb_param/k_min: 5e-06
   Simstrat: ~
   MyLake:
     Phys.par/C_shelter: 0.15
@@ -92,6 +96,11 @@ calibration:
       upper: 0.006
       initial: 0.00505
       log: false
+    extincoef_optic:
+      lower: 1.0
+      upper: 1.4
+      initial: 1.2
+      log: false
   GLM:
     sediment/sed_temp_mean:
       lower:
@@ -107,13 +116,13 @@ calibration:
       - false
       - false
   GOTM:
-    turb_param/k_min:
+    turbulence/turb_param/k_min:
       lower: 2.1e-05
       upper: 5E-5
       initial: 2.2203e-05
       log: false
   Simstrat:
-    a_seiche:
+    ModelParameters/a_seiche:
       lower: 1.0e-12
       upper: 0.003
       initial: 1.0e-07

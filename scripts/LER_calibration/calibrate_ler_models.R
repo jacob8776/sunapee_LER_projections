@@ -15,14 +15,12 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("GLM")
+model <- c("FLake")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
 
 # LHC - Calibration ----
-b <- read.csv("Data/buoy_manual.csv")
-str(b)
 
 yaml <- read_yaml(config_file)
 yaml$time$start <- "2005-06-26 00:00:00"
@@ -31,16 +29,16 @@ yaml$output$time_step <- 1
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_GLM"
+out_f <- "calibration_results_GOTM"
 cmethod <- "LHC"
-model <- c("GLM")
+model <- c("FLake")
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
 
 
 # Run LER and inspect default output
 export_config(config_file, model)
-run_ensemble(config_file = config_file, model = model)
+run_ensemble(config_file = config_file, model = model, verbose = TRUE)
 
 
 # plot heatmap
