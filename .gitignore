@@ -39,6 +39,11 @@ vignettes/*.pdf
 .Renviron
 
 # Output files
+LER_inputs/2007-2020_buoy_templine_v26Feb2021.csv
+
+**output/
+
+
 **output.nc
 
 **/.DS_Store

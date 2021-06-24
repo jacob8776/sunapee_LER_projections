@@ -2,11 +2,11 @@
 
 setwd("~/Dropbox/sunapee_LER_projections/LER_projections/")
 
-# List of GCM's to run 
-gcm <- c("GFDL-ESM2M")
-
-# List of RCP's to run 
-rcp <- c("rcp26", "rcp85")
+# # List of GCM's to run 
+# gcm <- c("GFDL-ESM2M")
+# 
+# # List of RCP's to run 
+# rcp <- c("historical")
 
 
 do.call(file.remove, list(list.files("~/Dropbox/sunapee_LER_projections/LER_projections/output/", full.names = TRUE)))
