@@ -8,7 +8,7 @@ location:
   init_depth: 33.0
 time:
   start: 2005-06-27 12:00:00
-  stop: 2010-01-01 12:00:00
+  stop: 2010-01-01 00:00:00
   time_step: 3600
 config_files:
   GOTM: GOTM/gotm.yaml

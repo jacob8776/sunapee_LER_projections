@@ -2,7 +2,7 @@ Sys.setenv(TZ = "UTC")
 
 # remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
 # remotes::install_github("tadhg-moore/gotmtools", ref = "yaml")
-remotes::install_github("aemon-j/LakeEnsemblR", ref = "flare")
+# remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
 
 
 # Load libraries
@@ -17,7 +17,7 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("GOTM")
+model <- c("FLake", "GLM", "Simstrat", "GOTM")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -28,14 +28,15 @@ yaml <- read_yaml(config_file)
 str(manual_buoy_temp)
 configr::read.config(config_file)
 yaml$time$start <- "2005-06-27 12:00:00"
-yaml$time$stop <- "2010-01-01 12:00:00"
-yaml$output$time_step <- 1
+yaml$time$stop <- "2010-01-01 00:00:00"
+yaml$output$time_step <- 24
+yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
 out_f <- "calibration_results_GOTM"
 cmethod <- "LHC"
-model <- c("GOTM")
+model <- c("FLake", "GLM", "Simstrat", "GOTM")
 folder <- "."
 dir.create(out_f, showWarnings = TRUE)
 
@@ -51,7 +52,7 @@ plot_heatmap(ncdf, model = model) +
   scale_colour_gradientn(limits = c(0, 32),
                          colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + theme_classic()
 
-fit <- calc_fit(ncdf, model = model)
+fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit
 
 # out <- analyze_ncdf(ncdf, model, spin_up = 190)

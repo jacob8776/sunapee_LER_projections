@@ -14,11 +14,13 @@ library(LakeEnsemblR)
 setwd("~/Dropbox/sunapee_LER_projections/LER_projections/")
 
 # List of GCM's to run 
-# 
-# gcm <- c("GFDL-ESM2M")
-# 
-# # List of RCP's to run
-# rcp <- c("rcp85")
+
+gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
+
+# List of RCP's to run 
+rcp <- c("historical", "rcp85")
+
+
 
 # set config file for all simulations
 config_file <- 'LakeEnsemblR.yaml'
@@ -28,8 +30,6 @@ model <- c("GLM", "FLake", "Simstrat", "GOTM")
 
 
 yaml <- read_yaml(config_file)
-yaml$time$start <- "1975-01-01 12:00:00"
-yaml$time$stop <- "1976-01-01 00:00:00"
 yaml$output$time_step <- "hour"
 yaml$output$time_step <- 24
 yaml$location$hypsograph <- c(file.path("../../../LER_inputs/sunapee_hypso.csv"))
@@ -47,12 +47,12 @@ for(i in 1:length(gcm)){
     print(getwd())
     if(rcp[[l]] == "historical"){
       yaml$time$start <- "1975-01-01 12:00:00"
-      yaml$time$stop <- "1976-01-01 00:00:00"
+      yaml$time$stop <- "2005-12-31 00:00:00"
       yaml$observations$temperature$file <- c(file.path("../../../LER_inputs/ic_historical.csv"))
     }
     else{
       yaml$time$start <- "2006-01-01 12:00:00"
-      yaml$time$stop <- "2007-01-01 00:00:00"
+      yaml$time$stop <- "2099-12-31 00:00:00"
       yaml$observations$temperature$file <- c(file.path("../../../LER_inputs/ic_projections.csv"))
     }
     yaml$input$meteo$file <- c(list.files(file.path("../../../met_files_processed/", gcm[[i]]), full.names = TRUE, pattern = rcp[[l]]))
