@@ -16,11 +16,13 @@ source("processing_projections/moving_projection_outputs.R")
 
 setwd("~/Dropbox/sunapee_LER_projections/LER_projections/output/")
 
-ncdf <- 'GFDL-ESM2M_rcp85_output.nc'
+ncdf <- 'GFDL-ESM2M_historical_output.nc'
 
 
 wtemp <- load_var(ncdf = ncdf, var = 'temp', return = 'list')
 
+
+calc_fit(ncdf = ncdf, model = "Simstrat")
 
 
 

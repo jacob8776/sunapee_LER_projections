@@ -29,7 +29,7 @@ input:
   light:
     Kw: 0.74
   ice:
-    use: false
+    use: true
 inflows:
   use: false
   file: infens.csv
