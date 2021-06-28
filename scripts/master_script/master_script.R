@@ -22,7 +22,6 @@ ncdf <- 'GFDL-ESM2M_historical_output.nc'
 wtemp <- load_var(ncdf = ncdf, var = 'temp', return = 'list')
 
 
-calc_fit(ncdf = ncdf, model = "Simstrat")
 
 
 

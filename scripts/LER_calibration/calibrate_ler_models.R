@@ -18,7 +18,7 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("GLM")
+model <- c("FLake")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -37,7 +37,7 @@ num <- 500
 spin_up <- 190
 out_f <- "calibration_results_GOTM"
 cmethod <- "LHC"
-model <- c("GLM")
+model <- c("FLake", "GOTM", "GLM", "Simstrat")
 folder <- "."
 dir.create(out_f, showWarnings = TRUE)
 
