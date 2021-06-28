@@ -54,27 +54,27 @@ scaling_factors:
     wind_speed: 1.0
   FLake:
     wind_speed: 1.6
-    swr: 1.3
+    swr: 1.2
   GLM:
     wind_speed: 1.4914
     swr: 1.1247
   GOTM:
     wind_speed: 1.3
-    swr: 1.45
+    swr: 1.4
 model_parameters:
   FLake:
     LAKE_PARAMS/depth_w_lk: 33
     LAKE_PARAMS/fetch_lk: 9100.0
-    LAKE_PARAMS/c_relax_C: 1.0
+    LAKE_PARAMS/c_relax_C: 0.95
     TRANSPARENCY/extincoef_optic: 1.2829
   GLM:
     bsn_len: 12870
     bsn_wid: 3000
     sediment/sed_temp_mean:
-    - 7
-    - 14
+    - 6.5
+    - 11.0
   GOTM:
-    turbulence/turb_param/k_min: 5e-06
+    turbulence/turb_param/k_min: 2.2e-06
   Simstrat: ~
   MyLake:
     Phys.par/C_shelter: 0.15

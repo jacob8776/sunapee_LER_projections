@@ -19,7 +19,7 @@
    depth_bs_lk = 5
    T_bs_lk = 4
    latitude_lk = 43.38083
-   c_relax_C = 1
+   c_relax_C = 0.95
 /
 &TRANSPARENCY
    nband_optic = 1

@@ -3,7 +3,7 @@ Sys.setenv(TZ = "UTC")
 # remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
 # remotes::install_github("tadhg-moore/gotmtools", ref = "yaml")
 # remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
-remotes::install_github("aemon-j/gotmtools", ref = "yaml")
+# remotes::install_github("aemon-j/gotmtools", ref = "yaml", force = TRUE)
 
 
 # Load libraries
@@ -18,7 +18,7 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("GOTM")
+model <- c("GLM")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -26,7 +26,6 @@ config_file
 # LHC - Calibration ----
 
 yaml <- read_yaml(config_file)
-str(manual_buoy_temp)
 configr::read.config(config_file)
 yaml$time$start <- "2005-06-27 12:00:00"
 yaml$time$stop <- "2010-01-01 00:00:00"
@@ -38,7 +37,7 @@ num <- 500
 spin_up <- 190
 out_f <- "calibration_results_GOTM"
 cmethod <- "LHC"
-model <- c("GOTM")
+model <- c("GLM")
 folder <- "."
 dir.create(out_f, showWarnings = TRUE)
 
@@ -53,6 +52,7 @@ run_ensemble(config_file = config_file, model = model)
 plot_heatmap(ncdf, model = model) +
   scale_colour_gradientn(limits = c(0, 32),
                          colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + theme_classic()
+plot_ensemble(ncdf, model = model, var = "ice_height")
 
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit
