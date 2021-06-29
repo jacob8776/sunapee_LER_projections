@@ -29,6 +29,8 @@ yaml <- read_yaml(config_file)
 configr::read.config(config_file)
 yaml$time$start <- "2005-06-27 12:00:00"
 yaml$time$stop <- "2010-01-01 00:00:00"
+# yaml$time$start <- "2007-06-11 12:00:00"
+# yaml$time$stop <- "2012-01-01 00:00:00"
 yaml$input$ice$use <- TRUE
 yaml$output$time_step <- 24
 yaml$output$time_unit <- "hour"
