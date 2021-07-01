@@ -53,8 +53,8 @@ scaling_factors:
   Simstrat:
     wind_speed: 1.0
   FLake:
-    wind_speed: 1.6
-    swr: 1.2
+    wind_speed: 1.2588
+    swr: 1.0644
   GLM:
     wind_speed: 1.4914
     swr: 1.1247
@@ -64,12 +64,10 @@ scaling_factors:
 model_parameters:
   FLake:
     LAKE_PARAMS/depth_w_lk: 33
-    LAKE_PARAMS/fetch_lk: 9100.0
-    LAKE_PARAMS/c_relax_C: 0.95
-    TRANSPARENCY/extincoef_optic: 1.2829
+    LAKE_PARAMS/c_relax_C: 0.0005165
   GLM:
-    bsn_len: 12870
-    bsn_wid: 3000
+    morphometry/bsn_len: 12870
+    morphometry/bsn_wid: 3000
     sediment/sed_temp_mean:
     - 6.5
     - 11.0
@@ -92,15 +90,10 @@ calibration:
       log: false
   FLake:
     c_relax_C:
-      lower: 0.0041
-      upper: 0.006
+      lower: 0.0001
+      upper: 0.01
       initial: 0.00505
-      log: false
-    extincoef_optic:
-      lower: 1.0
-      upper: 1.4
-      initial: 1.2
-      log: false
+      log: true
   GLM:
     sediment/sed_temp_mean:
       lower:
@@ -115,16 +108,21 @@ calibration:
       log:
       - false
       - false
-  GOTM: ~
+  GOTM:
+    turbulence/turb_param/k_min:
+      lower: 1.0e-12
+      upper: 1e-5
+      initial: 1.0e-07
+      log: true
   Simstrat:
     ModelParameters/a_seiche:
-      lower: 1.0e-12
-      upper: 0.003
-      initial: 1.0e-07
-      log: false
+      lower: 0.0001
+      upper: 0.01
+      initial: 0.003
+      log: true
   MyLake:
     Phys.par/C_shelter:
-      lower: 0.14
-      upper: 0.16
+      lower: 0.05
+      upper: 0.4
       initial: 0.15
       log: false

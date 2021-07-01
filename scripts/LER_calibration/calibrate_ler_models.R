@@ -37,9 +37,9 @@ yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_GOTM"
+out_f <- "calibration_results_Flake_063021"
 cmethod <- "LHC"
-model <- c("FLake", "GOTM", "GLM", "Simstrat")
+model <- c("FLake")
 folder <- "."
 dir.create(out_f, showWarnings = TRUE)
 
