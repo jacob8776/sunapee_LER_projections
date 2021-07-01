@@ -53,8 +53,8 @@ scaling_factors:
   Simstrat:
     wind_speed: 1.0
   FLake:
-    wind_speed: 1.2588
-    swr: 1.0644
+    wind_speed: 1.0
+    swr: 1.0
   GLM:
     wind_speed: 1.4914
     swr: 1.1247

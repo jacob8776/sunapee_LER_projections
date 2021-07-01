@@ -38,7 +38,7 @@ write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
 out_f <- "calibration_results_Flake_063021"
-cmethod <- "LHC"
+cmethod <- "MCMC"
 model <- c("FLake")
 folder <- "."
 dir.create(out_f, showWarnings = TRUE)
