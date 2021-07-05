@@ -14,11 +14,11 @@ library(LakeEnsemblR)
 library(ggpubr)
 # Set working directory
 getwd()
-setwd("LER_calibration/")
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("FLake")
+model <- c("GOTM")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -35,12 +35,12 @@ yaml$input$ice$use <- TRUE
 yaml$output$time_step <- 24
 yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
-num <- 10
+num <- 500
 spin_up <- 190
-out_f <- "calibration_results_Flake_063021"
+out_f <- "calibration_results_Flake_070121_newtest"
 
 cmethod <- "LHC"
-model <- c("Simstrat")
+model <- c("GOTM")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -74,10 +74,11 @@ cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = FALSE, model
               spin_up = spin_up, job_name = model, out_f = out_f)
 
 cal_files <- list.files(out_f, full.names = TRUE)
-cal_files <- cal_files[c(4,5)]
+cal_files <- cal_files[c(2,6)]
 
 res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
 dim(res[[model]])
+
 
 df <- plyr::ldply(res, function(x) {
   df <- x[, -c(3:7)]
@@ -103,7 +104,7 @@ p1
 
 #
 sub <- df[df$id_no == bst_par, ]
-sub <- df[df$id_no == 1, ] # Use this to try other parameter combinations
+# sub <- df[df$id_no == 1, ] # Use this to try other parameter combinations
 sub
 
 # yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
@@ -114,13 +115,14 @@ sub
 # yaml$scaling_factors$GLM$swr <- sub$value[2]
 # yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
 
-# yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
-# yaml$scaling_factors$GOTM$swr <- sub$value[2]
-# yaml$model_parameters$GOTM$`turbulence/turb_param/k_min` <- sub$value[3]
+yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
+yaml$scaling_factors$GOTM$swr <- sub$value[2]
+yaml$model_parameters$GOTM$`turbulence/turb_param/k_min` <- sub$value[3]
 
-yaml$scaling_factors$Simstrat$wind_speed <- sub$value[1]
-yaml$scaling_factors$Simstrat$swr <- sub$value[2]
-yaml$model_parameters$Simstrat$`ModelParameters/a_seiche` <-  sub$value[3]
+# yaml$scaling_factors$Simstrat$wind_speed <- sub$value[1]
+# yaml$scaling_factors$Simstrat$swr <- sub$value[2]
+# yaml$model_parameters$Simstrat$`ModelParameters/a_seiche` <-  sub$value[3]
+
 
 write_yaml(yaml, config_file)
 
@@ -132,6 +134,8 @@ fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit # Results from running model with calib output as input
 sub # Calibration results
 
+plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
+ggarrange(plotlist = plist)
 # ggsave(file.path(out_f, "calib_results.png"), p1,  dpi = 300,width = 384, height = 280, units = 'mm')
 
 # # Create priors ----
