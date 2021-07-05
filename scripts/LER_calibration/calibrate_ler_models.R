@@ -37,10 +37,10 @@ yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_Flake_070121_newtest"
+out_f <- "calibration_results_Simstrat_070121"
 
 cmethod <- "LHC"
-model <- c("GOTM")
+model <- c("Simstrat", "FLake", "GLM", "GOTM")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -74,7 +74,7 @@ cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = FALSE, model
               spin_up = spin_up, job_name = model, out_f = out_f)
 
 cal_files <- list.files(out_f, full.names = TRUE)
-cal_files <- cal_files[c(2,6)]
+cal_files <- cal_files[c(1,2)]
 
 res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
 dim(res[[model]])
@@ -115,13 +115,13 @@ sub
 # yaml$scaling_factors$GLM$swr <- sub$value[2]
 # yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
 
-yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
-yaml$scaling_factors$GOTM$swr <- sub$value[2]
-yaml$model_parameters$GOTM$`turbulence/turb_param/k_min` <- sub$value[3]
+# yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
+# yaml$scaling_factors$GOTM$swr <- sub$value[2]
+# yaml$model_parameters$GOTM$`turbulence/turb_param/k_min` <- sub$value[3]
 
-# yaml$scaling_factors$Simstrat$wind_speed <- sub$value[1]
-# yaml$scaling_factors$Simstrat$swr <- sub$value[2]
-# yaml$model_parameters$Simstrat$`ModelParameters/a_seiche` <-  sub$value[3]
+yaml$scaling_factors$Simstrat$wind_speed <- sub$value[1]
+yaml$scaling_factors$Simstrat$swr <- sub$value[2]
+yaml$model_parameters$Simstrat$`ModelParameters/a_seiche` <-  sub$value[3]
 
 
 write_yaml(yaml, config_file)

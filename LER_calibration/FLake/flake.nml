@@ -4,7 +4,7 @@
    save_interval_n = 1
    T_wML_in = 17.2
    T_bot_in = 8
-   h_ML_in = 11.55,
+   h_ML_in = 11.55
 /
 &METEO
    z_wind_m(1) = 10
