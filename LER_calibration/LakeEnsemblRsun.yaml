@@ -7,7 +7,7 @@ location:
   hypsograph: Data/sunapee_hypso.csv
   init_depth: 33.0
 time:
-  start: 2005-06-27 12:00:00
+  start: 2005-06-27 00:00:00
   stop: 2010-01-01 00:00:00
   time_step: 3600
 config_files:
@@ -18,7 +18,7 @@ config_files:
   MyLake: MyLake/mylake.Rdata
 observations:
   temperature:
-    file: Data/manual_buoy_temptst.csv
+    file: Data/manual_buoy_temp_hrz.csv
   ice_height:
     file: ~
 input:
@@ -62,6 +62,9 @@ scaling_factors:
   GOTM:
     wind_speed: 0.64446
     swr: 1.3926
+  MyLake:
+    wind_speed: 1.4675
+    swr: 1.1369
 model_parameters:
   FLake:
     LAKE_PARAMS/depth_w_lk: 33
@@ -77,7 +80,7 @@ model_parameters:
   Simstrat:
     ModelParameters/a_seiche: 0.0045528
   MyLake:
-    Phys.par/C_shelter: 0.15
+    Phys.par/C_shelter: 0.38241
 calibration:
   met:
     wind_speed:

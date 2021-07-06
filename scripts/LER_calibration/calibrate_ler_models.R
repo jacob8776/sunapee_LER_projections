@@ -18,16 +18,21 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("GOTM")
+model <- c("MyLake")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
+
+mantemp <- read.csv("Data/manual_buoy_temp_hrz.csv")
+str(mantemp)
+mantemp$datetime <- as.POSIXct(mantemp$datetime, format = "%Y-%m-%d %H:%M:%S")
+write.csv(mantemp, "Data/manual_buoy_temp_hrz_psx.csv", row.names = FALSE)
 
 # LHC - Calibration ----
 
 yaml <- read_yaml(config_file)
 configr::read.config(config_file)
-yaml$time$start <- "2005-06-27 12:00:00"
+yaml$time$start <- "2005-06-27 00:00:00"
 yaml$time$stop <- "2010-01-01 00:00:00"
 # yaml$time$start <- "2007-06-11 12:00:00"
 # yaml$time$stop <- "2012-01-01 00:00:00"
@@ -37,10 +42,10 @@ yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_Simstrat_070121"
+out_f <- "calibration_results_MyLake_070521"
 
 cmethod <- "LHC"
-model <- c("Simstrat", "FLake", "GLM", "GOTM")
+model <- c("MyLake", "FLake", "GLM", "GOTM", "Simstrat")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -68,7 +73,7 @@ fit
 plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
 ggarrange(plotlist = plist)
 
-# param_file <- "calibration_results_Flake_063021/params_GLM_LHC_202107011510.csv"
+param_file <- "calibration_results_GOTM_070121/params_GOTM_LHC_202107011912"
 
 cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = FALSE, model = model, folder = ".", 
               spin_up = spin_up, job_name = model, out_f = out_f)
@@ -119,9 +124,11 @@ sub
 # yaml$scaling_factors$GOTM$swr <- sub$value[2]
 # yaml$model_parameters$GOTM$`turbulence/turb_param/k_min` <- sub$value[3]
 
-yaml$scaling_factors$Simstrat$wind_speed <- sub$value[1]
-yaml$scaling_factors$Simstrat$swr <- sub$value[2]
-yaml$model_parameters$Simstrat$`ModelParameters/a_seiche` <-  sub$value[3]
+# yaml$scaling_factors$Simstrat$wind_speed <- sub$value[1]
+# yaml$scaling_factors$Simstrat$swr <- sub$value[2]
+# yaml$model_parameters$Simstrat$`ModelParameters/a_seiche` <-  sub$value[3]
+
+
 
 
 write_yaml(yaml, config_file)

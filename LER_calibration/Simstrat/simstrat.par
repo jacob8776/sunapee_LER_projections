@@ -38,7 +38,7 @@
   "Simulation" : {
     "Timestep s"                  : 3600,! /LER/ Simulation timestep in seconds
     "Start year"                  : 2005,! /LER/ Starting year
-    "Start d"                     : 177.5,! /LER/ Simulation start in days since 01.01. of starting year. 
+    "Start d"                     : 177,! /LER/ Simulation start in days since 01.01. of starting year. 
     "End d"                       : 1826,! /LER/ Simulation end: 52959 for full historical simulation from 1861, 
     "DisplaySimulation"           : 0,                  ! 0: No display, 1: Display when output is written, 2: Display every iteration
     "Continue from last snapshot" : false               ! If true simulation continues from last snapshot (if present in output folder). Default: false
