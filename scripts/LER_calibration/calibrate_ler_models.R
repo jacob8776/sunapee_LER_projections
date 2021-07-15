@@ -57,10 +57,12 @@ export_config(config_file, model)
 run_ensemble(config_file = config_file, model = model)
 
 
+
 # plot heatmap
 plot_heatmap(ncdf, model = model) +
   scale_colour_gradientn(limits = c(0, 32),
                          colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + theme_classic()
+
 plot_ensemble(ncdf, model = model, var = "ice_height")
 
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)

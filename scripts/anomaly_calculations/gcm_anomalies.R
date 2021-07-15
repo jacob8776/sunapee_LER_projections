@@ -8,7 +8,7 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 # 
 # # List of RCP's to run 
 # gcm <- c("GFDL-ESM2M")
-rcp <- c("historical", "rcp60")
+rcp <- c("historical", "rcp85")
 vars <- c("Relative_Humidity_percent", "Precipitation_millimeterPerDay", "Snowfall_millimeterPerDay",
           "Surface_Level_Barometric_Pressure_pascal", "Sea_Level_Barometric_Pressure_pascal", 
           "Longwave_Radiation_Downwelling_wattPerMeterSquared", "Shortwave_Radiation_Downwelling_wattPerMeterSquared",
@@ -83,6 +83,28 @@ ggplot(data = subset(anomalies),
   ggtitle("Anomalies of met variables in summer months")
 
 
+anomalies$variable <- as.factor(anomalies$variable)
+anomalies <- anomalies %>% 
+  dplyr::group_by(year, variable) %>% 
+  dplyr::mutate(mean = mean(anom)) %>% 
+  dplyr::mutate(sd = sd(anom))
+
+
+ggplot(data = subset(anomalies), 
+       mapping = aes(x = year, y = anom, color = model)) + 
+  geom_line() + 
+  facet_wrap(vars(variable), scales = 'free') + 
+  ggtitle("Anomalies of met variables in summer months")
+
+
+
+ggplot(data=anomalies, aes(y=mean, x=year), color = "black") + 
+  geom_line() + 
+  geom_ribbon(data = anomalies, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.4, 
+              linetype = 0.1, 
+              color = "grey") + 
+  facet_wrap(vars(variable), scales = 'free') +
+  ggtitle("Mean anomaly of met variables in summer months")
 
 
 
