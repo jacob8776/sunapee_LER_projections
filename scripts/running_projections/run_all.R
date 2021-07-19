@@ -15,7 +15,7 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_projections/")
 
 # List of GCM's to run 
 
-gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
+gcm <- c("GFDL-ESM2M")
 
 # List of RCP's to run 
 rcp <- c("historical", "rcp85")
@@ -26,7 +26,7 @@ rcp <- c("historical", "rcp85")
 config_file <- 'LakeEnsemblR.yaml'
 
 # Set which models for all simulations
-model <- c("GLM", "FLake", "Simstrat", "GOTM")
+model <- c("MyLake")
 
 
 yaml <- read_yaml(config_file)

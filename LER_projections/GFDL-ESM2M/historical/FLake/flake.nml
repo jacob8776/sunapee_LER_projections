@@ -14,7 +14,7 @@
    outputfile = 'output/output.dat'
 /
 &LAKE_PARAMS
-   depth_w_lk = 33
+   depth_w_lk = 11.55
    fetch_lk = 9100
    depth_bs_lk = 5
    T_bs_lk = 4
@@ -24,13 +24,13 @@
 &TRANSPARENCY
    nband_optic = 1
    frac_optic = 1
-   extincoef_optic = 1.2829
+   extincoef_optic = 0.74,
 /
 &inflow
    DTinflow = 0
    DTfixed = .true.
    QS = 0
-   Qfromfile = .false.
+   Qfromfile = .false.,
    Qfile = 'Tinflow'
    time_step_number = 1653
 /

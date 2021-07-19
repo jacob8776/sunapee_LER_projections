@@ -91,3 +91,22 @@ ggplot(subset(df, month >= 6 & month <= 8), aes(yday, mean)) +
   labs(y = "Thermocline depth (m)") +
   scale_y_continuous(trans = "reverse") +
   theme_classic() 
+
+
+dfsummer <- filter(df, month >=6 & month <=8)
+
+
+# Calculating stratification & ice metrics
+temp <- load_var(ncdf, "temp")
+ice <- load_var(ncdf, "ice_height")
+out <- lapply(1:length(temp), function(x) {
+  # x = 1 # for debugging
+  mlt <- reshape::melt(temp[[x]], id.vars = 1)
+  mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
+  if(names(out)[x] == "Obs") {
+    analyse_strat(data = mlt)
+  }
+  analyse_strat(data = mlt, H_ice = ice[[x]][, 2])
+})
+names(out) <- names(temp)
+out

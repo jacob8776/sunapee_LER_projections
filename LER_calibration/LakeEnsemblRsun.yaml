@@ -54,8 +54,8 @@ scaling_factors:
     wind_speed: 1.4505
     swr: 0.83902
   FLake:
-    wind_speed: 2.5787
-    swr: 1.2338
+    wind_speed: 1.3475
+    swr: 1.0315
   GLM:
     wind_speed: 1.4929
     swr: 0.97873
@@ -67,8 +67,7 @@ scaling_factors:
     swr: 1.1369
 model_parameters:
   FLake:
-    LAKE_PARAMS/depth_w_lk: 33
-    LAKE_PARAMS/c_relax_C: 0.0097559
+    LAKE_PARAMS/c_relax_C: 0.0098357
   GLM:
     morphometry/bsn_len: 12870
     morphometry/bsn_wid: 3000
