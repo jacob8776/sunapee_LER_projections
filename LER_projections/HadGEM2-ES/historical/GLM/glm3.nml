@@ -31,7 +31,7 @@
 /
 &time
    timefmt = 2
-   start = '1975-01-01 12:00:00'
+   start = '1975-01-01 00:00:00'
    stop = '2005-12-31 00:00:00'
    dt = 3600
    timezone = 0
@@ -117,7 +117,7 @@
    sed_heat_model = 1
    n_zones = 2
    zone_heights = 20, 33
-   sed_temp_mean = 6.5, 11
+   sed_temp_mean = 7, 14
    sed_temp_depth = 0.2, 0.2
    sed_temp_amplitude = 4, 3
    sed_temp_peak_doy = 242.5, 242.5

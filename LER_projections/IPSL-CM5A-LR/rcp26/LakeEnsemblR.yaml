@@ -4,11 +4,11 @@ location:
   longitude: -72.0541359
   elevation: 333
   depth: 33
-  hypsograph: ../LER_inputs/sunapee_hypso.csv
+  hypsograph: ../../../LER_inputs/sunapee_hypso.csv
   init_depth: 33
 time:
-  start: 2006-05-30 00:00:00
-  stop: 2007-01-01 00:00:00
+  start: 2006-01-01 00:00:00
+  stop: 2099-12-31 00:00:00
   time_step: 3600
 config_files:
   GOTM: GOTM/gotm.yaml
@@ -18,14 +18,14 @@ config_files:
   MyLake: MyLake/mylake.Rdata
 observations:
   temperature:
-    file: ../LER_inputs/manual_temp.csv
+    file: ../../../LER_inputs/ic_projections_hr0.csv
   ice_height:
     file: ~
 input:
   init_temp_profile:
     file: ~
   meteo:
-    file: ../../../met_files_processed//IPSL-CM5A-LR/IPSL-CM5A-LR_rcp85.csv
+    file: ../../../met_files_processed//IPSL-CM5A-LR/IPSL-CM5A-LR_rcp26.csv
   light:
     Kw: 0.74
   ice:
@@ -36,7 +36,7 @@ inflows:
   scale_param: 1.0
   mass-balance: false
 output:
-  file: ensemble_output
+  file: IPSL-CM5A-LR_rcp26_output
   format: netcdf
   depths: 0.5
   compression: 4
@@ -46,7 +46,7 @@ output:
   variables:
   - temp
   - ice_height
-scaling_factors:
+  scaling_factors: ~
   all:
     wind_speed: 1
     swr: 1

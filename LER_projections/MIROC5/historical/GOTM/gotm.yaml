@@ -6,7 +6,7 @@ location:
   depth: 33
   hypsograph: hypsograph.dat
 time:
-  start: 1975-01-01 12:00:00
+  start: 1975-01-01 00:00:00
   stop: 2005-12-31 00:00:00
   dt: 3600
 grid:

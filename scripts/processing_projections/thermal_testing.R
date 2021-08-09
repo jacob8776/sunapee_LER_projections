@@ -9,7 +9,7 @@ library(reshape)
 library(RColorBrewer)
 library(lubridate)
 
-setwd("LER_projections/output/")
+setwd("~/Dropbox/sunapee_LER_projections/LER_projections/output/")
 
 ncdf <- 'GFDL-ESM2M_historical_output.nc'
 
@@ -99,4 +99,10 @@ out <- lapply(1:length(temp), function(x) {
 names(out) <- names(temp)
 out
 
+df <- melt(out[1:5], id.vars = 1)
+colnames(df)[4] <- "model"
+ggplot(df, aes(x = year, y = value, col = model)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y")
 
+
+?analyse_strat

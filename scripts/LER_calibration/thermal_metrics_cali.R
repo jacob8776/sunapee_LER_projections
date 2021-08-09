@@ -9,7 +9,7 @@ library(reshape)
 library(RColorBrewer)
 library(lubridate)
 
-ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output.nc"
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models.nc"
 
 
 ######################## Calculating Schmidt Stability ################################
@@ -82,7 +82,7 @@ ggplot(subset(df, month >= 6 & month <= 8), aes(yday, value, colour = model)) +
   scale_y_continuous(trans = "reverse") +
   theme_classic() 
 
-ggplot(subset(df, month >= 6 & month <= 8), aes(yday, mean)) +
+ggplot(subset(df, month >= 6 & month <= 8 & model != "Obs"), aes(yday, mean)) +
   facet_wrap(~year) +
   geom_line() +
   geom_ribbon(data = subset(df, month >= 6 & month <= 8), aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
@@ -90,13 +90,15 @@ ggplot(subset(df, month >= 6 & month <= 8), aes(yday, mean)) +
               color = "grey") + 
   labs(y = "Thermocline depth (m)") +
   scale_y_continuous(trans = "reverse") +
-  theme_classic() 
+  theme_classic() + 
+  geom_line(data = subset(df, month >= 6 & month <= 8 & model == "Obs"), aes(yday, value, col = "Obs"))
 
 
 dfsummer <- filter(df, month >=6 & month <=8)
 
 
 # Calculating stratification & ice metrics
+
 temp <- load_var(ncdf, "temp")
 ice <- load_var(ncdf, "ice_height")
 out <- lapply(1:length(temp), function(x) {
@@ -110,3 +112,9 @@ out <- lapply(1:length(temp), function(x) {
 })
 names(out) <- names(temp)
 out
+
+
+df <- melt(out[1:5], id.vars = 1)
+colnames(df)[4] <- "model"
+ggplot(df, aes(x = year, y = value, col = model)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y")

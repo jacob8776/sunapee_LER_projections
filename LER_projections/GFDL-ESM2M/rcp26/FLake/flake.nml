@@ -1,6 +1,6 @@
 &SIMULATION_PARAMS
    del_time_lk = 86400
-   time_step_number = 34331
+   time_step_number = 34332
    save_interval_n = 1
    T_wML_in = 17.2
    T_bot_in = 8
@@ -24,13 +24,13 @@
 &TRANSPARENCY
    nband_optic = 1
    frac_optic = 1
-   extincoef_optic = 0.74
+   extincoef_optic = 0.74,
 /
 &inflow
    DTinflow = 0
    DTfixed = .true.
    QS = 0
-   Qfromfile = .false.
+   Qfromfile = .false.,
    Qfile = 'Tinflow'
    time_step_number = 1653
 /

@@ -16,7 +16,7 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 # 
 # # List of RCP's to run 
 # gcm <- c("GFDL-ESM2M")
-rcp <- c("historical", "rcp85")
+rcp <- c("historical", "rcp26", "rcp85")
 
 
 
@@ -92,14 +92,26 @@ for(i in 1:length(gcm)){
 
 
 
-anomalies_master %>% group_by(year, rcp, gcm, model, variable) 
-anomalies_master <- anomalies_master %>% 
-  group_by(rcp, gcm, variable, year, month, yday) %>% 
+anomalies_by_year <- anomalies_master %>% 
+  group_by(year, rcp, gcm, model, variable, mean) %>% 
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
+
+anomalies_master <- anomalies_by_year %>% 
+  group_by(rcp, gcm, variable, year) %>% 
   dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_model = sd(anom, na.rm = TRUE)) %>% 
-  group_by(rcp, model, variable, year, month, yday) %>%
+  dplyr::mutate(var_model = var(anom, na.rm = TRUE)) %>%
+  group_by(rcp, model, variable, year) %>%
   dplyr::mutate(mean_gcm = mean(anom, na.rm = TRUE)) %>%
-  dplyr::mutate(sd_gcm = sd(anom, na.rm = TRUE))
+  dplyr::mutate(sd_gcm = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_gcm = var(anom, na.rm = TRUE)) %>%
+  group_by(gcm, model, variable, year) %>% 
+  dplyr::mutate(mean_rcp = mean(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(sd_rcp = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_rcp = var(anom, na.rm = TRUE))
+
+write.csv(anomalies_master, "../../anomaly_calculations/thermodepth_annual_anomalies.csv", row.names = F)
+
 
 
 

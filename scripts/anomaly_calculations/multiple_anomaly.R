@@ -1,0 +1,193 @@
+library(LakeEnsemblR)
+library(lubridate)
+library(plyr)
+library(gotmtools)
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+
+
+
+gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
+# 
+# # List of RCP's to run 
+# gcm <- c("GFDL-ESM2M")
+rcp <- c("historical", "rcp26", "rcp85")
+
+
+
+
+setwd("~/Dropbox/sunapee_LER_projections/LER_projections/output/")
+
+
+anomalies_master <- data.frame("year" = numeric(0), 
+                               "rcp" = character(0), "gcm" = character(0), "model" = character(0), "variable" = character(0),
+                               "value" = numeric(0), "mean" = numeric(0), "anom" = numeric(0))
+
+
+for(i in 1:length(gcm)){
+  # Sets working directory to each gcm 
+  # Nested for loop goes into RCP scenarios for GCMs 
+  for(l in 1:length(rcp)){
+    ncdf <- paste0(gcm[[i]], "_", rcp[[l]], "_output.nc")
+    print(ncdf)
+    
+    temp <- load_var(ncdf, "temp")
+    ice <- load_var(ncdf, "ice_height")
+    out <- lapply(1:length(temp), function(x) {
+      # x = 1 # for debugging
+      mlt <- reshape::melt(temp[[x]], id.vars = 1)
+      mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
+      if(names(out)[x] == "Obs") {
+        analyse_strat(data = mlt)
+      }
+      analyse_strat(data = mlt, H_ice = ice[[x]][, 2])
+    })
+    names(out) <- names(temp)
+    out
+    
+    
+    df <- melt(out[1:5], id.vars = 1)
+    colnames(df)[4] <- "model"
+    df$gcm <- gcm[[i]]
+    df$rcp <- rcp[[l]]
+    
+    if(rcp[[l]] == "historical"){
+      hmeans <- df %>%  dplyr::group_by(model, gcm, rcp, variable) %>% 
+        dplyr::mutate(mean = mean(value, na.rm = TRUE))
+      
+      mean_all <- hmeans %>% 
+        dplyr::filter(model != "Obs") %>% 
+        distinct(mean, .keep_all = TRUE) %>% 
+        # mutate(gcm = gcm[[i]],
+        #        rcp = rcp[[l]]) %>% 
+        select(variable, model, mean, gcm)
+    }
+    
+    
+    
+    else{
+      
+      anomalies <- merge(mean_all, df, by = c("variable", "model", "gcm"
+      )) %>% 
+        mutate(anom = value - mean) %>%
+        dplyr::filter(model != "Obs") %>% 
+        select(year, rcp.y, gcm, model, 
+               variable, value, mean, anom)
+      colnames(anomalies)[2] <- c("rcp")
+      
+      
+      anomalies$variable <- as.character(anomalies$variable)
+      
+      anomalies_master <- rbind(anomalies_master, anomalies)
+      
+      
+      
+      
+      
+    }
+    
+    
+  }
+}
+
+
+
+
+anomalies_by_year <- anomalies_master %>% 
+  group_by(year, rcp, gcm, model, variable, mean) %>% 
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
+
+anomalies_master <- anomalies_by_year %>% 
+  group_by(rcp, gcm, variable, year) %>% 
+  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_model = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_model = var(anom, na.rm = TRUE)) %>%
+  group_by(rcp, model, variable, year) %>%
+  dplyr::mutate(mean_gcm = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_gcm = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_gcm = var(anom, na.rm = TRUE)) %>%
+  group_by(gcm, model, variable, year) %>% 
+  dplyr::mutate(mean_rcp = mean(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(sd_rcp = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_rcp = var(anom, na.rm = TRUE))
+
+write.csv(anomalies_master, "../../anomaly_calculations/multiple_annual_anomalies.csv", row.names = F)
+
+anomalies_master <- read_csv("../../anomaly_calculations/multiple_annual_anomalies.csv")
+
+ggplot(anomalies_master, aes(year, anom, colour = model)) +
+  facet_wrap(gcm~rcp) +
+  geom_line() +
+  labs(y = "Schmidt stability (J/m2)") +
+  geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
+              linetype = 0.1,
+              color = "grey") 
+
+
+
+
+ggplot(subset(anomalies_master, year <= 2010), aes(yday, mean_model, colour = gcm)) + 
+  facet_wrap(~year) + 
+  geom_line() + 
+  geom_ribbon(data = subset(anomalies_master, year <= 2010), aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
+              linetype = 0.1,
+              color = "grey") 
+
+
+ggplot(subset(anomalies_master), aes(yday, mean_gcm, colour = model)) + 
+  facet_wrap(~year) + 
+  geom_line() + 
+  geom_ribbon(data = subset(anomalies_master), aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm), alpha = 0.4,
+              linetype = 0.1,
+              color = "grey") 
+
+anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+mean_midcentury <- mean(anom_midcentury$anom, na.rm = TRUE)
+mean_endcentury <- mean(anom_endcentury$anom, na.rm = TRUE)
+max(anom_midcentury$anom, na.rm = TRUE)
+max(anom_endcentury$anom, na.rm = TRUE)
+median(anom_midcentury$anom, na.rm = TRUE)
+median(anom_endcentury$anom, na.rm = TRUE)
+
+# 
+# ggplot(data = anomalies_master, aes(x = sd_model, y = sd_gcm)) + geom_point()
+# 
+# linearmodel <- lm(anomalies_master$sd_gcm~anomalies_master$sd_model)
+# summary(linearmodel)
+# 
+# 
+# ggplot(data = anomalies_master, aes(x = yday, y = mean_model)) + geom_line() + 
+#          geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
+#                      linetype = 0.1,
+#                      color = "grey") +
+#   geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_gcm, ymax=mean_model+sd_gcm), alpha = 0.4,
+#               linetype = 0.1,
+#               color = "red")
+# 
+ggplot(anomalies_by_year, aes(x = year, y = mean_model, col = gcm)) +
+  geom_line() +
+  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = gcm), alpha = 0.2,
+              linetype = .1) +
+  facet_wrap(~rcp)  
+
+
+ggplot(anomalies_by_year, aes(x = year, y = mean_gcm, col = model)) +
+  geom_line() +
+  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_gcm-sd_gcm, ymax = mean_gcm+sd_gcm), alpha = 0.4,
+              linetype = 0.1,
+              col = "grey") + 
+  facet_wrap(~rcp)
+
+
+
+ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point()+
+  geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp")) +
+  geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm")) 
+
+

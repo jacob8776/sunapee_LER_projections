@@ -18,7 +18,7 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("MyLake")
+model <- c("FLake")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -45,7 +45,7 @@ spin_up <- 190
 out_f <- "calibration_results_FLake_071621"
 
 cmethod <- "LHC"
-model <- c("FLake", "MyLake", "GLM", "GOTM", "Simstrat")
+model <- c("FLake", "GLM", "Simstrat", "GOTM", "MyLake")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -56,7 +56,7 @@ export_config(config_file, model)
 
 run_ensemble(config_file = config_file, model = model)
 
-
+#file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models.nc")
 
 # plot heatmap
 plot_heatmap(ncdf, model = model) +
@@ -75,7 +75,7 @@ fit
 plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
 ggarrange(plotlist = plist)
 
-# param_file <- "calibration_results_GOTM_070121/params_GOTM_LHC_202107011912"
+param_file <- "calibration_results_FLake_071621/params_FLake_LHC_202107161729.csv"
 
 cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = FALSE, model = model, folder = ".", 
               spin_up = spin_up, job_name = model, out_f = out_f)
