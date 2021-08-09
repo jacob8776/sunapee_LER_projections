@@ -1,0 +1,597 @@
+---
+title: "080921_meeting"
+author: "Jacob Wynne"
+date: "8/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Calibration
+
+All models with the exception of FLake are calibrated with LHC to under 2 RMSE. There are currently a few bugs being worked out in the LHC script which will allow flake to fall under to 2 RMSE threshold. Other metrics such as NSE, r, bias and MAE all match up relatively well between models, with the exception of a positive bias in FLake and a large range of MAE values between models. 
+
+In terms of thermal metrics, the observed data tracks both Schmidt stability and thermocline depth relatively well. Unfortunately, observations are not yet calculable for the batch thermal metrics calculated but likely will be in the near future. 
+
+Once observations are calculated for all thermal metrics and validation is carried out, a possibility is to weight each model based on its performance in relation to observations. The weight could be calculated by taking the average distance from each model output to the observation over the course of the validation period. 
+
+* Would model weighting cause the uncertainty analyses to become overly complex or defeat the purpose of the uncertainty? 
+
+
+
+
+```{r, include = FALSE}
+library(LakeEnsemblR)
+library(lubridate)
+library(plyr)
+library(gotmtools)
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+```
+
+
+```{r, echo=FALSE,results='hide',fig.keep='all'}
+Sys.setenv(TZ = "UTC")
+
+# remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
+# remotes::install_github("tadhg-moore/gotmtools", ref = "yaml")
+# remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
+# remotes::install_github("aemon-j/gotmtools", ref = "yaml", force = TRUE)
+
+
+# Set working directory
+getwd()
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
+
+# Set config file & models
+config_file <- 'LakeEnsemblRsun.yaml'
+model <- c("FLake")
+ncdf <- "output/ensemble_output.nc"
+
+config_file
+
+# mantemp <- read.csv("Data/manual_buoy_temp_hrz.csv")
+# str(mantemp)
+# mantemp$datetime <- as.POSIXct(mantemp$datetime, format = "%Y-%m-%d %H:%M:%S")
+# write.csv(mantemp, "Data/manual_buoy_temp_hrz_psx.csv", row.names = FALSE)
+
+# LHC - Calibration ----
+
+yaml <- read_yaml(config_file)
+configr::read.config(config_file)
+yaml$time$start <- "2005-06-27 00:00:00"
+yaml$time$stop <- "2010-01-01 00:00:00"
+# yaml$time$start <- "2007-06-11 12:00:00"
+# yaml$time$stop <- "2012-01-01 00:00:00"
+yaml$input$ice$use <- TRUE
+yaml$output$time_step <- 24
+yaml$output$time_unit <- "hour"
+write_yaml(yaml, config_file)
+num <- 500
+spin_up <- 190
+out_f <- "calibration_results_FLake_071621"
+
+cmethod <- "LHC"
+model <- c("FLake", "GLM", "Simstrat", "GOTM", "MyLake")
+
+folder <- "."
+dir.create(out_f, showWarnings = FALSE)
+
+
+# Run LER and inspect default output
+export_config(config_file, model)
+
+run_ensemble(config_file = config_file, model = model)
+
+#file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models.nc")
+
+# plot heatmap
+plot_heatmap(ncdf, model = model) +
+  scale_colour_gradientn(limits = c(0, 32),
+                         colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + theme_classic()
+
+plot_ensemble(ncdf, model = model, var = "ice_height")
+
+fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
+fit
+
+# out <- analyze_ncdf(ncdf, model, spin_up = 190)
+# out$stats 
+
+## Plot residuals
+plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
+ggarrange(plotlist = plist)
+
+```
+
+
+DO NOT RUN 
+```{r, eval = FALSE}
+
+param_file <- "calibration_results_FLake_071621/params_FLake_LHC_202107161729.csv"
+
+cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = FALSE, model = model, folder = ".",
+              spin_up = spin_up, job_name = model, out_f = out_f)
+
+cal_files <- list.files(out_f, full.names = TRUE)
+cal_files <- cal_files[c(1,2)]
+
+res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
+dim(res[[model]])
+
+
+df <- plyr::ldply(res, function(x) {
+  df <- x[, -c(3:7)]
+  reshape2::melt(df, id.vars = c("par_id", "rmse"))
+}, .id = "model")
+df$id_no <- as.numeric(gsub(".*?([0-9]+).*", "\\1", df$par_id))
+
+bst_par <- df$id_no[which.min(df$rmse)]
+sub <- df[df$id_no == bst_par, ]
+sub
+
+p1 <- ggplot(df) +
+  geom_point(aes(value, rmse)) +
+  facet_wrap(model~variable, scales = "free_x") +
+  geom_hline(yintercept = 2, linetype = "dashed") +
+  ylab("RMSE (\u00B0C)") +
+  geom_vline(data = sub, aes(xintercept = value)) +
+  geom_hline(yintercept = 3.5, color = "red", linetype = "dashed") +
+  # coord_cartesian(ylim = c(1, 4)) +
+  # scale_x_log10() +
+  theme_classic(base_size = 16)
+p1
+
+#
+sub <- df[df$id_no == bst_par, ]
+# sub <- df[df$id_no == 1, ] # Use this to try other parameter combinations
+sub
+
+yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
+yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
+yaml$scaling_factors$FLake$swr <- sub$value[2]
+
+# yaml$scaling_factors$GLM$wind_speed <- sub$value[1]
+# yaml$scaling_factors$GLM$swr <- sub$value[2]
+# yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
+
+# yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
+# yaml$scaling_factors$GOTM$swr <- sub$value[2]
+# yaml$model_parameters$GOTM$`turbulence/turb_param/k_min` <- sub$value[3]
+
+# yaml$scaling_factors$Simstrat$wind_speed <- sub$value[1]
+# yaml$scaling_factors$Simstrat$swr <- sub$value[2]
+# yaml$model_parameters$Simstrat$`ModelParameters/a_seiche` <-  sub$value[3]
+
+
+
+
+write_yaml(yaml, config_file)
+
+export_config(config_file, model)
+
+run_ensemble(config_file, model)
+
+fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
+fit # Results from running model with calib output as input
+sub # Calibration results
+
+plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
+ggarrange(plotlist = plist)
+# ggsave(file.path(out_f, "calib_results.png"), p1,  dpi = 300,width = 384, height = 280, units = 'mm')
+
+
+```
+
+
+
+
+
+
+
+
+
+
+```{r, echo = FALSE}
+
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models.nc"
+
+
+######################## Calculating Schmidt Stability ################################
+
+
+out <- load_var(ncdf = ncdf, var = "temp")
+# out <- as.data.frame(out[[1]])
+bathy <- read.csv('~/Dropbox/sunapee_LER_projections/LER_inputs/sunapee_hypso.csv')
+colnames(bathy) <- c("depths", "areas")
+ts.sch <- lapply(out, function(x) {
+  ts.schmidt.stability(x, bathy = bathy, na.rm = TRUE)
+})
+## Reshape to data.frame
+df <- melt(ts.sch, id.vars = 1)
+colnames(df)[4] <- "model"
+df$yday <- yday(df$datetime)
+df$year <- year(df$datetime)
+
+df <- df %>% 
+  dplyr :: group_by(yday, year) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+
+
+## plot results
+ggplot(df, aes(yday, value, colour = model)) +
+  # geom_line(data=df, aes(y=mean, x=yday), color = "black", size = 1) +
+  geom_line() +
+  # geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6, 
+  #             linetype = 0.1, 
+  #             color = "grey") +
+  facet_wrap(~year) +
+  labs(y = "Schmidt stability (J/m2)") +
+  theme_classic() + ylim(-50, 1000) 
+
+ggplot(df, aes(yday, mean)) + 
+  geom_line() + 
+  geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+              linetype = 0.1,
+              color = "grey") + 
+  facet_wrap(~year) + 
+  labs(y = "Schmidt stability (J/m2)") +
+  theme_classic() + ylim(-50, 1000) + 
+  geom_line(data = subset(df,  model == "Obs"), aes(yday, value, col = "Obs"))
+
+
+
+#################################### Calculating thermocline depth ######################################
+
+
+## Same for thermocline depth
+ts.td <- lapply(out, function(x) {
+  ts.thermo.depth(x, Smin = 0.1, na.rm = TRUE)
+})
+
+df <- melt(ts.td, id.vars = 1)
+colnames(df)[4] <- "model"
+df$yday <- yday(df$datetime)
+df$month <- month(df$datetime)
+df$year <- year(df$datetime)
+
+df <- df %>% 
+  dplyr :: group_by(yday, year) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+ggplot(subset(df, month >= 6 & month <= 8), aes(yday, value, colour = model)) +
+  facet_wrap(~year) +
+  geom_line() +
+  labs(y = "Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() 
+
+ggplot(subset(df, month >= 6 & month <= 8 & model != "Obs"), aes(yday, mean)) +
+  facet_wrap(~year) +
+  geom_line() +
+  geom_ribbon(data = subset(df, month >= 6 & month <= 8), aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+              linetype = 0.1,
+              color = "grey") + 
+  labs(y = "Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() + 
+  geom_line(data = subset(df, month >= 6 & month <= 8 & model == "Obs"), aes(yday, value, col = "Obs"))
+
+
+dfsummer <- filter(df, month >=6 & month <=8)
+
+
+# Calculating stratification & ice metrics
+temp <- load_var(ncdf, "temp")
+ice <- load_var(ncdf, "ice_height")
+out <- lapply(1:length(temp), function(x) {
+  # x = 1 # for debugging
+  mlt <- reshape::melt(temp[[x]], id.vars = 1)
+  mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
+  if(names(out)[x] == "Obs") {
+    analyse_strat(data = mlt)
+  }
+  analyse_strat(data = mlt, H_ice = ice[[x]][, 2])
+})
+names(out) <- names(temp)
+
+
+
+df <- melt(out[1:5], id.vars = 1)
+colnames(df)[4] <- "model"
+ggplot(df, aes(x = year, y = value, col = model)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y")
+
+```
+
+
+
+
+
+```{r, eval = FALSE}
+
+gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
+# 
+# # List of RCP's to run 
+# gcm <- c("GFDL-ESM2M")
+rcp <- c("historical", "rcp26", "rcp85")
+
+
+
+
+setwd("~/Dropbox/sunapee_LER_projections/LER_projections/output/")
+
+
+anomalies_master <- data.frame("year" = numeric(0), "month" = numeric(0), "yday" = numeric(0), 
+                               "rcp" = character(0), "gcm" = character(0), "model" = character(0), "variable" = character(0),
+                               "value" = numeric(0), "mean" = numeric(0), "anom" = numeric(0))
+
+
+  for(i in 1:length(gcm)){
+    # Sets working directory to each gcm 
+    # Nested for loop goes into RCP scenarios for GCMs 
+    for(l in 1:length(rcp)){
+      ncdf <- paste0(gcm[[i]], "_", rcp[[l]], "_output.nc")
+      print(ncdf)
+      
+      out <- load_var(ncdf = ncdf, var = "temp")
+      #out <- as.data.frame(out[[1]])
+      bathy <- read.csv('~/Dropbox/sunapee_LER_projections/LER_inputs/sunapee_hypso.csv')
+      colnames(bathy) <- c("depths", "areas")
+      ts.sch <- lapply(out, function(x) {
+        ts.schmidt.stability(x, bathy = bathy, na.rm = TRUE)
+      })
+      ## Reshape to data.frame
+      df <- melt(ts.sch, id.vars = 1)
+      colnames(df)[4] <- "model"
+      df$yday <- yday(df$datetime)
+      df$year <- year(df$datetime)
+      df$month <- month(df$datetime)
+      df$gcm <- gcm[[i]]
+      df$rcp <- rcp[[l]]
+
+      if(rcp[[l]] == "historical"){
+            hmeans <- df %>%  dplyr::group_by(model, gcm, rcp) %>% 
+            dplyr::mutate(mean = mean(value, na.rm = TRUE))
+            
+            mean_all <- hmeans %>% 
+              dplyr::filter(model != "Obs") %>% 
+              distinct(mean, .keep_all = TRUE) %>% 
+              # mutate(gcm = gcm[[i]],
+              #        rcp = rcp[[l]]) %>% 
+              select(variable, model, mean, gcm)
+      }
+        
+            
+
+      else{
+        
+        anomalies <- merge(mean_all, df, by = c("variable", "model", "gcm"
+                                                )) %>% 
+          mutate(anom = value - mean) %>%
+          dplyr::filter(model != "Obs") %>% 
+          select(year, month, yday, rcp.y, gcm, model, 
+                 variable, value, mean, anom)
+          colnames(anomalies)[4] <- c("rcp")
+          
+        
+        anomalies$variable <- as.character(anomalies$variable)
+        
+        anomalies_master <- rbind(anomalies_master, anomalies)
+
+
+
+
+
+        }
+      
+
+      }
+    }
+  
+
+
+  
+anomalies_by_year <- anomalies_master %>% group_by(year, rcp, gcm, model, variable, mean) %>% 
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
+  
+
+#separate out into separate dataframes 
+anomalies_master <- anomalies_by_year %>% 
+  group_by(rcp, gcm, variable, year) %>% 
+  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_model = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_model = var(anom, na.rm = TRUE)) %>%
+  group_by(rcp, model, variable, year) %>%
+  dplyr::mutate(mean_gcm = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_gcm = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_gcm = var(anom, na.rm = TRUE)) %>%
+  group_by(gcm, model, variable, year) %>% 
+  dplyr::mutate(mean_rcp = mean(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(sd_rcp = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_rcp = var(anom, na.rm = TRUE))
+
+  
+
+```
+
+
+```{r}
+
+setwd("~/Dropbox/sunapee_LER_projections/anomaly_calculations/")
+
+anomalies_by_year <- read.csv("schmidt_annual_anomalies.csv")
+anomalies_by_year
+
+
+ggplot(anomalies_by_year, aes(year, anom, colour = model)) +
+  facet_wrap(gcm~rcp, scale = "free") +
+  geom_line() +
+  labs(y = "Schmidt stability (J/m2)") +
+  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
+              linetype = 0.1,
+              color = "grey") 
+
+ggplot(anomalies_by_year, aes(x = year, y = mean_model, col = gcm)) +
+  geom_line() +
+  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = gcm), alpha = 0.2,
+              linetype = .1) +
+  facet_wrap(~rcp)  
+  
+# 
+# ggplot(anomalies_by_year, aes(x = year, y = mean_gcm, col = model)) +
+#   geom_line() +
+#   geom_ribbon(data = anomalies_by_year, aes(ymin = mean_gcm-sd_gcm, ymax = mean_gcm+sd_gcm), alpha = 0.4,
+#               linetype = 0.1,
+#               col = "grey") + 
+#   facet_wrap(~rcp)
+# 
+
+
+ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point()+
+  geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp")) +
+  geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm")) 
+
+
+
+anom_midcentury <- anomalies_by_year %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+anom_endcentury <- anomalies_by_year %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+print(paste0("The mean midcentury Schmidt Stability for rcp8.5 is: ", mean(anom_midcentury$anom, na.rm = TRUE)))
+print(paste0("The mean endcentury Schmidt Stability for rcp8.5 is: ", mean(anom_endcentury$anom, na.rm = TRUE)))
+print(paste0("The maximum midcentury Schmidt Stability for rcp8.5 is: ", max(anom_midcentury$anom, na.rm = TRUE)))
+print(paste0("The maximum endcentury Schmidt Stability for rcp8.5 is: ", max(anom_endcentury$anom, na.rm = TRUE)))
+print(paste0("The minimum midcentury Schmidt Stability for rcp8.5 is: ", min(anom_midcentury$anom, na.rm = TRUE)))
+print(paste0("The minimum endcentury Schmidt Stability for rcp8.5 is: ", min(anom_endcentury$anom, na.rm = TRUE)))
+
+```
+
+Do way more than 3 years for spin up 
+
+average across gcm and model, color by rcp, use polygon to plot the rcp, ribbon represents the upper and lower limits of the rcp (y upper and y lower) 
+
+
+```{r}
+
+setwd("~/Dropbox/sunapee_LER_projections/anomaly_calculations/")
+
+anomalies_by_year <- read.csv("thermodepth_annual_anomalies.csv")
+anomalies_by_year
+
+
+
+ggplot(anomalies_by_year, aes(year, anom, colour = model)) +
+  facet_wrap(gcm~rcp) +
+  geom_line() +
+  labs(y = "Schmidt stability (J/m2)") +
+  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
+              linetype = 0.1,
+              color = "grey") 
+
+ggplot(anomalies_by_year, aes(x = year, y = mean_model, col = gcm)) +
+  geom_line() +
+  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = gcm), alpha = 0.2,
+              linetype = .1) +
+  facet_wrap(~rcp)  
+  
+# 
+# ggplot(anomalies_by_year, aes(x = year, y = mean_gcm, col = model)) +
+#   geom_line() +
+#   geom_ribbon(data = anomalies_by_year, aes(ymin = mean_gcm-sd_gcm, ymax = mean_gcm+sd_gcm), alpha = 0.4,
+#               linetype = 0.1,
+#               col = "grey") + 
+#   facet_wrap(~rcp)
+# 
+
+
+ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point()+
+  geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp")) +
+  geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm")) 
+
+
+
+
+
+anom_midcentury <- anomalies_by_year %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+anom_endcentury <- anomalies_by_year %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+print(paste0("The mean midcentury thermocline depth for rcp8.5 is: ", mean(anom_midcentury$anom, na.rm = TRUE)))
+print(paste0("The mean endcentury thermocline depth for rcp8.5 is: ", mean(anom_endcentury$anom, na.rm = TRUE)))
+print(paste0("The maximum midcentury thermocline depth for rcp8.5 is: ", max(anom_midcentury$anom, na.rm = TRUE)))
+print(paste0("The maximum endcentury thermocline depth for rcp8.5 is: ", max(anom_endcentury$anom, na.rm = TRUE)))
+print(paste0("The minimum midcentury thermocline depth for rcp8.5 is: ", min(anom_midcentury$anom, na.rm = TRUE)))
+print(paste0("The minimum endcentury thermocline depth for rcp8.5 is: ", min(anom_endcentury$anom, na.rm = TRUE)))
+
+
+
+```
+
+
+
+```{r}
+setwd("~/Dropbox/sunapee_LER_projections/anomaly_calculations/")
+
+anomalies_by_year <- read.csv("multiple_annual_anomalies.csv")
+anomalies_by_year
+
+ggplot(subset(anomalies_by_year, variable == "MeanIceDuration"), aes(year, anom, colour = model)) +
+  facet_wrap(gcm~rcp, scales = "free") +
+  geom_line() +
+  labs(y = "Mean Ice Duration (Days)") +
+  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
+              linetype = 0.1,
+              color = "grey") 
+
+ggplot(subset(anomalies_by_year, variable == "MeanIceDuration"), aes(x = year, y = mean_model, col = gcm)) +
+  geom_line() +
+  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = gcm), alpha = 0.2,
+              linetype = .1) +
+  facet_wrap(~rcp)  + 
+  ggtitle("Mean Ice Duration (Days)")
+  
+
+ggplot(subset(anomalies_by_year, gcm == "GFDL-ESM2M" & rcp == "rcp85"), aes(x = year, y = anom, col = model)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y") + 
+  ggtitle("Anomaly Values under rcp8.5 and GFDL gcm")
+
+
+ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point(size = 0.2)+
+  geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp"), size = 0.2) +
+  geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm"), size = 0.2) + 
+  facet_wrap(~variable, scales = "free")
+
+
+
+
+
+
+
+anom_midcentury <- anomalies_by_year %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85" & variable == "TbMax") 
+anom_endcentury <- anomalies_by_year %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85" & variable == "TbMax")
+print(paste0("The mean midcentury maximum bottom temperature for rcp8.5 is: ", mean(anom_midcentury$anom, na.rm = TRUE)))
+print(paste0("The mean endcentury maximum bottom temperature for rcp8.5 is: ", mean(anom_endcentury$anom, na.rm = TRUE)))
+
+
+
+
+```
+
+
+
+
+Suggestions on choosing variables? 
+
+Based on interesting and unique variance? Most important ecologically? 
+
+
+
+
+
