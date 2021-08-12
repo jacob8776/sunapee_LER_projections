@@ -7,7 +7,6 @@ setwd("LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("FLake")
 ncdf <- "output/ensemble_output.nc"
 
 yaml <- read_yaml(config_file)
@@ -38,6 +37,7 @@ met <- readr::read_csv("GLM/meteo_file.csv")
 temp <- load_var(ncdf, "temp")
 ice <- load_var(ncdf, "ice_height")
 
+library(ggplot2)
 library(patchwork)
 p <- ggplot() +
   geom_hline(yintercept = 0) +
