@@ -39,14 +39,14 @@
     "Timestep s"                  : 3600,! /LER/ Simulation timestep in seconds
     "Start year"                  : 2005,! /LER/ Starting year
     "Start d"                     : 177,! /LER/ Simulation start in days since 01.01. of starting year. 
-    "End d"                       : 1826,! /LER/ Simulation end: 52959 for full historical simulation from 1861, 
+    "End d"                       : 3652,! /LER/ Simulation end: 52959 for full historical simulation from 1861, 
     "DisplaySimulation"           : 0,                  ! 0: No display, 1: Display when output is written, 2: Display every iteration
     "Continue from last snapshot" : false               ! If true simulation continues from last snapshot (if present in output folder). Default: false
   },
   "ModelParameters" : {
     "lat"           : 43.3808278,! /LER/ Latitude in [°]
     "p_air"         : 972,! /LER/ Air pressure in [mbar]
-    "a_seiche"      : 0.0045528,! Fraction of wind energy which goes into seiche energy [-]
+    "a_seiche"      : 0.0035929,! Fraction of wind energy which goes into seiche energy [-]
     "a_seiche_w"    : 0,                                ! Fraction of wind energy which goes into seiche energy in winter [-] (only used if SplitSeicheParameter=true)
     "strat_sumr"    : 0,                                ! If maximum N2 (Brundt-Vaisala frequency) is below this threshold, a_seiche_w is used instead of a_seiche (only used if SplitSeicheParameter=true)
     "q_nn"          : 1.0,                              ! Fit parameter for distribution of seiche energy [-]

@@ -536,7 +536,7 @@ print(paste0("The minimum endcentury thermocline depth for rcp8.5 is: ", min(ano
 ```
 
 
-Below are some example plots of the remaining thermal metric anomalies. After discussions during the meeting, the most important metrics highlighted in the discussion will be chosen based on how comprehensive and important ecologially they are. Current thoughts about these metrics is to include ice off, ice on, bottom temperature maximum and minimum, surface temperature maximum and minimum, total ice duration, and total stratification duration. 
+Below are some example plots of the remaining thermal metric anomalies. After discussions during the meeting, the most important metrics highlighted in the discussion will be chosen based on how comprehensive and important ecologially they are. Current thoughts about these metrics is to include  bottom temperature, surface temperature, total ice duration, and total stratification duration. 
 
 
 ```{r}
@@ -559,6 +559,10 @@ ggplot(subset(anomalies_by_year, variable == "MeanIceDuration"), aes(x = year, y
               linetype = .1) +
   facet_wrap(~rcp)  + 
   ggtitle("Mean Ice Duration (Days)")
+
+ggplot(subset(anomalies_by_year, gcm == "GFDL-ESM2M" & rcp == "rcp26"), aes(x = year, y = anom, col = model)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y") + 
+  ggtitle("Anomaly Values under rcp2.6 and GFDL gcm")
   
 
 ggplot(subset(anomalies_by_year, gcm == "GFDL-ESM2M" & rcp == "rcp85"), aes(x = year, y = anom, col = model)) + geom_line() + 
