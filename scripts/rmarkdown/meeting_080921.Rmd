@@ -19,6 +19,7 @@ In terms of thermal metrics, the observed data tracks both Schmidt stability and
 Once observations are calculated for all thermal metrics and validation is carried out, a possibility is to weight each model based on its performance in relation to observations. The weight could be calculated by taking the average distance from each model output to the observation over the course of the validation period. 
 
 * Would model weighting cause the uncertainty analyses to become overly complex or defeat the purpose of the uncertainty? 
+* Consensus is that weighting would overcomplicate for this particular study and lead to unwanted issues when looking at uncertainty. 
 
 
 
@@ -112,7 +113,6 @@ ggarrange(plotlist = plist)
 ```
 
 
-DO NOT RUN 
 ```{r, eval = FALSE}
 
 param_file <- "calibration_results_FLake_071621/params_FLake_LHC_202107161729.csv"
@@ -196,7 +196,7 @@ ggarrange(plotlist = plist)
 
 
 
-
+Due to our decision to use 2015-2020 as the validation period, we will extend the calibration period 5 years,
 
 
 ```{r, echo = FALSE}
@@ -315,8 +315,9 @@ ggplot(df, aes(x = year, y = value, col = model)) + geom_line() +
 ```
 
 
+The chunk of code at the end of this script contains the mean, standard deviation and variance calculations across GCMs, RCPs and LER models. I want a method check on this piece of code due to its importance in the scope of this study. The calculations are done by grouping the variable, year, and two of the three columns: rcp, gcm, model. Whichever column is omitted in the grouping is the variable that the mean, sd, and variance is calculated for. 
 
-
+POST MEETING: The decision for these methods is to separate the chunk into multiple smaller pieces of code so as to avoid potential errors brought by continuously grouping in one pipe. Multiple pipes will create multiple dataframes, which will then be appended to one another. 
 
 ```{r, eval = FALSE}
 
@@ -425,6 +426,8 @@ anomalies_master <- anomalies_by_year %>%
 
 ```
 
+It was discussed during the meeting that the variance plot demonstrating contribution to uncertainty cannot contain RCP scenario uncertainty. This is because the RCP scenario uncertainty 
+
 
 ```{r}
 
@@ -459,7 +462,6 @@ ggplot(anomalies_by_year, aes(x = year, y = mean_model, col = gcm)) +
 
 
 ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point()+
-  geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp")) +
   geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm")) 
 
 
@@ -514,7 +516,6 @@ ggplot(anomalies_by_year, aes(x = year, y = mean_model, col = gcm)) +
 
 
 ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point()+
-  geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp")) +
   geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm")) 
 
 
@@ -534,6 +535,8 @@ print(paste0("The minimum endcentury thermocline depth for rcp8.5 is: ", min(ano
 
 ```
 
+
+Below are some example plots of the remaining thermal metric anomalies. After discussions during the meeting, the most important metrics highlighted in the discussion will be chosen based on how comprehensive and important ecologially they are. Current thoughts about these metrics is to include ice off, ice on, bottom temperature maximum and minimum, surface temperature maximum and minimum, total ice duration, and total stratification duration. 
 
 
 ```{r}
@@ -564,7 +567,6 @@ ggplot(subset(anomalies_by_year, gcm == "GFDL-ESM2M" & rcp == "rcp85"), aes(x = 
 
 
 ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point(size = 0.2)+
-  geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp"), size = 0.2) +
   geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm"), size = 0.2) + 
   facet_wrap(~variable, scales = "free")
 
@@ -587,9 +589,6 @@ print(paste0("The mean endcentury maximum bottom temperature for rcp8.5 is: ", m
 
 
 
-Suggestions on choosing variables? 
-
-Based on interesting and unique variance? Most important ecologically? 
 
 
 
