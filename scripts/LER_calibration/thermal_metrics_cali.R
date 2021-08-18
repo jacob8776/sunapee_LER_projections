@@ -9,7 +9,7 @@ library(reshape)
 library(RColorBrewer)
 library(lubridate)
 
-ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models.nc"
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_14Aug21.nc"
 
 
 ######################## Calculating Schmidt Stability ################################
@@ -53,7 +53,8 @@ ggplot(df, aes(yday, mean)) +
               color = "grey") + 
   facet_wrap(~year) + 
   labs(y = "Schmidt stability (J/m2)") +
-  theme_classic() + ylim(-50, 1000)
+  theme_classic() + ylim(-50, 1000) + 
+  geom_line(data = subset(df, model == "Obs"), aes(yday, value, col = "Obs"))
 
 
 #################################### Calculating thermocline depth ######################################
@@ -114,7 +115,31 @@ names(out) <- names(temp)
 out
 
 
-df <- melt(out[1:5], id.vars = 1)
+df <- melt(out[1:6], id.vars = 1)
 colnames(df)[4] <- "model"
-ggplot(df, aes(x = year, y = value, col = model)) + geom_line() + 
+
+
+df <- df %>% 
+  dplyr :: group_by(year, variable) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+
+
+ggplot(df, aes(x = year, y = value, colour = model)) + geom_line() + 
   facet_wrap(~variable, scales = "free_y")
+
+ggplot(df, aes(x = year, y = mean)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y") + 
+  geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+                                                         linetype = 0.1,
+                                                         color = "grey") + 
+  geom_line(data = subset(df, model == "Obs"), aes(year, value, col = "Obs"))
+
+
+
+
+
+
+
+

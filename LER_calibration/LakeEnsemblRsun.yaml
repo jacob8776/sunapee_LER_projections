@@ -8,7 +8,7 @@ location:
   init_depth: 33.0
 time:
   start: 2005-06-27 00:00:00
-  stop: 2010-01-01 00:00:00
+  stop: 2015-01-01 00:00:00
   time_step: 3600
 config_files:
   GOTM: GOTM/gotm.yaml
@@ -51,35 +51,36 @@ scaling_factors:
     wind_speed: 1
     swr: 1
   Simstrat:
-    wind_speed: 1.4505
-    swr: 0.83902
+    wind_speed: 1.4883
+    swr: 1.0299
   FLake:
-    wind_speed: 1.3475
-    swr: 1.0315
+    wind_speed: 0.91555
+    swr: 0.92208
   GLM:
-    wind_speed: 1.4929
-    swr: 0.97873
+    wind_speed: 1.4722
+    swr: 1.1198
   GOTM:
-    wind_speed: 0.64446
-    swr: 1.3926
+    wind_speed: 0.5434
+    swr: 1.3701
   MyLake:
-    wind_speed: 1.4675
-    swr: 1.1369
+    wind_speed: 1.4892
+    swr: 1.2741
 model_parameters:
   FLake:
-    LAKE_PARAMS/c_relax_C: 0.0098357
+    LAKE_PARAMS/c_relax_C: 0.000809
+    LAKE_PARAMS/depth_w_lk: 11.55
   GLM:
     morphometry/bsn_len: 12870
     morphometry/bsn_wid: 3000
     sediment/sed_temp_mean:
-    - 9.4596
-    - 9.7254
+    - 5.2066
+    - 11.825
   GOTM:
-    turbulence/turb_param/k_min: 1.7745e-06
+    turbulence/turb_param/k_min: 2.6656e-06
   Simstrat:
-    ModelParameters/a_seiche: 0.0045528
+    ModelParameters/a_seiche: 0.0035929
   MyLake:
-    Phys.par/C_shelter: 0.38241
+    Phys.par/C_shelter: 0.39897
 calibration:
   met:
     wind_speed:

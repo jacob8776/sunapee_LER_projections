@@ -1,0 +1,267 @@
+---
+title: "calibration_update_17Aug21"
+author: "Jacob Wynne"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Calibration Update
+
+* Calibration period now from 2005-06-27 to 2015-01-01
+* Spin up still 190. Should this stay the same? 
+* GLM not producing any ice at all. GOTM not following the same ice trend as other models. 
+* Flake is not below RMSE of 2, currently sitting at 2.33. It has very negative residuals around the thermocline depth, all the way out to -15. Are there any other parameters that can be changed for this model? If not, is this an adequate RMSE or does FLake have to be removed?
+
+```{r}
+
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
+
+ncdf <- "output/ensemble_output_all_models_14Aug21.nc"
+
+model <- c("FLake", "GLM", "GOTM", "Simstrat", "FLake")
+
+spin_up <- 190
+
+
+
+plot_heatmap(ncdf, model = model) +
+  scale_colour_gradientn(limits = c(0, 32),
+                         colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + theme_classic()
+
+plot_ensemble(ncdf, model = model, var = "ice_height")
+
+fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
+fit
+
+# out <- analyze_ncdf(ncdf, model, spin_up = 190)
+# out$stats 
+
+## Plot residuals
+plist <- plot_resid(ncdf = "output/ensemble_output_all_models_14Aug21.nc", var = "temp")
+ggarrange(plotlist = plist)
+
+
+```
+
+### Schmidt Stability
+
+* Not much to say about Schmidt Stability, observations seem to track well with the mean at the very least, RMSE calculations coming soon for the individual models. 
+
+
+```{r}
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_14Aug21.nc"
+
+
+######################## Calculating Schmidt Stability ################################
+
+
+out <- load_var(ncdf = ncdf, var = "temp")
+# out <- as.data.frame(out[[1]])
+bathy <- read.csv('~/Dropbox/sunapee_LER_projections/LER_inputs/sunapee_hypso.csv')
+colnames(bathy) <- c("depths", "areas")
+ts.sch <- lapply(out, function(x) {
+  ts.schmidt.stability(x, bathy = bathy, na.rm = TRUE)
+})
+## Reshape to data.frame
+df <- melt(ts.sch, id.vars = 1)
+colnames(df)[4] <- "model"
+df$yday <- yday(df$datetime)
+df$year <- year(df$datetime)
+
+df <- df %>% 
+  dplyr :: group_by(yday, year) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+
+
+## plot results
+ggplot(df, aes(yday, value, colour = model)) +
+  # geom_line(data=df, aes(y=mean, x=yday), color = "black", size = 1) +
+  geom_line() +
+  # geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6, 
+  #             linetype = 0.1, 
+  #             color = "grey") +
+  facet_wrap(~year) +
+  labs(y = "Schmidt stability (J/m2)") +
+  theme_classic() + ylim(-50, 1000)
+
+ggplot(df, aes(yday, mean)) + 
+  geom_line() + 
+  geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+              linetype = 0.1,
+              color = "grey") + 
+  facet_wrap(~year) + 
+  labs(y = "Schmidt stability (J/m2)") +
+  theme_classic() + ylim(-50, 1000) + 
+  geom_line(data = subset(df, model == "Obs"), aes(yday, value, col = "Obs"))
+
+```
+
+
+
+
+
+
+
+### Thermocline Depth 
+
+* Similar update on thermocline depth. RMSE calculations coming soon.
+* GLM appears to be the poorest performer most years based on the first figure. 
+* The extra years of observations give me more confidence, as 2009 and 2010 were a bit off. The thermocline seems to fit quite well from 2011 and on. 
+
+
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE,error=FALSE, results='hide',fig.keep='all'}
+
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_14Aug21.nc"
+
+out <- load_var(ncdf = ncdf, var = "temp")
+## Same for thermocline depth
+ts.td <- lapply(out, function(x) {
+  ts.thermo.depth(x, Smin = 0.1, na.rm = TRUE)
+})
+
+df <- melt(ts.td, id.vars = 1)
+colnames(df)[4] <- "model"
+df$yday <- yday(df$datetime)
+df$month <- month(df$datetime)
+df$year <- year(df$datetime)
+
+df <- df %>% 
+  dplyr :: group_by(yday, year) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+ggplot(subset(df, month >= 6 & month <= 8), aes(yday, value, colour = model)) +
+  facet_wrap(~year) +
+  geom_line() +
+  labs(y = "Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() 
+
+ggplot(subset(df, month >= 6 & month <= 8 & model != "Obs"), aes(yday, mean)) +
+  facet_wrap(~year) +
+  geom_line() +
+  geom_ribbon(data = subset(df, month >= 6 & month <= 8), aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+              linetype = 0.1,
+              color = "grey") + 
+  labs(y = "Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() + 
+  geom_line(data = subset(df, month >= 6 & month <= 8 & model == "Obs"), aes(yday, value, col = "Obs"))
+
+
+dfsummer <- filter(df, month >=6 & month <=8)
+
+
+```
+
+
+### All other metrics
+
+* Observations are added for this group of metrics
+* There seems to be an issue with 2009 calculations, as shown by the printed dataframe. 
+* The only metric to be compared with ice will have to be added in - coming soon. 
+* There is very limited stratification data calculated for the observed data. 
+* Seems to very high uncertainty for bottom temperature. Reason to remove it from desired metrics? 
+
+
+```{r}
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_14Aug21.nc"
+
+out <- load_var(ncdf = ncdf, var = "temp")
+
+temp <- load_var(ncdf, "temp")
+ice <- load_var(ncdf, "ice_height")
+out <- lapply(1:length(temp), function(x) {
+  # x = 1 # for debugging
+  mlt <- reshape::melt(temp[[x]], id.vars = 1)
+  mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
+  if(names(out)[x] == "Obs") {
+    analyse_strat(data = mlt)
+  }
+  analyse_strat(data = mlt, H_ice = ice[[x]][, 2])
+})
+names(out) <- names(temp)
+
+
+df <- melt(out[1:6], id.vars = 1)
+colnames(df)[4] <- "model"
+
+
+df <- df %>% 
+  dplyr :: group_by(year, variable) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+
+
+ggplot(df, aes(x = year, y = value, colour = model)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y")
+
+ggplot(df, aes(x = year, y = mean)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y") + 
+  geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+                                                         linetype = 0.1,
+                                                         color = "grey") + 
+  geom_line(data = subset(df, model == "Obs"), aes(year, value, col = "Obs"))
+
+
+checkthis <- filter(df, year == 2009, model == "Obs")
+checkthis
+
+
+
+```
+
+```
+
+

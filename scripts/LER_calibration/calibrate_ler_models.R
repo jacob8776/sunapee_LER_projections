@@ -18,7 +18,7 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("FLake")
+model <- c("GLM")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -33,7 +33,7 @@ config_file
 yaml <- read_yaml(config_file)
 configr::read.config(config_file)
 yaml$time$start <- "2005-06-27 00:00:00"
-yaml$time$stop <- "2010-01-01 00:00:00"
+yaml$time$stop <- "2015-01-01 00:00:00"
 # yaml$time$start <- "2007-06-11 12:00:00"
 # yaml$time$stop <- "2012-01-01 00:00:00"
 yaml$input$ice$use <- TRUE
@@ -42,10 +42,10 @@ yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_FLake_071621"
+out_f <- "calibration_results_Flake_081721"
 
 cmethod <- "LHC"
-model <- c("FLake", "GLM", "Simstrat", "GOTM", "MyLake")
+model <- c("FLake")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -56,7 +56,8 @@ export_config(config_file, model)
 
 run_ensemble(config_file = config_file, model = model)
 
-#file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models.nc")
+# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_14Aug21.nc")
+# ncdf <- "output/ensemble_output_all_models_14Aug21.nc"
 
 # plot heatmap
 plot_heatmap(ncdf, model = model) +
@@ -75,12 +76,12 @@ fit
 plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
 ggarrange(plotlist = plist)
 
-param_file <- "calibration_results_FLake_071621/params_FLake_LHC_202107161729.csv"
+# param_file <- "calibration_results_MyLake_081321/MyLake_LHC_202108131525"
 
 cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = FALSE, model = model, folder = ".", 
               spin_up = spin_up, job_name = model, out_f = out_f)
 
-cal_files <- list.files(out_f, full.names = TRUE)
+cal_files <- list.files(param_file, full.names = TRUE)
 cal_files <- cal_files[c(1,2)]
 
 res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
@@ -114,9 +115,9 @@ sub <- df[df$id_no == bst_par, ]
 # sub <- df[df$id_no == 1, ] # Use this to try other parameter combinations
 sub
 
-yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
-yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
-yaml$scaling_factors$FLake$swr <- sub$value[2]
+# yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
+# yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
+# yaml$scaling_factors$FLake$swr <- sub$value[2]
 
 # yaml$scaling_factors$GLM$wind_speed <- sub$value[1]
 # yaml$scaling_factors$GLM$swr <- sub$value[2]
