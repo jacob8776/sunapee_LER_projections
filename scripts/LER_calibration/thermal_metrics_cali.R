@@ -117,11 +117,29 @@ out
 
 df <- melt(out[1:6], id.vars = 1)
 colnames(df)[4] <- "model"
+
+
 df <- df %>% 
   dplyr :: group_by(year, variable) %>% 
   dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
   dplyr :: mutate(sd = sd(value, na.rm = TRUE))
 
-ggplot(df, aes(x = year, y = mean)) + geom_line() + 
+
+
+ggplot(df, aes(x = year, y = value, colour = model)) + geom_line() + 
   facet_wrap(~variable, scales = "free_y")
+
+ggplot(df, aes(x = year, y = mean)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y") + 
+  geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+                                                         linetype = 0.1,
+                                                         color = "grey") + 
+  geom_line(data = subset(df, model == "Obs"), aes(year, value, col = "Obs"))
+
+
+
+
+
+
+
 
