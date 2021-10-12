@@ -7,7 +7,7 @@ location:
   hypsograph: ../../../LER_inputs/sunapee_hypso.csv
   init_depth: 33
 time:
-  start: 2006-01-01 00:00:00
+  start: 1938-09-01 00:00:00
   stop: 2099-12-31 00:00:00
   time_step: 3600
 config_files:
@@ -18,14 +18,14 @@ config_files:
   MyLake: MyLake/mylake.Rdata
 observations:
   temperature:
-    file: ../../../LER_inputs/ic_projections_hr0.csv
+    file: ../../../LER_inputs/ic_historical_hr0.csv
   ice_height:
     file: ~
 input:
   init_temp_profile:
     file: ~
   meteo:
-    file: ../../../met_files_processed//GFDL-ESM2M/GFDL-ESM2M_rcp26.csv
+    file: ../../../met_files_processed/cat_files/GFDL-ESM2M/GFDL-ESM2M_rcp26.csv
   light:
     Kw: 0.74
   ice:
