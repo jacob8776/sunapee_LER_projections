@@ -1,21 +1,21 @@
 &glm_setup
    sim_name = 'GLMSimulation'
-   max_layers = 220
+   max_layers = 500
    min_layer_vol = 0.5
-   min_layer_thick = 0.15
-   max_layer_thick = 1
+   min_layer_thick = 0.1
+   max_layer_thick = 0.64125
    density_model = 1
    non_avg = .true.
 /
 &mixing
    surface_mixing = 1
-   coef_mix_conv = 0.2
+   coef_mix_conv = 0.125
    coef_wind_stir = 0.23
-   coef_mix_shear = 0.51
-   coef_mix_turb = 0.3
+   coef_mix_shear = 0.2
+   coef_mix_turb = 0.51
    coef_mix_KH = 0.3
    deep_mixing = 2
-   coef_mix_hyp = 0.38841
+   coef_mix_hyp = 0.5
    diff = 0
 /
 &morphometry
@@ -117,7 +117,7 @@
    sed_heat_model = 1
    n_zones = 2
    zone_heights = 20, 33
-   sed_temp_mean = 5.2066, 11.825
+   sed_temp_mean = 3.4826, 10.597
    sed_temp_depth = 0.2, 0.2
    sed_temp_amplitude = 4, 3
    sed_temp_peak_doy = 242.5, 242.5
@@ -125,4 +125,10 @@
 /
 &debugging
    disable_evap = .true.
+/
+&snowice
+   snow_albedo_factor = 1
+   snow_rho_max = 500
+   snow_rho_min = 100
+   dt_iceon_avg = 0.042
 /
