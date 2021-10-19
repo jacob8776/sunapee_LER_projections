@@ -1,0 +1,8 @@
+output/output:
+  format: netcdf
+  time_unit: hour
+  time_step: 24
+  time_method: mean
+  sync_interval: 0
+  variables:
+  - source: /*
