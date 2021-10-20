@@ -9,13 +9,22 @@ library(rLakeAnalyzer)
 library(reshape)
 library(RColorBrewer)
 
+mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
+                 axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
+                 axis.text.x=element_text(size=18, colour='black'), axis.text.y=element_text(size=18, colour='black'), 
+                 axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
+                 strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
+                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
+                 legend.title = element_text(size = 20))
+scale_colour_discrete <- ggthemes::scale_colour_colorblind
+scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 # 
 # # List of RCP's to run 
 # gcm <- c("GFDL-ESM2M")
-rcp <- c("historical", "rcp26", "rcp85")
+rcp <- c("rcp26", "rcp60", "rcp85")
 
 
 
@@ -51,29 +60,28 @@ anomalies_master <- data.frame("year" = numeric(0), "month" = numeric(0), "yday"
       df$gcm <- gcm[[i]]
       df$rcp <- rcp[[l]]
 
-      if(rcp[[l]] == "historical"){
-            hmeans <- df %>%  dplyr::group_by(model, gcm, rcp) %>% 
-            dplyr::mutate(mean = mean(value, na.rm = TRUE))
+        hmeans <- df %>%  dplyr::group_by(model, gcm, rcp) %>% 
+          filter(year >= 1975 & year <= 2005) %>% 
+        dplyr::mutate(mean = mean(value, na.rm = TRUE))
             
-            mean_all <- hmeans %>% 
-              dplyr::filter(model != "Obs") %>% 
-              distinct(mean, .keep_all = TRUE) %>% 
-              # mutate(gcm = gcm[[i]],
-              #        rcp = rcp[[l]]) %>% 
-              select(variable, model, mean, gcm)
-      }
+        mean_all <- hmeans %>% 
+        distinct(mean, .keep_all = TRUE) %>% 
+        # mutate(gcm = gcm[[i]],
+        #        rcp = rcp[[l]]) %>% 
+        select(variable, model, mean, gcm)
+      
         
             
 
-      else{
-        
+
         anomalies <- merge(mean_all, df, by = c("variable", "model", "gcm"
                                                 )) %>% 
-          mutate(anom = value - mean) %>%
-          dplyr::filter(model != "Obs") %>% 
-          select(year, month, yday, rcp.y, gcm, model, 
-                 variable, value, mean, anom)
-          colnames(anomalies)[4] <- c("rcp")
+        filter(year >= 2006) %>% 
+        mutate(anom = value - mean) %>%
+        dplyr::filter(model != "Obs") %>% 
+        select(year, month, yday, rcp.y, gcm, model, 
+             variable, value, mean, anom)
+        colnames(anomalies)[4] <- c("rcp")
           
         
         anomalies$variable <- as.character(anomalies$variable)
@@ -84,7 +92,7 @@ anomalies_master <- data.frame("year" = numeric(0), "month" = numeric(0), "yday"
 
 
 
-        }
+        
       
 
       }
@@ -113,7 +121,7 @@ anomalies_master <- anomalies_by_year %>%
 
 write.csv(anomalies_master, "../../anomaly_calculations/schmidt_annual_anomalies.csv", row.names = F)
 
-anomalies_master <- read_csv("../../anomaly_calculations/schmidt_annual_anomalies.csv")
+anomalies_master <- read.csv("../../anomaly_calculations/schmidt_annual_anomalies.csv")
 
 ggplot(anomalies_master, aes(year, anom, colour = model)) +
   facet_wrap(gcm~rcp) +
@@ -141,15 +149,30 @@ ggplot(subset(anomalies_master), aes(yday, mean_gcm, colour = model)) +
               linetype = 0.1,
               color = "grey") 
 
-anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
-anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
 
-mean_midcentury <- mean(anom_midcentury$anom, na.rm = TRUE)
-mean_endcentury <- mean(anom_endcentury$anom, na.rm = TRUE)
-max(anom_midcentury$anom, na.rm = TRUE)
-max(anom_endcentury$anom, na.rm = TRUE)
-median(anom_midcentury$anom, na.rm = TRUE)
-median(anom_endcentury$anom, na.rm = TRUE)
+mean(anom_midcentury$mean_model, na.rm = TRUE)
+max(anom_midcentury$mean_model, na.rm = TRUE)
+median(anom_midcentury$mean_model, na.rm = TRUE)
+sum(anom_midcentury$var_model)
+mean(anom_endcentury$mean_model, na.rm = TRUE)
+max(anom_endcentury$mean_model, na.rm = TRUE)
+median(anom_endcentury$mean_model, na.rm = TRUE)
+sum(anom_endcentury$var_model)
+
+
+
+mean(anom_midcentury$mean_gcm, na.rm = TRUE)
+max(anom_midcentury$mean_gcm, na.rm = TRUE)
+median(anom_midcentury$mean_gcm, na.rm = TRUE)
+sum(anom_midcentury$var_gcm)
+mean(anom_endcentury$mean_gcm, na.rm = TRUE)
+max(anom_endcentury$mean_gcm, na.rm = TRUE)
+median(anom_endcentury$mean_gcm, na.rm = TRUE)
+sum(anom_endcentury$var_gcm)
+
+
 
 # 
 # ggplot(data = anomalies_master, aes(x = sd_model, y = sd_gcm)) + geom_point()
@@ -166,30 +189,51 @@ median(anom_endcentury$anom, na.rm = TRUE)
 #               linetype = 0.1,
 #               color = "red")
 # 
-ggplot(anomalies_by_year, aes(x = year, y = mean_model, col = gcm)) +
+# ggplot(anomalies_by_year, aes(x = year, y = mean_model, col = gcm)) +
+#   geom_line() +
+#   geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = gcm), alpha = 0.2,
+#               linetype = .1) +
+#   facet_wrap(~rcp)  
+#   
+# 
+# ggplot(anomalies_by_year, aes(x = year, y = mean_gcm, col = model)) +
+#   geom_line() +
+#   geom_ribbon(data = anomalies_by_year, aes(ymin = mean_gcm-sd_gcm, ymax = mean_gcm+sd_gcm), alpha = 0.4,
+#               linetype = 0.1,
+#               col = "grey") + 
+#   facet_wrap(~rcp)
+# 
+# 
+# 
+# ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point()+
+#   geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp")) +
+#   geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm")) 
+# 
+# 
+
+
+  
+ggplot(subset(anomalies_master), aes(year, mean_model, colour = rcp)) +
+  facet_wrap(~gcm) +
   geom_line() +
-  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = gcm), alpha = 0.2,
+  geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
+              linetype = .1)+
+  labs(y = "Schmidt stability (J/m2)") +
+  mytheme
+
+ggsave('../../../sundox/plots/schmidt_anom_year_fgcm.png', dpi = 300,width = 384,height = 280, units = 'mm')
+
+
+ggplot(subset(anomalies_master), aes(year, mean_gcm, colour = rcp)) +
+  geom_hline(yintercept = 0) +
+  facet_wrap(~model) +
+  geom_line() +
+  labs(y = "Schmidt stability (J/m2)") +
+  geom_ribbon(data = anomalies_master, aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
               linetype = .1) +
-  facet_wrap(~rcp)  
-  
+  mytheme
 
-ggplot(anomalies_by_year, aes(x = year, y = mean_gcm, col = model)) +
-  geom_line() +
-  geom_ribbon(data = anomalies_by_year, aes(ymin = mean_gcm-sd_gcm, ymax = mean_gcm+sd_gcm), alpha = 0.4,
-              linetype = 0.1,
-              col = "grey") + 
-  facet_wrap(~rcp)
-
-
-
-ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point()+
-  geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp")) +
-  geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm")) 
-
-
-
-
-  
+ggsave('../../../sundox/plots/schmidt_anom_year_fler_rcp85.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 

@@ -11,7 +11,7 @@ setwd("~/Dropbox/sunapee_LER_projections/met_files_nc")
 
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR",
          "MIROC5")
-rcp <- c("historical", "rcp26", "rcp60", "rcp85")
+rcp <- c("rcp26", "rcp60", "rcp85")
 
 
 

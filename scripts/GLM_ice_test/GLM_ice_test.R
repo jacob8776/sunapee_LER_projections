@@ -11,7 +11,7 @@ ncdf <- "output/ensemble_output.nc"
 
 yaml <- read_yaml(config_file)
 yaml$time$start <- "2005-06-27 00:00:00"
-yaml$time$stop <- "2010-01-01 00:00:00"
+yaml$time$stop <- "2015-01-01 00:00:00"
 yaml$input$ice$use <- TRUE
 yaml$output$time_step <- 24
 yaml$output$time_unit <- "hour"
@@ -27,7 +27,7 @@ nml <- glmtools::read_nml("GLM/glm3.nml")
 nml$snowice <- list(snow_albedo_factor = 1,
                     snow_rho_max = 500,
                     snow_rho_min = 100,
-                    dt_iceon_avg = 0.01) # Adjust for ice (0.01 - 1)
+                    dt_iceon_avg = 0.042) # Adjust for ice (0.01 - 1)
 glmtools::write_nml(nml, "GLM/glm3.nml")
 
 run_ensemble(config_file = config_file, model = model)

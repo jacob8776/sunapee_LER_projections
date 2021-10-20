@@ -1,0 +1,235 @@
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(reshape2)
+library(RColorBrewer)
+library(lubridate)
+library(Metrics)
+
+setrcp <- c("rcp60")
+
+anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/schmidt_annual_anomalies.csv")
+
+anomalies_master <- filter(anomalies_master, rcp == setrcp)
+
+
+anomalies_master <- anomalies_master %>% 
+  group_by(year) %>% 
+  mutate(sum_var_model = sum(var_model)) %>% 
+  mutate(sum_var_gcm = sum(var_gcm)) %>% 
+  mutate(sum_vars = sum_var_model + sum_var_gcm) %>% 
+  mutate(prop_model = sum_var_model/sum_vars) %>% 
+  mutate(prop_gcm = sum_var_gcm/sum_vars)
+
+prop_model <- select(anomalies_master, year, prop_model)
+prop_model$method <- "model"
+colnames(prop_model) <- c("year", "prop", "method")
+prop_gcm <- select(anomalies_master, year, prop_gcm)
+prop_gcm$method <- "gcm"
+colnames(prop_gcm) <- c("year", "prop", "method")
+
+proportions <- rbind(prop_model, prop_gcm)
+
+
+
+
+mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
+                 axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
+                 axis.text.x=element_text(size=18, colour='black'), axis.text.y=element_text(size=18, colour='black'), 
+                 axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
+                 strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
+                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
+                 legend.title = element_text(size = 20))
+scale_colour_discrete <- ggthemes::scale_colour_colorblind
+scale_fill_discrete <- ggthemes::scale_fill_colorblind
+
+
+
+proportions_schmidt <- ggplot(data = proportions, aes(x = year, y = prop, color = method)) + 
+  geom_line() + mytheme + 
+  ggtitle("Schmidt Stability")+   ylim(0,1)
+
+# ggplot(data = anomalies_master, mapping = aes(x = year, y = prop_model)) + geom_line() +
+#    geom_line(data = anomalies_master, mapping = aes(x = year, y = prop_gcm)) 
+
+
+
+
+
+
+## thermocline depth
+
+
+anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/thermodepth_annual_anomalies_all.csv")
+
+anomalies_master <- filter(anomalies_master, rcp == setrcp)
+
+anomalies_master <- anomalies_master %>% 
+  group_by(year) %>% 
+  mutate(sum_var_model = sum(var_model)) %>% 
+  mutate(sum_var_gcm = sum(var_gcm)) %>% 
+  mutate(sum_vars = sum_var_model + sum_var_gcm) %>% 
+  mutate(prop_model = sum_var_model/sum_vars) %>% 
+  mutate(prop_gcm = sum_var_gcm/sum_vars)
+
+prop_model <- select(anomalies_master, year, prop_model)
+prop_model$method <- "model"
+colnames(prop_model) <- c("year", "prop", "method")
+prop_gcm <- select(anomalies_master, year, prop_gcm)
+prop_gcm$method <- "gcm"
+colnames(prop_gcm) <- c("year", "prop", "method")
+
+proportions <- rbind(prop_model, prop_gcm)
+
+
+
+
+mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
+                 axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
+                 axis.text.x=element_text(size=18, colour='black'), axis.text.y=element_text(size=18, colour='black'), 
+                 axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
+                 strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
+                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
+                 legend.title = element_text(size = 20))
+scale_colour_discrete <- ggthemes::scale_colour_colorblind
+scale_fill_discrete <- ggthemes::scale_fill_colorblind
+
+
+
+proportions_thermo <- ggplot(data = proportions, aes(x = year, y = prop, color = method)) + 
+  geom_line() + mytheme + 
+  ggtitle("Thermocline Depth") +   ylim(0,1)
+
+
+
+
+
+### maximum surface temperature
+
+anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
+
+anomalies_master <- filter(anomalies_master, variable == "TsMax", rcp == setrcp)
+
+anomalies_master <- anomalies_master %>% 
+  group_by(year) %>% 
+  mutate(sum_var_model = sum(var_model)) %>% 
+  mutate(sum_var_gcm = sum(var_gcm)) %>% 
+  mutate(sum_vars = sum_var_model + sum_var_gcm) %>% 
+  mutate(prop_model = sum_var_model/sum_vars) %>% 
+  mutate(prop_gcm = sum_var_gcm/sum_vars)
+
+prop_model <- select(anomalies_master, year, prop_model)
+prop_model$method <- "model"
+colnames(prop_model) <- c("year", "prop", "method")
+prop_gcm <- select(anomalies_master, year, prop_gcm)
+prop_gcm$method <- "gcm"
+colnames(prop_gcm) <- c("year", "prop", "method")
+
+proportions <- rbind(prop_model, prop_gcm)
+
+
+proportions_tsmax <- ggplot(data = proportions, aes(x = year, y = prop, color = method)) + 
+  geom_line() + mytheme + 
+  ggtitle("Maximum Surface Temperature")+   ylim(0,1)
+
+
+
+### maximum surface temperature
+
+anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
+
+anomalies_master <- filter(anomalies_master, variable == "TbMax", rcp == setrcp)
+
+anomalies_master <- anomalies_master %>% 
+  group_by(year) %>% 
+  mutate(sum_var_model = sum(var_model)) %>% 
+  mutate(sum_var_gcm = sum(var_gcm)) %>% 
+  mutate(sum_vars = sum_var_model + sum_var_gcm) %>% 
+  mutate(prop_model = sum_var_model/sum_vars) %>% 
+  mutate(prop_gcm = sum_var_gcm/sum_vars)
+
+prop_model <- select(anomalies_master, year, prop_model)
+prop_model$method <- "model"
+colnames(prop_model) <- c("year", "prop", "method")
+prop_gcm <- select(anomalies_master, year, prop_gcm)
+prop_gcm$method <- "gcm"
+colnames(prop_gcm) <- c("year", "prop", "method")
+
+proportions <- rbind(prop_model, prop_gcm)
+
+
+proportions_tbmax <- ggplot(data = proportions, aes(x = year, y = prop, color = method)) + 
+  geom_line() + mytheme + 
+  ggtitle("Maximum Bottom Temperature")+   ylim(0,1)
+
+
+
+
+### maximum surface temperature
+
+anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
+
+anomalies_master <- filter(anomalies_master, variable == "TotStratDur", rcp == setrcp)
+
+anomalies_master <- anomalies_master %>% 
+  group_by(year) %>% 
+  mutate(sum_var_model = sum(var_model)) %>% 
+  mutate(sum_var_gcm = sum(var_gcm)) %>% 
+  mutate(sum_vars = sum_var_model + sum_var_gcm) %>% 
+  mutate(prop_model = sum_var_model/sum_vars) %>% 
+  mutate(prop_gcm = sum_var_gcm/sum_vars)
+
+prop_model <- select(anomalies_master, year, prop_model)
+prop_model$method <- "model"
+colnames(prop_model) <- c("year", "prop", "method")
+prop_gcm <- select(anomalies_master, year, prop_gcm)
+prop_gcm$method <- "gcm"
+colnames(prop_gcm) <- c("year", "prop", "method")
+
+proportions <- rbind(prop_model, prop_gcm)
+
+
+proportions_totstratdur <- ggplot(data = proportions, aes(x = year, y = prop, color = method)) + 
+  geom_line() + mytheme + 
+  ggtitle("Total Stratification Duration")+   ylim(0,1)
+
+
+
+anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
+
+anomalies_master <- filter(anomalies_master, variable == "TotIceDur", is.na(value) == F, rcp == setrcp)
+
+anomalies_master <- anomalies_master %>% 
+  group_by(year) %>% 
+  mutate(sum_var_model = sum(var_model, na.rm = TRUE)) %>% 
+  mutate(sum_var_gcm = sum(var_gcm, na.rm = TRUE)) %>% 
+  mutate(sum_vars = sum_var_model + sum_var_gcm) %>% 
+  mutate(prop_model = sum_var_model/sum_vars) %>% 
+  mutate(prop_gcm = sum_var_gcm/sum_vars)
+
+prop_model <- select(anomalies_master, year, prop_model)
+prop_model$method <- "model"
+colnames(prop_model) <- c("year", "prop", "method")
+prop_gcm <- select(anomalies_master, year, prop_gcm)
+prop_gcm$method <- "gcm"
+colnames(prop_gcm) <- c("year", "prop", "method")
+
+proportions <- rbind(prop_model, prop_gcm)
+
+
+proportions_toticedur <- ggplot(data = proportions, aes(x = year, y = prop, color = method)) + 
+  geom_line() + mytheme + 
+  ggtitle("Total Ice Duration")+   ylim(0,1)
+
+
+
+ggarrange(proportions_tsmax, proportions_tbmax, proportions_schmidt, proportions_thermo, 
+          proportions_totstratdur, proportions_toticedur, 
+          labels = c("A", "B", "C", "D", "E", "F"), 
+          ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
+

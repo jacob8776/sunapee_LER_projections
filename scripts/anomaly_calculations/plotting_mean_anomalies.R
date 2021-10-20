@@ -1,0 +1,277 @@
+library(LakeEnsemblR)
+library(lubridate)
+library(plyr)
+library(gotmtools)
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(scales)
+
+
+mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
+                 axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
+                 axis.text.x=element_text(size=18, colour='black'), axis.text.y=element_text(size=18, colour='black'), 
+                 axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
+                 strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
+                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
+                 legend.title = element_text(size = 20))
+scale_colour_discrete <- ggthemes::scale_colour_colorblind
+scale_fill_discrete <- ggthemes::scale_fill_colorblind
+
+
+anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
+
+
+######## TsMax ###########
+
+## RCP26
+
+tsmax26 <- filter(anomalies_master, variable == "TsMax", rcp == "rcp26")
+tsmax26
+
+tsmax26 <- select(tsmax26, rcp, year, anom, sd_model, sd_gcm)
+
+
+tsmax26 <- tsmax26 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+
+## RCP 60 
+
+tsmax60 <- filter(anomalies_master, variable == "TsMax", rcp == "rcp60")
+tsmax60
+
+tsmax60 <- select(tsmax60, rcp, year, anom, sd_model, sd_gcm)
+
+
+tsmax60 <- tsmax60 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+## RCP 85 
+
+tsmax85 <- filter(anomalies_master, variable == "TsMax", rcp == "rcp85")
+tsmax85
+
+tsmax85 <- select(tsmax85, rcp, year, anom, sd_model, sd_gcm)
+
+
+tsmax85 <- tsmax85 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+
+tsmax <- rbind(tsmax26, tsmax60, tsmax85)
+
+
+ 
+stempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = rcp), alpha = 0.2,
+              linetype = .1)+
+  labs(y = "Degrees C") +
+  ylim(-5, 15) + 
+  mytheme + 
+  ggtitle("Maximum Surface Temperature") 
+
+# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+
+
+################# TbMax ########################
+
+
+## RCP26
+
+tbmax26 <- filter(anomalies_master, variable == "TbMax", rcp == "rcp26")
+tbmax26
+
+tbmax26 <- select(tbmax26, rcp, year, anom, sd_model, sd_gcm)
+
+
+tbmax26 <- tbmax26 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+
+## RCP 60 
+
+tbmax60 <- filter(anomalies_master, variable == "TbMax", rcp == "rcp60")
+tbmax60
+
+tbmax60 <- select(tbmax60, rcp, year, anom, sd_model, sd_gcm)
+
+
+tbmax60 <- tbmax60 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+## RCP 85 
+
+tbmax85 <- filter(anomalies_master, variable == "TbMax", rcp == "rcp85")
+tbmax85
+
+tbmax85 <- select(tbmax85, rcp, year, anom, sd_model, sd_gcm)
+
+
+tbmax85 <- tbmax85 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+
+tsmax <- rbind(tbmax26, tbmax60, tbmax85)
+
+
+
+btempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = rcp), alpha = 0.2,
+              linetype = .1)+
+  labs(y = "Degrees C") +
+  ylim(-2.5, 5) + 
+  mytheme + 
+  ggtitle("Maximum Bottom Temperature") 
+
+# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+
+
+################# totstratdur ##################
+
+## RCP26
+
+totstrat26 <- filter(anomalies_master, variable == "TotStratDur", rcp == "rcp26")
+totstrat26
+
+totstrat26 <- select(totstrat26, rcp, year, anom, sd_model, sd_gcm)
+
+
+totstrat26 <- totstrat26 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+
+## RCP 60 
+
+totstrat60 <- filter(anomalies_master, variable == "TotStratDur", rcp == "rcp60")
+totstrat60
+
+totstrat60 <- select(totstrat60, rcp, year, anom, sd_model, sd_gcm)
+
+
+totstrat60 <- totstrat60 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+## RCP 85 
+
+totstrat85 <- filter(anomalies_master, variable == "TotStratDur", rcp == "rcp85")
+totstrat85
+
+totstrat85 <- select(totstrat85, rcp, year, anom, sd_model, sd_gcm)
+
+
+totstrat85 <- totstrat85 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+
+tsmax <- rbind(totstrat26, totstrat60, totstrat85)
+
+
+
+strat_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = rcp), alpha = 0.2,
+              linetype = .1)+
+  labs(y = "Days") +
+  mytheme + 
+  ylim(-5, 100) + 
+  ggtitle("Total Stratification Duration") 
+
+# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+
+
+######## Schmidt Stability ###########
+
+anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/schmidt_annual_anomalies.csv")
+
+
+## RCP26
+
+schmidt26 <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp26")
+schmidt26
+
+schmidt26 <- select(schmidt26, rcp, year, anom, sd_model, sd_gcm)
+
+
+schmidt26 <- schmidt26 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+
+## RCP 60 
+
+schmidt60 <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp60")
+schmidt60
+
+schmidt60 <- select(schmidt60, rcp, year, anom, sd_model, sd_gcm)
+
+
+schmidt60 <- schmidt60 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+## RCP 85 
+
+schmidt85 <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp85")
+schmidt85
+
+schmidt85 <- select(schmidt85, rcp, year, anom, sd_model, sd_gcm)
+
+
+schmidt85 <- schmidt85 %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
+
+tsmax <- rbind(schmidt26, schmidt60, schmidt85)
+
+
+
+schmidt_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = rcp), alpha = 0.2,
+              linetype = .1)+
+  labs(y = "J/m2") +
+  mytheme + 
+  ylim(-5, 230) + 
+  ggtitle("Schmidt Stability") 
+
+# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+
+
+
+
+
+ggarrange(stempplot, btempplot, strat_plot, schmidt_plot, 
+          labels = c("A", "B", "C", "D"), 
+          ncol = 2, nrow = 2)
+
+
+
+

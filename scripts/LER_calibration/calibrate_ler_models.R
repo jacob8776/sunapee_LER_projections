@@ -4,7 +4,7 @@ Sys.setenv(TZ = "UTC")
 # remotes::install_github("tadhg-moore/gotmtools", ref = "yaml")
 # remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
 # remotes::install_github("aemon-j/gotmtools", ref = "yaml", force = TRUE)
-
+# devtools::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
 
 # Load libraries
 library(gotmtools)
@@ -18,7 +18,7 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("GLM")
+model <- c("GOTM")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -42,7 +42,7 @@ yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_Flake_081721"
+out_f <- "calibration_results_FLake_083021_v2"
 
 cmethod <- "LHC"
 model <- c("FLake")
@@ -56,8 +56,8 @@ export_config(config_file, model)
 
 run_ensemble(config_file = config_file, model = model)
 
-# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_14Aug21.nc")
-# ncdf <- "output/ensemble_output_all_models_14Aug21.nc"
+# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_31Aug21.nc")
+# ncdf <- "output/ensemble_output_all_models_31Aug21.nc"
 
 # plot heatmap
 plot_heatmap(ncdf, model = model) +
@@ -81,7 +81,7 @@ ggarrange(plotlist = plist)
 cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = FALSE, model = model, folder = ".", 
               spin_up = spin_up, job_name = model, out_f = out_f)
 
-cal_files <- list.files(param_file, full.names = TRUE)
+cal_files <- list.files(out_f, full.names = TRUE)
 cal_files <- cal_files[c(1,2)]
 
 res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
@@ -115,13 +115,16 @@ sub <- df[df$id_no == bst_par, ]
 # sub <- df[df$id_no == 1, ] # Use this to try other parameter combinations
 sub
 
-# yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
-# yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
-# yaml$scaling_factors$FLake$swr <- sub$value[2]
+yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
+yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
+yaml$scaling_factors$FLake$swr <- sub$value[2]
+yaml$model_parameters$FLake$`LAKE_PARAMS/depth_bs_lk` <- sub$value[4]
+yaml$model_parameters$FLake$`LAKE_PARAMS/T_bs_lk` <- sub$value[5]
 
 # yaml$scaling_factors$GLM$wind_speed <- sub$value[1]
 # yaml$scaling_factors$GLM$swr <- sub$value[2]
 # yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
+# yaml$model_parameters$GLM$`glm_setup/max_layer_thick` <-  sub$value[5]
 
 # yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
 # yaml$scaling_factors$GOTM$swr <- sub$value[2]
