@@ -11,11 +11,9 @@ library(RColorBrewer)
 library(scales)
 
 
-
-gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 # 
-# # List of RCP's to run 
-# gcm <- c("GFDL-ESM2M")
+gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
+# # # List of RCP's to run 
 rcp <- c("rcp26", "rcp60", "rcp85") 
 
 
@@ -29,11 +27,13 @@ anomalies_master <- data.frame("year" = numeric(0),
                                "value" = numeric(0), "mean" = numeric(0), "anom" = numeric(0))
 
 
+
 for(i in 1:length(gcm)){
+  # i = 1
   # Sets working directory to each gcm 
   # Nested for loop goes into RCP scenarios for GCMs 
   for(l in 1:length(rcp)){
-    
+    # l = 1
     ncdf <- paste0(gcm[[i]], "_", rcp[[l]], "_output.nc")
     print(ncdf)
     
@@ -41,17 +41,18 @@ for(i in 1:length(gcm)){
     # out <- out[1:5]
     
     temp <- load_var(ncdf, "temp")
-    temp <- temp[1:5]
     ice <- load_var(ncdf, "ice_height")
-    ice <- ice[1:5]
+    # ice <- lapply(1:length(ice), function(x){
+    #   ice[[x]] %>%
+    #     mutate(across(where(is.numeric), ~ ifelse(is.na(.), 0, .)))    })
+    # names(ice) <- c("FLake", "MyLake", "GLM", "Simstrat", "GOTM", "Obs")
+    
+    
     out <- lapply(1:length(temp), function(x) {
       # x = 1 # for debugging
       mlt <- reshape::melt(temp[[x]], id.vars = 1)
       mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
-     # if(names(out)[x] == "Obs") {
-    #    LakeEnsemblrR::analyse_strat(data = mlt)
-     # }
-      analyse_strat(data = mlt, H_ice = ice[[x]][, 2])
+      analyze_strat(data = mlt, H_ice = ice[[x]][, 2])
     })
     names(out) <- names(temp)
     
@@ -81,7 +82,7 @@ for(i in 1:length(gcm)){
 
       anomalies <- merge(mean_all, df, by = c("variable", "model", "gcm"
       )) %>% 
-        filter(year >= 2006) %>% 
+        filter(year >= 1975) %>% 
         mutate(anom = value - mean) %>%
         dplyr::filter(model != "Obs") %>% 
         select(year, rcp.y, gcm, model, 
@@ -141,9 +142,9 @@ scale_colour_discrete <- ggthemes::scale_colour_colorblind
 scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
-# anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+# anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26")
 # anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
-# 
+#
 # mean_midcentury <- mean(anom_midcentury$anom, na.rm = TRUE)
 # mean_endcentury <- mean(anom_endcentury$anom, na.rm = TRUE)
 # max(anom_midcentury$anom, na.rm = TRUE)
@@ -152,165 +153,165 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 # median(anom_endcentury$anom, na.rm = TRUE)
 
 
-# Plotting TsMax
+# # Plotting TsMax
+#
+# ggplot(subset(anomalies_master, variable == "TsMax"), aes(year, mean_model, colour = rcp)) +
+#   facet_wrap(~gcm) +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
+#               linetype = .1)+
+#   labs(y = "Degrees C") +
+#   ylim(-5, 15) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/gcm_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# ggplot(subset(anomalies_master, variable == "TsMax"), aes(year, mean_gcm, colour = rcp)) +
+#   geom_hline(yintercept = 0) +
+#   facet_wrap(~model) +
+#   geom_line() +
+#   labs(y = "Degrees C") +
+#   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+#               linetype = .1) +
+#   ylim(-5, 15) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/ler_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# # plotting TsMin
+#
+#
+# ggplot(subset(anomalies_master, variable == "TsMin"), aes(year, mean_model, colour = rcp)) +
+#   facet_wrap(~gcm) +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
+#               linetype = .1)+
+#   labs(y = "Degrees C") +
+#   ylim(-5, 15) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/gcm_tsmin.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# ggplot(subset(anomalies_master, variable == "TsMin"), aes(year, mean_gcm, colour = rcp)) +
+#   geom_hline(yintercept = 0) +
+#   facet_wrap(~model) +
+#   geom_line() +
+#   labs(y = "Degrees C") +
+#   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+#               linetype = .1) +
+#   ylim(-5, 15) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/ler_tsmin.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# # Plotting TbMax
+#
+# ggplot(subset(anomalies_master, variable == "TbMax"), aes(year, mean_model, colour = rcp)) +
+#   facet_wrap(~gcm) +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
+#               linetype = .1)+
+#   labs(y = "Degrees C") +
+#   ylim(-5, 15) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/gcm_tbmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# ggplot(subset(anomalies_master, variable == "TbMax"), aes(year, mean_gcm, colour = rcp)) +
+#   geom_hline(yintercept = 0) +
+#   facet_wrap(~model) +
+#   geom_line() +
+#   labs(y = "Degrees C") +
+#   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+#               linetype = .1) +
+#   ylim(-5, 15) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/ler_tbmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+#
+# # Plotting TbMin
+#
+# ggplot(subset(anomalies_master, variable == "TbMin"), aes(year, mean_model, colour = rcp)) +
+#   facet_wrap(~gcm) +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
+#               linetype = .1)+
+#   labs(y = "Degrees C") +
+#   ylim(-5, 15) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/gcm_tbmin.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# ggplot(subset(anomalies_master, variable == "TbMin"), aes(year, mean_gcm, colour = rcp)) +
+#   geom_hline(yintercept = 0) +
+#   facet_wrap(~model) +
+#   geom_line() +
+#   labs(y = "Degrees C") +
+#   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+#               linetype = .1) +
+#   ylim(-5, 15) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/ler_tbmin.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# # Plotting Total stratification duration
+#
+# ggplot(subset(anomalies_master, variable == "TotStratDur"), aes(year, mean_model, colour = rcp)) +
+#   facet_wrap(~gcm) +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
+#               linetype = .1)+
+#   labs(y = "Degrees C") +
+#   ylim(-5, 100) +
+#   mytheme
+#
+# ggsave('../../../sundox/plots/totstratdur_gcm.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# ggplot(subset(anomalies_master, variable == "TotStratDur"), aes(year, mean_gcm, colour = rcp)) +
+#   geom_hline(yintercept = 0) +
+#   facet_wrap(~model) +
+#   geom_line() +
+#   labs(y = "Degrees C") +
+#   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+#               linetype = .1) +
+#   ylim(-5, 100) +
+#   mytheme
+#
+#
+# ggsave('../../../sundox/plots/totstratdur_ler.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+#
+# # Plotting total ice duration
+#
+ # ggplot(subset(anomalies_master, variable == "TotIceDur"), aes(year, mean_gcm, colour = rcp)) +
+ #   facet_wrap(~model) +
+ #   geom_line() +
+ #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+ #               linetype = .1)+
+ #   labs(y = "Degrees C") +
+ #   mytheme
 
-ggplot(subset(anomalies_master, variable == "TsMax"), aes(year, mean_model, colour = rcp)) +
-  facet_wrap(~gcm) +
-  geom_line() +
-  geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
-              linetype = .1)+
-  labs(y = "Degrees C") +
-  ylim(-5, 15) + 
-  mytheme 
-
-ggsave('../../../sundox/plots/gcm_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-ggplot(subset(anomalies_master, variable == "TsMax"), aes(year, mean_gcm, colour = rcp)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Degrees C") +
-  geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-              linetype = .1) +
-  ylim(-5, 15) + 
-  mytheme
-
-ggsave('../../../sundox/plots/ler_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-# plotting TsMin
-
-
-ggplot(subset(anomalies_master, variable == "TsMin"), aes(year, mean_model, colour = rcp)) +
-  facet_wrap(~gcm) +
-  geom_line() +
-  geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
-              linetype = .1)+
-  labs(y = "Degrees C") +
-  ylim(-5, 15) + 
-  mytheme 
-
-ggsave('../../../sundox/plots/gcm_tsmin.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-ggplot(subset(anomalies_master, variable == "TsMin"), aes(year, mean_gcm, colour = rcp)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Degrees C") +
-  geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-              linetype = .1) +
-  ylim(-5, 15) + 
-  mytheme
-
-ggsave('../../../sundox/plots/ler_tsmin.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-# Plotting TbMax
-
-ggplot(subset(anomalies_master, variable == "TbMax"), aes(year, mean_model, colour = rcp)) +
-  facet_wrap(~gcm) +
-  geom_line() +
-  geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
-              linetype = .1)+
-  labs(y = "Degrees C") +
-  ylim(-5, 15) + 
-  mytheme 
-
-ggsave('../../../sundox/plots/gcm_tbmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-ggplot(subset(anomalies_master, variable == "TbMax"), aes(year, mean_gcm, colour = rcp)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Degrees C") +
-  geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-              linetype = .1) +
-  ylim(-5, 15) + 
-  mytheme
-
-ggsave('../../../sundox/plots/ler_tbmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-
-# Plotting TbMin
-
-ggplot(subset(anomalies_master, variable == "TbMin"), aes(year, mean_model, colour = rcp)) +
-  facet_wrap(~gcm) +
-  geom_line() +
-  geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
-              linetype = .1)+
-  labs(y = "Degrees C") +
-  ylim(-5, 15) + 
-  mytheme 
-
-ggsave('../../../sundox/plots/gcm_tbmin.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-ggplot(subset(anomalies_master, variable == "TbMin"), aes(year, mean_gcm, colour = rcp)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Degrees C") +
-  geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-              linetype = .1) +
-  ylim(-5, 15) + 
-  mytheme
-
-ggsave('../../../sundox/plots/ler_tbmin.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-# Plotting Total stratification duration
-
-ggplot(subset(anomalies_master, variable == "TotStratDur"), aes(year, mean_model, colour = rcp)) +
-  facet_wrap(~gcm) +
-  geom_line() +
-  geom_ribbon(aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
-              linetype = .1)+
-  labs(y = "Degrees C") + 
-  ylim(-5, 100) + 
-  mytheme 
-
-ggsave('../../../sundox/plots/totstratdur_gcm.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-ggplot(subset(anomalies_master, variable == "TotStratDur"), aes(year, mean_gcm, colour = rcp)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Degrees C") +
-  geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-              linetype = .1) +
-  ylim(-5, 100) + 
-  mytheme
-
-
-ggsave('../../../sundox/plots/totstratdur_ler.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-# Plotting total ice duration 
-
-ggplot(subset(anomalies_master, variable == "TotIceDur"), aes(year, mean_gcm, colour = rcp)) +
-  facet_wrap(~model) +
-  geom_line() +
-  geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-              linetype = .1)+
-  labs(y = "Degrees C") +
-  mytheme 
-
-ggsave('../../../sundox/plots/toticedur_ler.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-unique(anomalies_master$variable)
-
-ggplot(subset(anomalies_master, variable == "TbMin"), aes(year, mean_gcm, colour = rcp)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Degrees C") +
-  geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-              linetype = .1) +
-  mytheme
-
-
+# ggsave('../../../sundox/plots/toticedur_ler.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#
+# unique(anomalies_master$variable)
+#
+ ggplot(subset(anomalies_master, variable == "TotIceDur"), aes(year, mean_gcm, colour = rcp)) +
+   geom_hline(yintercept = 0) +
+   facet_wrap(~model) +
+   geom_line() +
+   labs(y = "Degrees C") +
+   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+               linetype = .1) +
+   mytheme
+#
+#

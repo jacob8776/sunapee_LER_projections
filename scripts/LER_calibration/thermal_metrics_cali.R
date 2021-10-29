@@ -10,6 +10,7 @@ library(reshape2)
 library(RColorBrewer)
 library(lubridate)
 library(Metrics)
+library(plotrix)
 
 
 ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_31Aug21.nc"
@@ -61,6 +62,14 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 
 wideform$mean <- wideformmean
 
+
+taylor.diagram(wideform$Obs, wideform$Simstrat)
+taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 3)
+taylor.diagram(wideform$Obs, wideform$FLake, add = TRUE, col = 5)
+taylor.diagram(wideform$Obs, wideform$MyLake, add = TRUE, col = 7)
+taylor.diagram(wideform$Obs, wideform$GOTM, add = TRUE, col = 9)
+
+
 rmse <- c()
 models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM", "mean")
 rmse <- c(rmse, (rmse(wideform$Obs, wideform$FLake)))
@@ -81,6 +90,7 @@ df <- df %>%
   dplyr :: group_by(yday, year) %>% 
   dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
   dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
 
 
 

@@ -76,7 +76,7 @@ anomalies_master <- data.frame("year" = numeric(0), "month" = numeric(0), "yday"
 
         anomalies <- merge(mean_all, df, by = c("variable", "model", "gcm"
                                                 )) %>% 
-        filter(year >= 2006) %>% 
+        filter(year >= 1975) %>% 
         mutate(anom = value - mean) %>%
         dplyr::filter(model != "Obs") %>% 
         select(year, month, yday, rcp.y, gcm, model, 
@@ -130,7 +130,6 @@ ggplot(anomalies_master, aes(year, anom, colour = model)) +
   geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
               linetype = 0.1,
               color = "grey") 
-  
 
 
 
@@ -219,19 +218,23 @@ ggplot(subset(anomalies_master), aes(year, mean_model, colour = rcp)) +
   geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
               linetype = .1)+
   labs(y = "Schmidt stability (J/m2)") +
-  mytheme
+  mytheme + 
+  geom_line(y = 0, col = "black") + 
+  geom_vline(xintercept=2006, linetype = "dashed")
 
 ggsave('../../../sundox/plots/schmidt_anom_year_fgcm.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 ggplot(subset(anomalies_master), aes(year, mean_gcm, colour = rcp)) +
-  geom_hline(yintercept = 0) +
   facet_wrap(~model) +
   geom_line() +
   labs(y = "Schmidt stability (J/m2)") +
   geom_ribbon(data = anomalies_master, aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
               linetype = .1) +
-  mytheme
+  mytheme + 
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept=2006, linetype = "dashed")
+
 
 ggsave('../../../sundox/plots/schmidt_anom_year_fler_rcp85.png', dpi = 300,width = 384,height = 280, units = 'mm')
 

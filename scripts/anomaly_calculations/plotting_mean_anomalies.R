@@ -29,7 +29,7 @@ anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculat
 
 ## RCP26
 
-tsmax26 <- filter(anomalies_master, variable == "TsMax", rcp == "rcp26")
+tsmax26 <- filter(anomalies_master, variable == "TsMean", rcp == "rcp26")
 tsmax26
 
 tsmax26 <- select(tsmax26, rcp, year, anom, sd_model, sd_gcm)
@@ -43,7 +43,7 @@ tsmax26 <- tsmax26 %>%
 
 ## RCP 60 
 
-tsmax60 <- filter(anomalies_master, variable == "TsMax", rcp == "rcp60")
+tsmax60 <- filter(anomalies_master, variable == "TsMean", rcp == "rcp60")
 tsmax60
 
 tsmax60 <- select(tsmax60, rcp, year, anom, sd_model, sd_gcm)
@@ -56,7 +56,7 @@ tsmax60 <- tsmax60 %>%
 
 ## RCP 85 
 
-tsmax85 <- filter(anomalies_master, variable == "TsMax", rcp == "rcp85")
+tsmax85 <- filter(anomalies_master, variable == "TsMean", rcp == "rcp85")
 tsmax85
 
 tsmax85 <- select(tsmax85, rcp, year, anom, sd_model, sd_gcm)
@@ -77,9 +77,12 @@ stempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = rcp), alpha = 0.2,
               linetype = .1)+
   labs(y = "Degrees C") +
-  ylim(-5, 15) + 
+  ylim(-2, 7) + 
   mytheme + 
-  ggtitle("Maximum Surface Temperature") 
+  ggtitle("Mean Surface Temperature") +
+  geom_line(y = 0, col = "black") + 
+  geom_vline(xintercept = 2006, linetype = "dashed")
+
 
 # ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
@@ -89,7 +92,7 @@ stempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
 
 ## RCP26
 
-tbmax26 <- filter(anomalies_master, variable == "TbMax", rcp == "rcp26")
+tbmax26 <- filter(anomalies_master, variable == "TbMean", rcp == "rcp26")
 tbmax26
 
 tbmax26 <- select(tbmax26, rcp, year, anom, sd_model, sd_gcm)
@@ -103,7 +106,7 @@ tbmax26 <- tbmax26 %>%
 
 ## RCP 60 
 
-tbmax60 <- filter(anomalies_master, variable == "TbMax", rcp == "rcp60")
+tbmax60 <- filter(anomalies_master, variable == "TbMean", rcp == "rcp60")
 tbmax60
 
 tbmax60 <- select(tbmax60, rcp, year, anom, sd_model, sd_gcm)
@@ -116,7 +119,7 @@ tbmax60 <- tbmax60 %>%
 
 ## RCP 85 
 
-tbmax85 <- filter(anomalies_master, variable == "TbMax", rcp == "rcp85")
+tbmax85 <- filter(anomalies_master, variable == "TbMean", rcp == "rcp85")
 tbmax85
 
 tbmax85 <- select(tbmax85, rcp, year, anom, sd_model, sd_gcm)
@@ -137,9 +140,13 @@ btempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = rcp), alpha = 0.2,
               linetype = .1)+
   labs(y = "Degrees C") +
-  ylim(-2.5, 5) + 
+  ylim(-1, 3) + 
   mytheme + 
-  ggtitle("Maximum Bottom Temperature") 
+  ggtitle("Mean Bottom Temperature") +
+  geom_line(y = 0, col = "black") +
+  geom_vline(xintercept = 2006, linetype = "dashed")
+
+
 
 # ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
@@ -197,8 +204,12 @@ strat_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
               linetype = .1)+
   labs(y = "Days") +
   mytheme + 
-  ylim(-5, 100) + 
-  ggtitle("Total Stratification Duration") 
+  ylim(-30, 100) + 
+  ggtitle("Total Stratification Duration")  +
+  geom_line(y = 0, col = "black") + 
+  geom_vline(xintercept = 2006, linetype = "dashed")
+
+
 
 # ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
@@ -259,8 +270,11 @@ schmidt_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) 
               linetype = .1)+
   labs(y = "J/m2") +
   mytheme + 
-  ylim(-5, 230) + 
-  ggtitle("Schmidt Stability") 
+  ylim(-45, 230) + 
+  ggtitle("Schmidt Stability") + 
+  geom_line(y = 0, col = "black") + 
+  geom_vline(xintercept = 2006, linetype = "dashed")
+
 
 # ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
@@ -270,8 +284,9 @@ schmidt_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) 
 
 ggarrange(stempplot, btempplot, strat_plot, schmidt_plot, 
           labels = c("A", "B", "C", "D"), 
-          ncol = 2, nrow = 2)
+          ncol = 2, nrow = 2, common.legend = TRUE, legend = "bottom")
 
+ggsave('~/Dropbox/sundox/plots/mean_anoms_summer.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 

@@ -16,6 +16,10 @@ ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_outpu
 out <- load_var(ncdf = ncdf, var = "temp")
 
 temp <- load_var(ncdf, "temp")
+depths <- get.offsets(temp$FLake)
+idx <- which(depths < 11)
+temp <- lapply(temp, function(x) x[, c(1,idx+1)])
+head(temp$FLake)
 ice <- load_var(ncdf, "ice_height")
 out <- lapply(1:length(temp), function(x) {
   # x = 1 # for debugging
@@ -129,6 +133,14 @@ rmse <- c(rmse, (rmse(wideform$Obs, wideform$Simstrat)))
 rmse <- c(rmse, (rmse(wideform$Obs, wideform$MyLake)))
 rmse <- c(rmse, (rmse(wideform$Obs, wideform$GLM)))
 rmse <- c(rmse, (rmse(wideform$Obs, wideform$mean)))
+
+
+library(plotrix)
+
+cor(x = as.vector(wideform$Obs), y = as.vector(wideform$FLake))
+taylor.diagram(wideform$Obs, wideform$FLake, pos.cor = T)
+taylor.diagram(wideform$Obs, wideform$GLM, pos.cor = T, add = T, col = 3)
+
 
 
 models <- as.data.frame(models)

@@ -29,7 +29,7 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 # 
 # # List of RCP's to run 
 # gcm <- c("GFDL-ESM2M")
-rcp <- c("rcp85")
+rcp <- c("rcp26", "rcp60", "rcp85")
 
 
 
@@ -79,7 +79,7 @@ for(i in 1:length(gcm)){
       
       anomalies <- merge(mean_all, df, by = c("variable", "model", "gcm"
       )) %>% 
-        filter(year >= 2006) %>% 
+        filter(year >= 1975) %>% 
         mutate(anom = value - mean) %>%
         dplyr::filter(model != "Obs") %>% 
         select(year, month, yday, rcp, gcm, model, 
@@ -157,92 +157,92 @@ write.csv(anomalies_master, "../../anomaly_calculations/thermodepth_annual_anoma
 anomalies_master <- read.csv("../../anomaly_calculations/thermodepth_annual_anomalies.csv_rcp26")
 
 
-library(scales)
-p1 <- ggplot(anomalies_gcm) +
-  geom_line(aes(year, var_gcm, color = model)) + 
-  mytheme
-
-p1 / ggplot(anomalies_model, aes(year, var_model, color = gcm)) +
-  geom_line() + 
-  mytheme
-
-anomalies_gcm <- anomalies_gcm %>% 
-  group_by(year, rcp, gcm, variable) %>% 
-  dplyr::mutate(sum_var_gcm = sum(var_gcm, na.rm = TRUE))
-
-anomalies_model <- anomalies_model %>% 
-  group_by(year, rcp, model, variable) %>% 
-  dplyr::mutate(sum_var_model = sum(var_model, na.rm = TRUE))
-
-ggplot(anomalies_gcm, aes(year, sum_var_gcm)) + 
-  geom_line(col = "green") + 
-  geom_line(data = anomalies_model, aes(year, sum_var_model), col = "blue") +
-  xlab("Year") + 
-  ylab("Variance") + 
-  mytheme
-
-ggplot(anomalies_gcm, aes(year, sum_var_gcm)) + 
-  geom_area(fill = 4)
-  
-  
-ggplot(subset(anomalies_model, model == "GLM"), aes(year, var_model, colour = gcm)) +
-  # facet_wrap(~gcm) +
-  geom_line() +
-  geom_line(data = subset(anomalies_gcm, gcm == "MIROC5"), aes(year, var_gcm, color = "GCM")) +
-  labs(y = "Thermocline Depth (m)") +
-  mytheme
-
-ggplot(test_gcm, aes(year, mean_var)) + 
-  geom_line(col = "green")+
-  geom_line(data = test_model, aes(year, mean_var), col = "blue")
-
-
-ggplot(anomalies_gcm, aes(year, anom, colour = model)) +
-  facet_wrap(~gcm) +
-  geom_line() +
-  geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = gcm), alpha = 0.1,
-              linetype = .1)+
-  labs(y = "Thermocline Depth (m)") +
-  mytheme
-
-ggsave('../../../sundox/plots/thermo_depth_anom_year_fgcm_rcp85.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-ggplot(subset(anomalies_master), aes(year, anom, colour = gcm)) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Thermocline Depth (m)") +
-  geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = model), alpha = 0.1,
-              linetype = .1) +
-  mytheme
-
-ggsave('../../../sundox/plots/thermo_depth_anom_year_fler_rcp85.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-
-anomalies_master <- read.csv("../../anomaly_calculations/thermodepth_annual_anomalies_rcp85.csv")
-
-
-anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
-anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
-
-mean(anom_midcentury$mean_model, na.rm = TRUE)
-max(anom_midcentury$mean_model, na.rm = TRUE)
-median(anom_midcentury$mean_model, na.rm = TRUE)
-sum(anom_midcentury$var_model)
-mean(anom_endcentury$mean_model, na.rm = TRUE)
-max(anom_endcentury$mean_model, na.rm = TRUE)
-median(anom_endcentury$mean_model, na.rm = TRUE)
-sum(anom_endcentury$var_model)
-
-
-
-mean(anom_midcentury$mean_gcm, na.rm = TRUE)
-max(anom_midcentury$mean_gcm, na.rm = TRUE)
-median(anom_midcentury$mean_gcm, na.rm = TRUE)
-sum(anom_midcentury$var_gcm)
-mean(anom_endcentury$mean_gcm, na.rm = TRUE)
-max(anom_endcentury$mean_gcm, na.rm = TRUE)
-median(anom_endcentury$mean_gcm, na.rm = TRUE)
-sum(anom_endcentury$var_gcm)
-
+# library(scales)
+# p1 <- ggplot(anomalies_gcm) +
+#   geom_line(aes(year, var_gcm, color = model)) + 
+#   mytheme
+# 
+# p1 / ggplot(anomalies_model, aes(year, var_model, color = gcm)) +
+#   geom_line() + 
+#   mytheme
+# 
+# anomalies_gcm <- anomalies_gcm %>% 
+#   group_by(year, rcp, gcm, variable) %>% 
+#   dplyr::mutate(sum_var_gcm = sum(var_gcm, na.rm = TRUE))
+# 
+# anomalies_model <- anomalies_model %>% 
+#   group_by(year, rcp, model, variable) %>% 
+#   dplyr::mutate(sum_var_model = sum(var_model, na.rm = TRUE))
+# 
+# ggplot(anomalies_gcm, aes(year, sum_var_gcm)) + 
+#   geom_line(col = "green") + 
+#   geom_line(data = anomalies_model, aes(year, sum_var_model), col = "blue") +
+#   xlab("Year") + 
+#   ylab("Variance") + 
+#   mytheme
+# 
+# ggplot(anomalies_gcm, aes(year, sum_var_gcm)) + 
+#   geom_area(fill = 4)
+#   
+#   
+# ggplot(subset(anomalies_model, model == "GLM"), aes(year, var_model, colour = gcm)) +
+#   # facet_wrap(~gcm) +
+#   geom_line() +
+#   geom_line(data = subset(anomalies_gcm, gcm == "MIROC5"), aes(year, var_gcm, color = "GCM")) +
+#   labs(y = "Thermocline Depth (m)") +
+#   mytheme
+# 
+# ggplot(test_gcm, aes(year, mean_var)) + 
+#   geom_line(col = "green")+
+#   geom_line(data = test_model, aes(year, mean_var), col = "blue")
+# 
+# 
+# ggplot(anomalies_gcm, aes(year, anom, colour = model)) +
+#   facet_wrap(~gcm) +
+#   geom_line() +
+#   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = gcm), alpha = 0.1,
+#               linetype = .1)+
+#   labs(y = "Thermocline Depth (m)") +
+#   mytheme
+# 
+# ggsave('../../../sundox/plots/thermo_depth_anom_year_fgcm_rcp85.png', dpi = 300,width = 384,height = 280, units = 'mm')
+# 
+# 
+# ggplot(subset(anomalies_master), aes(year, anom, colour = gcm)) +
+#   facet_wrap(~model) +
+#   geom_line() +
+#   labs(y = "Thermocline Depth (m)") +
+#   geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = model), alpha = 0.1,
+#               linetype = .1) +
+#   mytheme
+# 
+# ggsave('../../../sundox/plots/thermo_depth_anom_year_fler_rcp85.png', dpi = 300,width = 384,height = 280, units = 'mm')
+# 
+# 
+# 
+# anomalies_master <- read.csv("../../anomaly_calculations/thermodepth_annual_anomalies_rcp85.csv")
+# 
+# 
+# anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+# anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+# 
+# mean(anom_midcentury$mean_model, na.rm = TRUE)
+# max(anom_midcentury$mean_model, na.rm = TRUE)
+# median(anom_midcentury$mean_model, na.rm = TRUE)
+# sum(anom_midcentury$var_model)
+# mean(anom_endcentury$mean_model, na.rm = TRUE)
+# max(anom_endcentury$mean_model, na.rm = TRUE)
+# median(anom_endcentury$mean_model, na.rm = TRUE)
+# sum(anom_endcentury$var_model)
+# 
+# 
+# 
+# mean(anom_midcentury$mean_gcm, na.rm = TRUE)
+# max(anom_midcentury$mean_gcm, na.rm = TRUE)
+# median(anom_midcentury$mean_gcm, na.rm = TRUE)
+# sum(anom_midcentury$var_gcm)
+# mean(anom_endcentury$mean_gcm, na.rm = TRUE)
+# max(anom_endcentury$mean_gcm, na.rm = TRUE)
+# median(anom_endcentury$mean_gcm, na.rm = TRUE)
+# sum(anom_endcentury$var_gcm)
+# 
