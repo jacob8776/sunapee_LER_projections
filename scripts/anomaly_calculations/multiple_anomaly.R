@@ -305,13 +305,22 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 #
 # unique(anomalies_master$variable)
 #
- ggplot(subset(anomalies_master, variable == "TotIceDur"), aes(year, mean_gcm, colour = rcp)) +
+ ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp85"), aes(year, anom, colour = gcm)) +
    geom_hline(yintercept = 0) +
    facet_wrap(~model) +
    geom_line() +
    labs(y = "Degrees C") +
-   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-               linetype = .1) +
+#   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+#               linetype = .1) +
    mytheme
 #
 #
+ 
+ ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp85"), aes(year, anom, colour = model)) +
+   geom_hline(yintercept = 0) +
+   facet_wrap(~gcm) +
+   geom_line() +
+   labs(y = "Degrees C") +
+   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+   #               linetype = .1) +
+   mytheme

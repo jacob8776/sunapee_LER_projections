@@ -10,6 +10,7 @@ library(RColorBrewer)
 library(lubridate)
 library(reshape2)
 library(scales)
+library(Metrics)
 
 ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_31Aug21.nc"
 
@@ -28,7 +29,7 @@ out <- lapply(1:length(temp), function(x) {
   if(names(out)[x] == "Obs") {
     analyse_strat(data = mlt)
   }
-  analyse_strat(data = mlt, H_ice = ice[[x]][, 2])
+  analyse_strat(data = mlt, H_ice = ice[[x]][, 2], month = 6:8)
 })
 names(out) <- names(temp)
 
@@ -70,14 +71,14 @@ ggplot(subset(df, variable == "TsMax" |  variable == "TbMax"),
   scale_x_continuous(breaks = pretty_breaks()) +
   ylab("Degrees C")
 
-ggsave('~/Dropbox/sundox/plots/surface_bottom_temps_cali.png', dpi = 300,width = 384,height = 280, units = 'mm')
+# ggsave('~/Dropbox/sundox/plots/surface_bottom_temps_cali.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 ggplot(subset(df, variable == "TotStratDur"), aes(x = year, y = value, colour = model)) + geom_point() + 
   mytheme + 
   scale_x_continuous(breaks = pretty_breaks()) +
   ylab("Days")
 
-ggsave('~/Dropbox/sundox/plots/totstratdur_cali.png', dpi = 300,width = 384,height = 280, units = 'mm')
+# ggsave('~/Dropbox/sundox/plots/totstratdur_cali.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 ggplot(subset(df, variable == "TotIceDur"), aes(x = year, y = value, colour = model)) + geom_line() + 
@@ -85,7 +86,7 @@ ggplot(subset(df, variable == "TotIceDur"), aes(x = year, y = value, colour = mo
   scale_x_continuous(breaks = pretty_breaks()) +
   ylab("Days")
 
-ggsave('~/Dropbox/sundox/plots/toticedur_cali.png', dpi = 300,width = 384,height = 280, units = 'mm')
+# ggsave('~/Dropbox/sundox/plots/toticedur_cali.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 ggplot(df, aes(x = year, y = value, colour = model)) + geom_line() + 
@@ -116,7 +117,7 @@ checkthis
 
 #tsmax
 
-wideform <- dcast(subset(df, variable == "TsMax"), year~model, value.var = "value")
+wideform <- dcast(subset(df, variable == "TsMean"), year~model, value.var = "value")
 wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
                      is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
                      is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
@@ -124,6 +125,9 @@ wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
 wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake + wideform$Simstrat)/5
 
 wideform$mean <- wideformmean
+
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/tsmean_cali_wideform.csv", row.names = FALSE)
+
 
 rmse <- c()
 models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM", "mean")
@@ -135,11 +139,7 @@ rmse <- c(rmse, (rmse(wideform$Obs, wideform$GLM)))
 rmse <- c(rmse, (rmse(wideform$Obs, wideform$mean)))
 
 
-library(plotrix)
 
-cor(x = as.vector(wideform$Obs), y = as.vector(wideform$FLake))
-taylor.diagram(wideform$Obs, wideform$FLake, pos.cor = T)
-taylor.diagram(wideform$Obs, wideform$GLM, pos.cor = T, add = T, col = 3)
 
 
 
@@ -147,7 +147,7 @@ models <- as.data.frame(models)
 rmse <- as.data.frame(rmse)
 
 model_rmse <- cbind(models, rmse)
-paste0("rmse for tsmax is: ")
+paste0("rmse for tsmean is: ")
 model_rmse
 
 # # tsmin
@@ -176,7 +176,7 @@ model_rmse
 
 # tbmax
 
-wideform <- dcast(subset(df, variable == "TbMax"), year~model, value.var = "value")
+wideform <- dcast(subset(df, variable == "TbMean"), year~model, value.var = "value")
 wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
                      is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
                      is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
@@ -184,6 +184,8 @@ wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
 wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake + wideform$Simstrat)/5
 
 wideform$mean <- wideformmean
+
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/tbmean_cali_wideform.csv", row.names = FALSE)
 
 
 rmse <- c()
@@ -238,6 +240,8 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 
 wideform$mean <- wideformmean
 
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/totstratdur_cali_wideform.csv", row.names = FALSE)
+
 
 bias <- c()
 models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM", "mean")
@@ -255,5 +259,143 @@ bias <- as.data.frame(bias)
 model_rmse <- cbind(models, bias)
 paste0("bias for totstratdur is: ")
 model_rmse
+
+
+wideform <- dcast(subset(df, variable == "TbMean"), year~model, value.var = "value")
+wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+                     is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+
+wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake + wideform$Simstrat)/5
+
+wideform$mean <- wideformmean
+
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/tbmean_cali_wideform.csv", row.names = FALSE)
+
+
+rmse <- c()
+models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM", "mean")
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$FLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GOTM)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$Simstrat)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$MyLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GLM)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$mean)))
+
+models <- as.data.frame(models)
+rmse <- as.data.frame(rmse)
+
+model_rmse <- cbind(models, rmse)
+paste0("rmse for tbmax is: ")
+model_rmse
+
+
+# #tbmin
+# 
+# wideform <- dcast(subset(df, variable == "TbMin"), year~model, value.var = "value")
+# wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+#                      is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+#                      is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+# 
+# 
+# rmse <- c()
+# models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM")
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$FLake)))
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$GOTM)))
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$Simstrat)))
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$MyLake)))
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$GLM)))
+# 
+# models <- as.data.frame(models)
+# rmse <- as.data.frame(rmse)
+# 
+# model_rmse <- cbind(models, rmse)
+# paste0("rmse for tbmin is: ")
+# model_rmse
+
+
+#total stratification duration
+
+wideform <- dcast(subset(df, variable == "TotStratDur"), year~model, value.var = "value")
+wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+                     is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+
+wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake + wideform$Simstrat)/5
+
+wideform$mean <- wideformmean
+
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/totstratdur_cali_wideform.csv", row.names = FALSE)
+
+
+bias <- c()
+models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM", "mean")
+bias <- c(bias, (bias(wideform$Obs, wideform$FLake)))
+bias <- c(bias, (bias(wideform$Obs, wideform$GOTM)))
+bias <- c(bias, (bias(wideform$Obs, wideform$Simstrat)))
+bias <- c(bias, (bias(wideform$Obs, wideform$MyLake)))
+bias <- c(bias, (bias(wideform$Obs, wideform$GLM)))
+bias <- c(bias, (bias(wideform$Obs, wideform$mean)))
+
+
+models <- as.data.frame(models)
+bias <- as.data.frame(bias)
+
+model_rmse <- cbind(models, bias)
+paste0("bias for totstratdur is: ")
+model_rmse
+
+
+wideform <- dcast(subset(df, variable == "MixPer"), year~model, value.var = "value")
+wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+                     is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+
+wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake + wideform$Simstrat)/5
+
+wideform$mean <- wideformmean
+
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/mixper_cali_wideform.csv", row.names = FALSE)
+
+
+rmse <- c()
+models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM", "mean")
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$FLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GOTM)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$Simstrat)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$MyLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GLM)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$mean)))
+
+models <- as.data.frame(models)
+rmse <- as.data.frame(rmse)
+
+model_rmse <- cbind(models, rmse)
+paste0("rmse for tbmax is: ")
+model_rmse
+
+
+# #tbmin
+# 
+# wideform <- dcast(subset(df, variable == "TbMin"), year~model, value.var = "value")
+# wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+#                      is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+#                      is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+# 
+# 
+# rmse <- c()
+# models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM")
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$FLake)))
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$GOTM)))
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$Simstrat)))
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$MyLake)))
+# rmse <- c(rmse, (rmse(wideform$Obs, wideform$GLM)))
+# 
+# models <- as.data.frame(models)
+# rmse <- as.data.frame(rmse)
+# 
+# model_rmse <- cbind(models, rmse)
+# paste0("rmse for tbmin is: ")
+# model_rmse
 
 

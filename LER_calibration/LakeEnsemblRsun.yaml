@@ -18,7 +18,7 @@ config_files:
   MyLake: MyLake/mylake.Rdata
 observations:
   temperature:
-    file: Data/manual_buoy_temp_hrz.csv
+    file: Data/manual_buoy_temp_dpth.csv
   ice_height:
     file: ~
 input:
@@ -38,7 +38,7 @@ inflows:
 output:
   file: ensemble_output
   format: netcdf
-  depths: 0.5
+  depths: 1.0
   compression: 4
   time_unit: hour
   time_step: 24.0
@@ -51,20 +51,20 @@ scaling_factors:
     wind_speed: 1
     swr: 1
   Simstrat:
-    wind_speed: 1.4883
-    swr: 1.0299
+    wind_speed: 1.0
+    swr: 1.0
   FLake:
     wind_speed: 1.0
     swr: 1.0
   GLM:
-    wind_speed: 1.4959
-    swr: 1.0655
+    wind_speed: 1.0
+    swr: 1.0
   GOTM:
-    wind_speed: 0.5434
-    swr: 1.3701
+    wind_speed: 1.0
+    swr: 1.0
   MyLake:
-    wind_speed: 1.4892
-    swr: 1.2741
+    wind_speed: 1.0
+    swr: 1.0
 model_parameters:
   FLake:
     LAKE_PARAMS/c_relax_C: 0.0054947

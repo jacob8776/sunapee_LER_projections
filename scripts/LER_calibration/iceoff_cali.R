@@ -62,6 +62,9 @@ wideformmean <- (wideform$FLake +  wideform$GOTM + wideform$MyLake + wideform$Si
 
 wideform$mean <- wideformmean
 
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/toticedur_cali_wideform.csv", row.names = FALSE)
+
+
 
 bias <- c()
 models <- c("FLake", "GOTM", "Simstrat", "MyLake", "mean")

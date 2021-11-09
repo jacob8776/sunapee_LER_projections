@@ -42,10 +42,10 @@ yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_FLake_083021_v2"
+# out_f <- "calibration_results_FLake_083021_v2"
 
 cmethod <- "LHC"
-model <- c("FLake")
+model <- c("FLake", "GOTM", "Simstrat", "GLM", "MyLake")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -56,8 +56,8 @@ export_config(config_file, model)
 
 run_ensemble(config_file = config_file, model = model)
 
-# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_31Aug21.nc")
-# ncdf <- "output/ensemble_output_all_models_31Aug21.nc"
+file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_5Nov21.nc")
+ncdf <- "output/ensemble_output_all_models_5Nov21.nc"
 
 # plot heatmap
 plot_heatmap(ncdf, model = model) +
@@ -73,7 +73,7 @@ fit
 # out$stats 
 
 ## Plot residuals
-plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
+plist <- plot_resid(ncdf = "output/ensemble_output_all_models_31Aug21.nc", var = "temp")
 ggarrange(plotlist = plist)
 
 # param_file <- "calibration_results_MyLake_081321/MyLake_LHC_202108131525"

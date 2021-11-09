@@ -62,12 +62,14 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 
 wideform$mean <- wideformmean
 
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/schmidt_cali_wideform.csv", row.names = FALSE)
 
-taylor.diagram(wideform$Obs, wideform$Simstrat)
-taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 3)
-taylor.diagram(wideform$Obs, wideform$FLake, add = TRUE, col = 5)
-taylor.diagram(wideform$Obs, wideform$MyLake, add = TRUE, col = 7)
-taylor.diagram(wideform$Obs, wideform$GOTM, add = TRUE, col = 9)
+# 
+# taylor.diagram(wideform$Obs, wideform$Simstrat)
+# taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 3)
+# taylor.diagram(wideform$Obs, wideform$FLake, add = TRUE, col = 5)
+# taylor.diagram(wideform$Obs, wideform$MyLake, add = TRUE, col = 7)
+# taylor.diagram(wideform$Obs, wideform$GOTM, add = TRUE, col = 9)
 
 
 rmse <- c()
@@ -143,6 +145,14 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 
 wideform$mean <- wideformmean
 
+write.csv(wideform ,"~/Dropbox/sunapee_LER_projections/LER_calibration/cali_calcs/thermodepth_cali_wideform.csv", row.names = FALSE)
+
+paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
+paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))
+paste0("Simstrat RMSE: ", rmse(wideform$Obs, wideform$Simstrat))
+paste0("MyLake RMSE: ", rmse(wideform$Obs, wideform$MyLake))
+paste0("GLM RMSE: ", rmse(wideform$Obs, wideform$GLM))
+paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 paste0("FLake RMSE: ", bias(wideform$Obs, wideform$FLake))
 paste0("GOTM RMSE: ", bias(wideform$Obs, wideform$GOTM))
@@ -193,7 +203,7 @@ out <- lapply(1:length(temp), function(x) {
   if(names(out)[x] == "Obs") {
     analyse_strat(data = mlt)
   }
-  analyse_strat(data = mlt, H_ice = ice[[x]][, 2], month = 6:8)
+  analyze_strat(data = mlt, H_ice = ice[[x]][, 2], month = 6:8)
 })
 names(out) <- names(temp)
 out
