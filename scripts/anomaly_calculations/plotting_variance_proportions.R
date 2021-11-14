@@ -28,12 +28,17 @@ anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculat
 
 anomalies_master <- filter(anomalies_master, rcp == setrcp)
 
+
+# pull out relevant columns from anomalies_master dataset for model uncertainty 
 selected_var_model <- select(anomalies_master, year, var_model)
+# pull out unique variance values, should be five for each year 
 test <- unique(selected_var_model)
+# group by year and sum, remove column of unique variances per year 
 test_sum_model <- test %>% 
   group_by(year) %>% 
   mutate(sum_var_model = sum(var_model)) %>% 
   select(-var_model) 
+# removing duplicate values for each year, four each year
 test_sum_model <- unique(test_sum_model)
 
 
@@ -119,16 +124,25 @@ mix_period <- ggplot(data = proportions, aes(x = year, y = prop, color = method)
 
 
 
-### maximum surface temperature
+### mean surface temperature
 
 anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
 
 anomalies_master <- filter(anomalies_master, variable == "TsMean", rcp == setrcp)
 
+ggplot() +
+  geom_line(data = anomalies_master, aes(year, anom, color = model)) +
+  facet_wrap(~gcm)
+
+ggplot() +
+  geom_line(data = anomalies_master, aes(year, anom, color = gcm)) +
+  facet_wrap(~model)
+
+
 anomalies_master <- anomalies_master %>% 
   group_by(year) %>% 
-  mutate(sum_var_model = sum(var_model)) %>% 
-  mutate(sum_var_gcm = sum(var_gcm)) %>% 
+  mutate(sum_var_model = mean(var_model)) %>% 
+  mutate(sum_var_gcm = mean(var_gcm)) %>% 
   mutate(sum_vars = sum_var_model + sum_var_gcm) %>% 
   mutate(prop_model = sum_var_model/sum_vars) %>% 
   mutate(prop_gcm = sum_var_gcm/sum_vars)
@@ -149,7 +163,7 @@ proportions_tsmax <- ggplot(data = proportions, aes(x = year, y = prop, color = 
   geom_line() + mytheme + 
   ggtitle("Mean Surface Temperature")+   ylim(0,1)
 
-
+proportions_tsmax
 
 ### maximum surface temperature
 

@@ -179,7 +179,17 @@ tsmean_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = le
   ggtitle("Mean Surface Temperature Distribution") + 
   labs(y = "Degrees C", x = "Time Period")+ geom_hline(yintercept = 0)
 
+tsmean_violin
 
+sub <- anomalies_master[anomalies_master$rcp == "rcp85", ]
+
+ggplot(sub) +
+  geom_line(aes(year, mean_gcm, color = model)) +
+  facet_wrap(~gcm)
+
+ggplot(sub) +
+  geom_line(aes(year, mean_model, color = gcm)) +
+  facet_wrap(~model)
 
 
 ####################################################################################
@@ -495,7 +505,7 @@ schmidt_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = l
 schmidt_violin
 
 
-ggarrange(tsmean_violin, tbmean_violin, schmidt_violin, stratdur_violin, ice_violin, mix_violin, 
+ggarrange(tsmean_violin, tbmean_violin, stratdur_violin, schmidt_violin, ice_violin, mix_violin, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 

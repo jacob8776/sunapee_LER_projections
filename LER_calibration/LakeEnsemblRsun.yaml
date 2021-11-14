@@ -54,11 +54,11 @@ scaling_factors:
     wind_speed: 1.0
     swr: 1.0
   FLake:
-    wind_speed: 1.0
-    swr: 1.0
+    wind_speed: 1.406
+    swr: 0.84065
   GLM:
-    wind_speed: 1.0
-    swr: 1.0
+    wind_speed: 1.4167
+    swr: 0.89851
   GOTM:
     wind_speed: 1.0
     swr: 1.0
@@ -67,18 +67,18 @@ scaling_factors:
     swr: 1.0
 model_parameters:
   FLake:
-    LAKE_PARAMS/c_relax_C: 0.0054947
-    LAKE_PARAMS/depth_bs_lk: 2.4575
-    LAKE_PARAMS/T_bs_lk: 15.205
+    LAKE_PARAMS/c_relax_C: 0.0071876
+    LAKE_PARAMS/depth_bs_lk: 0.1128
+    LAKE_PARAMS/T_bs_lk: 7.2767
     LAKE_PARAMS/depth_w_lk: 33
   GLM:
     morphometry/bsn_len: 12870
     morphometry/bsn_wid: 3000
     sediment/sed_temp_mean:
-    - 3.4826
-    - 10.597
+    - 6.7002
+    - 11.854
     glm_setup/min_layer_thick: 0.1
-    glm_setup/max_layer_thick: 0.64125
+    glm_setup/max_layer_thick: 0.21837
     glm_setup/max_layers: 500
     mixing/coef_mix_KH: 0.3
     mixing/coef_mix_conv: 0.125

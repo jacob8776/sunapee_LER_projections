@@ -111,6 +111,13 @@ anomalies_by_year <- anomalies_master %>%
   group_by(year, rcp, gcm, model, variable, mean) %>% 
   summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
 
+
+########################### COULD AFFECT VARIANCE DIFFERENCES ###############################################
+
+
+# Model uncertainty grouped by all relevant columns except for lake model. Calculations are then carried out across lake models 
+# for mean, standard deviation and variance. Same method for gcm uncertainty and rcp uncertainty. 
+
 anomalies_master <- anomalies_master %>% 
   group_by(rcp, gcm, variable, year) %>% 
   dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>%
@@ -124,6 +131,8 @@ anomalies_master <- anomalies_master %>%
   dplyr::mutate(mean_rcp = mean(anom, na.rm = TRUE)) %>% 
   dplyr::mutate(sd_rcp = sd(anom, na.rm = TRUE)) %>% 
   dplyr::mutate(var_rcp = var(anom, na.rm = TRUE))
+
+##################################################################################################################
 
 
 write.csv(anomalies_master, "../../anomaly_calculations/multiple_annual_anomalies.csv", row.names = F)

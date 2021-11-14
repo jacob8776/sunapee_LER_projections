@@ -16,10 +16,10 @@
 &LAKE_PARAMS
    depth_w_lk = 33
    fetch_lk = 9100
-   depth_bs_lk = 2.4575
-   T_bs_lk = 15.205
+   depth_bs_lk = 0.1128
+   T_bs_lk = 7.2767
    latitude_lk = 43.38083
-   c_relax_C = 0.0054947
+   c_relax_C = 0.0071876
 /
 &TRANSPARENCY
    nband_optic = 1

@@ -42,10 +42,10 @@ yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-# out_f <- "calibration_results_FLake_083021_v2"
+out_f <- "calibration_results_GLM_13Nov21"
 
 cmethod <- "LHC"
-model <- c("FLake", "GOTM", "Simstrat", "GLM", "MyLake")
+model <- c("GLM")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -56,8 +56,12 @@ export_config(config_file, model)
 
 run_ensemble(config_file = config_file, model = model)
 
-file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_5Nov21.nc")
-ncdf <- "output/ensemble_output_all_models_5Nov21.nc"
+# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_12Nov21.nc")
+# ncdf <- "output/ensemble_output_all_models_12Nov21.nc"
+
+lst <- load_var(ncdf, "temp")
+summary(lst$Obs)
+
 
 # plot heatmap
 plot_heatmap(ncdf, model = model) +
@@ -73,12 +77,13 @@ fit
 # out$stats 
 
 ## Plot residuals
-plist <- plot_resid(ncdf = "output/ensemble_output_all_models_31Aug21.nc", var = "temp")
+plist <- plot_resid(ncdf = ncdf, var = "temp")
 ggarrange(plotlist = plist)
+
 
 # param_file <- "calibration_results_MyLake_081321/MyLake_LHC_202108131525"
 
-cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = FALSE, model = model, folder = ".", 
+cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = TRUE, model = model, folder = ".", 
               spin_up = spin_up, job_name = model, out_f = out_f)
 
 cal_files <- list.files(out_f, full.names = TRUE)
@@ -115,16 +120,16 @@ sub <- df[df$id_no == bst_par, ]
 # sub <- df[df$id_no == 1, ] # Use this to try other parameter combinations
 sub
 
-yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
-yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
-yaml$scaling_factors$FLake$swr <- sub$value[2]
-yaml$model_parameters$FLake$`LAKE_PARAMS/depth_bs_lk` <- sub$value[4]
-yaml$model_parameters$FLake$`LAKE_PARAMS/T_bs_lk` <- sub$value[5]
+# yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
+# yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
+# yaml$scaling_factors$FLake$swr <- sub$value[2]
+# yaml$model_parameters$FLake$`LAKE_PARAMS/depth_bs_lk` <- sub$value[4]
+# yaml$model_parameters$FLake$`LAKE_PARAMS/T_bs_lk` <- sub$value[5]
 
-# yaml$scaling_factors$GLM$wind_speed <- sub$value[1]
-# yaml$scaling_factors$GLM$swr <- sub$value[2]
-# yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
-# yaml$model_parameters$GLM$`glm_setup/max_layer_thick` <-  sub$value[5]
+yaml$scaling_factors$GLM$wind_speed <- sub$value[1]
+yaml$scaling_factors$GLM$swr <- sub$value[2]
+yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
+yaml$model_parameters$GLM$`glm_setup/max_layer_thick` <-  sub$value[5]
 
 # yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
 # yaml$scaling_factors$GOTM$swr <- sub$value[2]
@@ -149,7 +154,7 @@ sub # Calibration results
 
 plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
 ggarrange(plotlist = plist)
-# ggsave(file.path(out_f, "calib_results.png"), p1,  dpi = 300,width = 384, height = 280, units = 'mm')
+#ggsave(file.path(out_f, "calib_results.png"), p1,  dpi = 300,width = 384, height = 280, units = 'mm')
 
 # # Create priors ----
 # par_df <- plyr::ddply(df, "variable", function(x) {

@@ -105,6 +105,50 @@ anomalies_by_year <- anomalies_master %>%
   group_by(year, rcp, gcm, model, variable, mean) %>% 
   summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
 
+
+########################### COULD AFFECT VARIANCE DIFFERENCES ###############################################
+
+
+# Model uncertainty grouped by all relevant columns except for lake model. Calculations are then carried out across lake models 
+# for mean, standard deviation and variance. Same method for gcm uncertainty and rcp uncertainty. 
+
+anomalies_model <- anomalies_by_year %>% 
+  group_by(rcp, gcm, variable, year) %>% 
+  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_model = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_model = var(anom, na.rm = TRUE)) %>% 
+  dplyr::select(year, rcp, gcm, variable, mean_model:var_model)
+
+ggplot(anomalies_model) +
+  geom_line(aes(year, var_model, color = gcm)) +
+  facet_wrap(~rcp) +
+  coord_cartesian(ylim = c(0, 8000))
+
+anomalies_gcm <- anomalies_by_year %>% 
+  group_by(rcp, model, variable, year) %>% 
+  dplyr::mutate(mean_gcm = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_gcm = sd(anom, na.rm = TRUE)) %>% 
+  dplyr::mutate(var_gcm = var(anom, na.rm = TRUE)) %>% 
+  dplyr::select(year, rcp, gcm, model, variable, mean_gcm:var_gcm)
+
+ggplot(anomalies_gcm) +
+  geom_line(aes(year, var_gcm, color = model)) +
+  facet_wrap(~rcp) +
+  coord_cartesian(ylim = c(0, 8000))
+
+df <- anomalies_gcm %>% 
+  group_by(year) %>% 
+  mutate(tot_var = mean(var_gcm))
+
+df2 <- anomalies_model %>% 
+  group_by(year) %>% 
+  mutate(tot_var = mean(var_model))
+
+ggplot() +
+  geom_line(data = df, aes(year, tot_var, color = "GCM")) +
+  geom_line(data = df2, aes(year, tot_var, color = "Model"))
+
+
 anomalies_master <- anomalies_by_year %>% 
   group_by(rcp, gcm, variable, year) %>% 
   dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>%
@@ -118,6 +162,9 @@ anomalies_master <- anomalies_by_year %>%
   dplyr::mutate(mean_rcp = mean(anom, na.rm = TRUE)) %>% 
   dplyr::mutate(sd_rcp = sd(anom, na.rm = TRUE)) %>% 
   dplyr::mutate(var_rcp = var(anom, na.rm = TRUE))
+
+##################################################################################################################
+
 
 write.csv(anomalies_master, "../../anomaly_calculations/schmidt_annual_anomalies.csv", row.names = F)
 
