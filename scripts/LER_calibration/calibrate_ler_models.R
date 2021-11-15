@@ -18,7 +18,7 @@ setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("GOTM")
+model <- c("Simstrat")
 ncdf <- "output/ensemble_output.nc"
 
 config_file
@@ -42,10 +42,10 @@ yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
 spin_up <- 190
-out_f <- "calibration_results_GLM_13Nov21"
+out_f <- "change"
 
 cmethod <- "LHC"
-model <- c("GLM")
+model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -120,16 +120,20 @@ sub <- df[df$id_no == bst_par, ]
 # sub <- df[df$id_no == 1, ] # Use this to try other parameter combinations
 sub
 
-# yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
-# yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
-# yaml$scaling_factors$FLake$swr <- sub$value[2]
-# yaml$model_parameters$FLake$`LAKE_PARAMS/depth_bs_lk` <- sub$value[4]
-# yaml$model_parameters$FLake$`LAKE_PARAMS/T_bs_lk` <- sub$value[5]
+#yaml$model_parameters$MyLake$`Phys.par/C_shelter` <- sub$value[3]
+#yaml$scaling_factors$MyLake$wind_speed <- sub$value[1]
+#yaml$scaling_factors$MyLake$swr <- sub$value[2]
 
-yaml$scaling_factors$GLM$wind_speed <- sub$value[1]
-yaml$scaling_factors$GLM$swr <- sub$value[2]
-yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
-yaml$model_parameters$GLM$`glm_setup/max_layer_thick` <-  sub$value[5]
+yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
+yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
+yaml$scaling_factors$FLake$swr <- sub$value[2]
+yaml$model_parameters$FLake$`LAKE_PARAMS/depth_bs_lk` <- sub$value[4]
+yaml$model_parameters$FLake$`LAKE_PARAMS/T_bs_lk` <- sub$value[5]
+
+# yaml$scaling_factors$GLM$wind_speed <- sub$value[1]
+# yaml$scaling_factors$GLM$swr <- sub$value[2]
+# yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
+# yaml$model_parameters$GLM$`glm_setup/max_layer_thick` <-  sub$value[5]
 
 # yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
 # yaml$scaling_factors$GOTM$swr <- sub$value[2]

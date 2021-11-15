@@ -14,12 +14,12 @@
    outputfile = 'output/output.dat'
 /
 &LAKE_PARAMS
-   depth_w_lk = 33
+   depth_w_lk = 11.55
    fetch_lk = 9100
-   depth_bs_lk = 0.1128
-   T_bs_lk = 7.2767
+   depth_bs_lk = 0.37232
+   T_bs_lk = 18.555
    latitude_lk = 43.38083
-   c_relax_C = 0.0071876
+   c_relax_C = 0.0009851
 /
 &TRANSPARENCY
    nband_optic = 1
