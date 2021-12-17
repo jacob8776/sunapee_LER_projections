@@ -47,82 +47,48 @@ output:
   - temp
   - ice_height
   
-  scaling_factors:
+scaling_factors:
   all:
     wind_speed: 1
     swr: 1
   Simstrat:
-    wind_speed: 1.0
+    wind_speed: 1.4684
+    swr: 0.93668
   FLake:
-    wind_speed: 1.5
-    swr: 1.1
+    wind_speed: 1.4686
+    swr: 0.7919
   GLM:
-    wind_speed: 1.4914
-    swr: 1.1247
+    wind_speed: 1.4167
+    swr: 0.89851
+  GOTM:
+    wind_speed: 0.7952
+    swr: 1.4135
+  MyLake:
+    wind_speed: 1.4255
+    swr: 1.2848
 model_parameters:
   FLake:
-    depth_w_lk: 33
-    fetch_lk: 2000.0
-    c_relax_C: 1.0
+    LAKE_PARAMS/c_relax_C: 0.0009851
+    LAKE_PARAMS/depth_bs_lk: 0.37232
+    LAKE_PARAMS/T_bs_lk: 18.555
   GLM:
-    bsn_len: 12870
-    bsn_wid: 3000
+    morphometry/bsn_len: 12870
+    morphometry/bsn_wid: 3000
     sediment/sed_temp_mean:
-    - 7
-    - 14
+    - 6.7002
+    - 11.854
+    glm_setup/min_layer_thick: 0.1
+    glm_setup/max_layer_thick: 0.21837
+    glm_setup/max_layers: 500
+    mixing/coef_mix_KH: 0.3
+    mixing/coef_mix_conv: 0.125
+    mixing/coef_mix_shear: 0.2
+    mixing/coef_mix_turb: 0.51
+    mixing/coef_wind_stir: 0.23
+    mixing/coef_mix_hyp: 0.5
   GOTM:
-    k_min: 3.6e-06
-  Simstrat: ~
-  MyLake:
-    Phys.par/C_shelter: 0.15
-calibration:
-  met:
-    wind_speed:
-      lower: 0.5
-      upper: 1.5
-      initial: 1.0
-      log: false
-    swr:
-      lower: 0.5
-      upper: 1.5
-      initial: 1.0
-      log: false
-  FLake:
-    c_relax_C:
-      lower: 0.0041
-      upper: 0.006
-      initial: 0.00505
-      log: false
-  GLM:
-    sediment/sed_temp_mean:
-      lower:
-      - 0.4
-      - 0.4
-      upper:
-      - 20
-      - 20
-      initial:
-      - 7
-      - 14
-      log:
-      - false
-      - false
-  GOTM:
-    turb_param/k_min:
-      lower: 2.1e-05
-      upper: 5E-5
-      initial: 2.2203e-05
-      log: false
+    turbulence/turb_param/k_min: 2.6303e-06
   Simstrat:
-    a_seiche:
-      lower: 1.0e-12
-      upper: 0.003
-      initial: 1.0e-07
-      log: false
+    ModelParameters/a_seiche: 0.0042714
   MyLake:
-    Phys.par/C_shelter:
-      lower: 0.14
-      upper: 0.16
-      initial: 0.15
-      log: false
-
+    Phys.par/C_shelter: 0.36905

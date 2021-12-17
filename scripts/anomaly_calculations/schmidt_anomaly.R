@@ -21,11 +21,16 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
-# 
-# # List of RCP's to run 
+#
+# # List of RCP's to run
 # gcm <- c("GFDL-ESM2M")
 rcp <- c("rcp26", "rcp60", "rcp85")
 
+# gcm <- c("GFDL-ESM2M")
+# # 
+# # # List of RCP's to run 
+# # gcm <- c("GFDL-ESM2M")
+# rcp <- c("rcp85")
 
 
 

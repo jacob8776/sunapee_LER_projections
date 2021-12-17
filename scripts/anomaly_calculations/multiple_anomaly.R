@@ -52,7 +52,7 @@ for(i in 1:length(gcm)){
       # x = 1 # for debugging
       mlt <- reshape::melt(temp[[x]], id.vars = 1)
       mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
-      analyze_strat(data = mlt, H_ice = ice[[x]][, 2])
+      analyze_strat(data = mlt, H_ice = ice[[x]][, 2], dates = 6:8)
     })
     names(out) <- names(temp)
     

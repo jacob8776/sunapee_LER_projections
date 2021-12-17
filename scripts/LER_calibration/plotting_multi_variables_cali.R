@@ -12,15 +12,15 @@ library(reshape2)
 library(scales)
 library(Metrics)
 
-ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_31Aug21.nc"
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
 
 out <- load_var(ncdf = ncdf, var = "temp")
 
 temp <- load_var(ncdf, "temp")
-depths <- get.offsets(temp$FLake)
-idx <- which(depths < 11)
-temp <- lapply(temp, function(x) x[, c(1,idx+1)])
-head(temp$FLake)
+# depths <- get.offsets(temp$FLake)
+# idx <- which(depths < 11)
+# temp <- lapply(temp, function(x) x[, c(1,idx+1)])
+# head(temp$FLake)
 ice <- load_var(ncdf, "ice_height")
 out <- lapply(1:length(temp), function(x) {
   # x = 1 # for debugging
@@ -103,8 +103,6 @@ ggplot(df, aes(x = year, y = mean)) + geom_line() +
   geom_line(data = subset(df, model == "Obs"), aes(year, value, col = "Obs"))
 
 
-checkthis <- filter(df, year == 2009, model == "Obs")
-checkthis
 
 
 

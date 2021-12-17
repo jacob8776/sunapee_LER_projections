@@ -19,7 +19,6 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 rcp <- c("rcp26", "rcp60", "rcp85")
 
 
-
 # set config file for all simulations
 config_file <- 'LakeEnsemblR.yaml'
 

@@ -56,8 +56,8 @@ export_config(config_file, model)
 
 run_ensemble(config_file = config_file, model = model)
 
-# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_12Nov21.nc")
-# ncdf <- "output/ensemble_output_all_models_12Nov21.nc"
+# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_15Nov21.nc")
+# ncdf <- "output/ensemble_output_all_models_15Nov21.nc"
 
 lst <- load_var(ncdf, "temp")
 summary(lst$Obs)

@@ -27,69 +27,47 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
 
-model_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp85"), aes(year, anom, colour = gcm)) +
+model_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (C)") +
+  ggtitle("Summer Mean Surface Temperature") + 
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
 #
 #
 
-gcm_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp85"), aes(year, anom, colour = model)) +
+gcm_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~gcm) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (C)") +
+  ggtitle("Summer Mean Surface Temperature") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
 
 
 
-model_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == "rcp85"), aes(year, anom, colour = gcm)) +
+model_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (C)") +
+  ggtitle("Summer Mean Bottom Temperature") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
 #
 #
 
-gcm_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == "rcp85"), aes(year, anom, colour = model)) +
+gcm_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~gcm) +
   geom_line() +
-  labs(y = "Degrees C") +
-  #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-  #               linetype = .1) +
-  mytheme
-
-
-
-
-
-
-model_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == "rcp85"), aes(year, anom, colour = gcm)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Degrees C") +
-  #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-  #               linetype = .1) +
-  mytheme
-#
-#
-
-gcm_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == "rcp85"), aes(year, anom, colour = model)) +
-  geom_hline(yintercept = 0) +
-  facet_wrap(~gcm) +
-  geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (C)") +
+  ggtitle("Summer Mean Bottom Temperature") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
@@ -99,22 +77,24 @@ gcm_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == 
 
 
 
-model_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "rcp85"), aes(year, anom, colour = gcm)) +
+model_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (Days)") +
+  ggtitle("Summer Stratification Duration") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
 #
 #
 
-gcm_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "rcp85"), aes(year, anom, colour = model)) +
+gcm_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~gcm) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (Days)") +
+  ggtitle("Summer Stratification Duration") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
@@ -124,27 +104,52 @@ gcm_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "rcp
 
 
 
-
-
-model_mix <- ggplot(subset(anomalies_master, variable == "MixPer" & rcp == "rcp85"), aes(year, anom, colour = gcm)) +
+model_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (Days)") +
+  ggtitle("Total Ice Duration") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
 #
 #
 
-gcm_mix <- ggplot(subset(anomalies_master, variable == "MixPer" & rcp == "rcp85"), aes(year, anom, colour = model)) +
+gcm_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~gcm) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (Days)") +
+  ggtitle("Total Ice Duration") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
+
+
+
+
+
+
+
+
+# model_mix <- ggplot(subset(anomalies_master, variable == "MixPer" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
+#   geom_hline(yintercept = 0) +
+#   geom_line() +
+#   labs(y = "Degrees C") +
+#   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+#   #               linetype = .1) +
+#   mytheme
+# #
+# #
+# 
+# gcm_mix <- ggplot(subset(anomalies_master, variable == "MixPer" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
+#   geom_hline(yintercept = 0) +
+#   geom_line() +
+#   labs(y = "Degrees C") +
+#   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+#   #               linetype = .1) +
+#   mytheme
 
 
 
@@ -152,22 +157,24 @@ gcm_mix <- ggplot(subset(anomalies_master, variable == "MixPer" & rcp == "rcp85"
 anomalies_master <- read.csv("../../anomaly_calculations/schmidt_annual_anomalies.csv")
 
 
-model_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == "rcp85"), aes(year, anom, colour = gcm)) +
+model_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~model) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (J/m2)") +
+  ggtitle("Schmidt Stability") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
 #
 #
 
-gcm_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == "rcp85"), aes(year, anom, colour = model)) +
+gcm_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
-  facet_wrap(~gcm) +
   geom_line() +
-  labs(y = "Degrees C") +
+  labs(y = "Anomaly (J/m2)") +
+  ggtitle("Schmidt Stability") + 
+  
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
@@ -175,18 +182,46 @@ gcm_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" &
 
 
 
-ggarrange(model_tsmean, model_tbmean, model_schmidt, model_strat, model_ice, model_mix, 
+anomalies_master <- read.csv("../../anomaly_calculations/thermodepth_annual_anomalies.csv")
+
+
+model_thermo <- ggplot(subset(anomalies_master, variable == "thermo.depth" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
+  geom_hline(yintercept = 0) +
+  geom_line() +
+  labs(y = "Anomaly (m)") +
+  ggtitle("Thermocline Depth") + 
+  
+  #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+  #               linetype = .1) +
+  mytheme
+#
+#
+
+gcm_thermo <- ggplot(subset(anomalies_master, variable == "thermo.depth" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
+  geom_hline(yintercept = 0) +
+  geom_line() +
+  labs(y = "Anomaly (m)") +
+  ggtitle("Thermocline Depth") + 
+  
+  #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
+  #               linetype = .1) +
+  mytheme
+
+
+
+
+ggarrange(model_tsmean, model_tbmean, model_schmidt, model_thermo, model_strat, model_ice, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('~/Dropbox/sundox/plots/model_uncertainty.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('~/Dropbox/sundox/plots/model_uncertainty_means.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 
-ggarrange(gcm_tsmean, gcm_tbmean, gcm_schmidt, gcm_strat, gcm_ice, gcm_mix, 
+ggarrange(gcm_tsmean, gcm_tbmean, gcm_schmidt, gcm_thermo, gcm_strat, gcm_ice, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('~/Dropbox/sundox/plots/gcm_uncertainty.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('~/Dropbox/sundox/plots/gcm_uncertainty_means.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 

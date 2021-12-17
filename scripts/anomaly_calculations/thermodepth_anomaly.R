@@ -16,7 +16,7 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 # 
 # # List of RCP's to run 
 # gcm <- c("GFDL-ESM2M")
-rcp <- c("historical", "rcp26", "rcp85")
+rcp <- c("rcp26", "rcp60", "rcp85")
 
 
 
@@ -51,43 +51,41 @@ for(i in 1:length(gcm)){
     df$month <- month(df$datetime)
     df$gcm <- gcm[[i]]
     df$rcp <- rcp[[l]]
-    df <- df %>% filter(month >= 6 & month <= 9)
+    df <- df %>% filter(month >= 6 & month <= 8)
     
-    if(rcp[[l]] == "historical"){
-      hmeans <- df %>%  dplyr::group_by(model) %>% 
-        dplyr::mutate(mean = mean(value, na.rm = TRUE))
+
+    hmeans <- df %>%  dplyr::group_by(model, gcm, rcp) %>% 
+      filter(year >= 1975 & year <= 2005) %>% 
+      dplyr::mutate(mean = mean(value, na.rm = TRUE))
+    
+    mean_all <- hmeans %>% 
+      distinct(mean, .keep_all = TRUE) %>% 
+      # mutate(gcm = gcm[[i]],
+      #        rcp = rcp[[l]]) %>% 
+      select(variable, model, mean, gcm)
       
-      mean_all <- hmeans %>% 
-        distinct(mean, .keep_all = TRUE) %>% 
-        # mutate(gcm = gcm[[i]],
-        #        rcp = rcp[[l]]) %>% 
-        select(variable, model, mean, gcm)
-    }
+      
+    anomalies <- merge(mean_all, df, by = c("variable", "model", "gcm"
+    )) %>% 
+      filter(year >= 1975) %>% 
+      mutate(anom = value - mean) %>%
+      dplyr::filter(model != "Obs") %>% 
+      select(year, month, yday, rcp.y, gcm, model, 
+             variable, value, mean, anom)
+    colnames(anomalies)[4] <- c("rcp")
     
     
+    anomalies$variable <- as.character(anomalies$variable)
     
-    else{
-      
-      anomalies <- merge(mean_all, df, by = c("variable", "model", "gcm"
-      )) %>% 
-        mutate(anom = value - mean) %>%
-        dplyr::filter(model != "Obs") %>% 
-        select(year, month, yday, rcp, gcm, model, 
-               variable, value, mean, anom)
-      
-      anomalies$variable <- as.character(anomalies$variable)
-      
-      anomalies_master <- rbind(anomalies_master, anomalies)
-      
-      
-      
+    anomalies_master <- rbind(anomalies_master, anomalies)
+    
       
       
     }
     
     
   }
-}
+
 
 
 

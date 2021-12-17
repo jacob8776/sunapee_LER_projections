@@ -13,7 +13,7 @@ library(Metrics)
 library(plotrix)
 
 
-ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_31Aug21.nc"
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
 out <- load_var(ncdf = ncdf, var = "temp")
 
 

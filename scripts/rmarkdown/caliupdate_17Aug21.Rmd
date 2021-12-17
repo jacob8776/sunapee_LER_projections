@@ -33,7 +33,7 @@ library(Metrics)
 
 setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
 
-ncdf <- "output/ensemble_output_all_models_31Aug21.nc"
+ncdf <- "output/ensemble_output_all_models_15Nov21.nc"
 
 model <- c("FLake", "GLM", "GOTM", "Simstrat", "MyLake")
 
@@ -54,7 +54,7 @@ fit
 # out$stats 
 
 ## Plot residuals
-plist <- plot_resid(ncdf = "output/ensemble_output_all_models_31Aug21.nc", var = "temp")
+plist <- plot_resid(ncdf = "output/ensemble_output_all_models_15Nov21.nc", var = "temp")
 ggarrange(plotlist = plist)
 
 
@@ -68,7 +68,7 @@ ggarrange(plotlist = plist)
 
 
 ```{r, echo=TRUE,warning=FALSE,message=FALSE,error=FALSE, fig.keep='all'}
-ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_31Aug21.nc"
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
 
 
 ######################## Calculating Schmidt Stability ################################
@@ -196,7 +196,7 @@ library(reshape)
 library(RColorBrewer)
 library(lubridate)
 
-ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_31Aug21.nc"
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
 
 out <- load_var(ncdf = ncdf, var = "temp")
 ## Same for thermocline depth
@@ -302,7 +302,7 @@ library(reshape)
 library(RColorBrewer)
 library(lubridate)
 
-ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_31Aug21.nc"
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
 
 out <- load_var(ncdf = ncdf, var = "temp")
 
@@ -313,9 +313,9 @@ out <- lapply(1:length(temp), function(x) {
   mlt <- reshape::melt(temp[[x]], id.vars = 1)
   mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
   if(names(out)[x] == "Obs") {
-    analyse_strat(data = mlt)
+    analyze_strat(data = mlt, month = 6:8)
   }
-  analyse_strat(data = mlt, H_ice = ice[[x]][, 2])
+  analyze_strat(data = mlt, H_ice = ice[[x]][, 2], month = 6:8)
 })
 names(out) <- names(temp)
 
@@ -391,7 +391,7 @@ library(reshape)
 library(RColorBrewer)
 library(lubridate)
 
-ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_31Aug21.nc"
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
 
 out <- load_var(ncdf = ncdf, var = "temp")
 
@@ -402,9 +402,9 @@ out <- lapply(1:length(temp), function(x) {
   mlt <- reshape::melt(temp[[x]], id.vars = 1)
   mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
   if(names(out)[x] == "Obs") {
-    analyse_strat(data = mlt)
+    analyze_strat(data = mlt)
   }
-  analyse_strat(data = mlt, H_ice = ice[[x]][, 2])
+  analyze_strat(data = mlt, H_ice = ice[[x]][, 2])
 })
 names(out) <- names(temp)
 

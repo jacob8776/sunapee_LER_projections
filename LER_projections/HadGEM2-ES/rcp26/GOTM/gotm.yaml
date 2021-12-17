@@ -167,7 +167,7 @@ turbulence:
     galp: 0.27
     const_num: 0.0005
     const_nuh: 0.0005
-    k_min: 3.6e-06
+    k_min: 2.6303e-06
     eps_min: 1.0e-12
     kb_min: 1.0e-10
     epsb_min: 1.0e-14
