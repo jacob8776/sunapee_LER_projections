@@ -62,45 +62,45 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-#### rcp 8.5
+#### for plot
 
-anomaly_model_8.5 <- as.data.frame(anom_midcentury_8.5$mean_model)
-anomaly_gcm_8.5 <- as.data.frame(anom_midcentury_8.5$mean_gcm)
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_8.5$uncertainty <- "GCM"
-anomaly_gcm_8.5$uncertainty <- "Lake Model"
+anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
 
 
-midcentury_8.5 <- rbind(anomaly_model_8.5, anomaly_gcm_8.5)
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 
 #############################################################
 
-anomaly_model_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_model)
-anomaly_gcm_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_gcm)
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_8.5_end$uncertainty <- "GCM"
-anomaly_gcm_8.5_end$uncertainty <- "Lake Model"
+anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5_end) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5_end) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
 
 
-endcentury_8.5 <- rbind(anomaly_model_8.5_end, anomaly_gcm_8.5_end)
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
 
-midcentury_8.5$time <- "midcentury"
-endcentury_8.5$time <- "endcentury"
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
 
-rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
 
-stratdur_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+stratdur_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
   ggtitle("Summer Stratification Duration") + 
   labs(y = "Anomaly (Days)", x = "Time Period") + geom_hline(yintercept = 0)
-  
+
 anom_midcentury_8.5$time <- as.character("midcentury")
 
 stratdur_violin_test <- ggplot(data = anom_midcentury_8.5, mapping = aes(x = factor(time, level = level_order), y = anom, fill = model, col = model)) + 
@@ -108,7 +108,7 @@ stratdur_violin_test <- ggplot(data = anom_midcentury_8.5, mapping = aes(x = fac
   mytheme + 
   ggtitle("Summer Stratification Duration") + 
   labs(y = "Anomaly (Days)", x = "Time Period") + geom_hline(yintercept = 0)
-  
+
 
 
 
@@ -147,40 +147,41 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-#### rcp 8.5
+#### for plot
 
-anomaly_model_8.5 <- as.data.frame(anom_midcentury_8.5$mean_model)
-anomaly_gcm_8.5 <- as.data.frame(anom_midcentury_8.5$mean_gcm)
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_8.5$uncertainty <- "GCM"
-anomaly_gcm_8.5$uncertainty <- "Lake Model"
+anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
 
 
-midcentury_8.5 <- rbind(anomaly_model_8.5, anomaly_gcm_8.5)
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 
 #############################################################
 
-anomaly_model_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_model)
-anomaly_gcm_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_gcm)
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_8.5_end$uncertainty <- "GCM"
-anomaly_gcm_8.5_end$uncertainty <- "Lake Model"
+anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5_end) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5_end) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
 
 
-endcentury_8.5 <- rbind(anomaly_model_8.5_end, anomaly_gcm_8.5_end)
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
 
-midcentury_8.5$time <- "midcentury"
-endcentury_8.5$time <- "endcentury"
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
 
-rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+anom_midcentury_8.5$time <- as.character("midcentury")
 
-tsmean_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+tsmean_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
   ggtitle("Mean Summer Surface Temperature") + 
@@ -234,40 +235,43 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-#### rcp 8.5
+#### for plot
 
-anomaly_model_8.5 <- as.data.frame(anom_midcentury_8.5$mean_model)
-anomaly_gcm_8.5 <- as.data.frame(anom_midcentury_8.5$mean_gcm)
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_8.5$uncertainty <- "GCM"
-anomaly_gcm_8.5$uncertainty <- "Lake Model"
+anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
 
 
-midcentury_8.5 <- rbind(anomaly_model_8.5, anomaly_gcm_8.5)
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 
 #############################################################
 
-anomaly_model_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_model)
-anomaly_gcm_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_gcm)
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_8.5_end$uncertainty <- "GCM"
-anomaly_gcm_8.5_end$uncertainty <- "Lake Model"
+anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5_end) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5_end) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
 
 
-endcentury_8.5 <- rbind(anomaly_model_8.5_end, anomaly_gcm_8.5_end)
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
 
-midcentury_8.5$time <- "midcentury"
-endcentury_8.5$time <- "endcentury"
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
 
-rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
 
-tbmean_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+anom_midcentury_8.5$time <- as.character("midcentury")
+
+
+tbmean_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
   ggtitle("Mean Summer Bottom Temperature") + 
@@ -311,46 +315,46 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-#### rcp 8.5
+#### for plot
 
-anomaly_model_8.5 <- as.data.frame(anom_midcentury_8.5$mean_model)
-anomaly_gcm_8.5 <- as.data.frame(anom_midcentury_8.5$mean_gcm)
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_8.5$uncertainty <- "GCM"
-anomaly_gcm_8.5$uncertainty <- "Lake Model"
+anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
 
 
-midcentury_8.5 <- rbind(anomaly_model_8.5, anomaly_gcm_8.5)
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 
 #############################################################
 
-anomaly_model_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_model)
-anomaly_gcm_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_gcm)
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_8.5_end$uncertainty <- "GCM"
-anomaly_gcm_8.5_end$uncertainty <- "Lake Model"
+anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5_end) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5_end) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
 
 
-endcentury_8.5 <- rbind(anomaly_model_8.5_end, anomaly_gcm_8.5_end)
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
 
-midcentury_8.5$time <- "midcentury"
-endcentury_8.5$time <- "endcentury"
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
 
-rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
 
-ice_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+ice_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
   ggtitle("Total Ice Duration") + 
   labs(y = "Anomaly (Days)", x = "Time Period")+ geom_hline(yintercept = 0)
 
-tbmean_violin
+ice_violin
 
 
 
@@ -390,40 +394,40 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-#### rcp 8.5
+#### for plot
 
-anomaly_model_8.5 <- as.data.frame(anom_midcentury_8.5$mean_model)
-anomaly_gcm_8.5 <- as.data.frame(anom_midcentury_8.5$mean_gcm)
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_8.5$uncertainty <- "GCM"
-anomaly_gcm_8.5$uncertainty <- "Lake Model"
+anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
 
 
-midcentury_8.5 <- rbind(anomaly_model_8.5, anomaly_gcm_8.5)
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 
 #############################################################
 
-anomaly_model_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_model)
-anomaly_gcm_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_gcm)
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_8.5_end$uncertainty <- "GCM"
-anomaly_gcm_8.5_end$uncertainty <- "Lake Model"
+anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5_end) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5_end) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
 
 
-endcentury_8.5 <- rbind(anomaly_model_8.5_end, anomaly_gcm_8.5_end)
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
 
-midcentury_8.5$time <- "midcentury"
-endcentury_8.5$time <- "endcentury"
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
 
-rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
 
-mix_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+mix_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
   ggtitle("Total Mixing Period") + 
@@ -469,41 +473,40 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-#### rcp 8.5
+#### for plot
 
-anomaly_model_8.5 <- as.data.frame(anom_midcentury_8.5$mean_model)
-anomaly_gcm_8.5 <- as.data.frame(anom_midcentury_8.5$mean_gcm)
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_8.5$uncertainty <- "GCM"
-anomaly_gcm_8.5$uncertainty <- "Lake Model"
+anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
 
 
-midcentury_8.5 <- rbind(anomaly_model_8.5, anomaly_gcm_8.5)
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 
 #############################################################
 
-anomaly_model_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_model)
-anomaly_gcm_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_gcm)
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_8.5_end$uncertainty <- "GCM"
-anomaly_gcm_8.5_end$uncertainty <- "Lake Model"
+anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5_end) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5_end) <- c("anomaly", "Distribution")
-
-
-endcentury_8.5 <- rbind(anomaly_model_8.5_end, anomaly_gcm_8.5_end)
-
-midcentury_8.5$time <- "midcentury"
-endcentury_8.5$time <- "endcentury"
-
-rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
 
 
-schmidt_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
+
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
+
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+
+schmidt_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
   ggtitle("Schmidt Stability") + 
@@ -550,54 +553,53 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-#### rcp 8.5
+#### for plot
 
-anomaly_model_8.5 <- as.data.frame(anom_midcentury_8.5$mean_model)
-anomaly_gcm_8.5 <- as.data.frame(anom_midcentury_8.5$mean_gcm)
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_8.5$uncertainty <- "GCM"
-anomaly_gcm_8.5$uncertainty <- "Lake Model"
+anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5) <- c("anomaly", "Distribution")
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
 
 
-midcentury_8.5 <- rbind(anomaly_model_8.5, anomaly_gcm_8.5)
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 
 #############################################################
 
-anomaly_model_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_model)
-anomaly_gcm_8.5_end <- as.data.frame(anom_endcentury_8.5$mean_gcm)
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_8.5_end$uncertainty <- "GCM"
-anomaly_gcm_8.5_end$uncertainty <- "Lake Model"
+anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
-colnames(anomaly_model_8.5_end) <- c("anomaly", "Distribution")
-colnames(anomaly_gcm_8.5_end) <- c("anomaly", "Distribution")
-
-
-endcentury_8.5 <- rbind(anomaly_model_8.5_end, anomaly_gcm_8.5_end)
-
-midcentury_8.5$time <- "midcentury"
-endcentury_8.5$time <- "endcentury"
-
-rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
 
 
-thermo_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
+
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
+
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+
+thermo_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
   ggtitle("Thermocline Depth") + 
   labs(y = "Anomaly (m)", x = "Time Period") + geom_hline(yintercept = 0)
 
-schmidt_violin
+thermo_violin
 
 
 ggarrange(tsmean_violin, tbmean_violin, schmidt_violin, thermo_violin, stratdur_violin, ice_violin, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('~/Dropbox/sundox/plots/vioplots.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('~/Dropbox/sundox/plots/vioplots_6.0.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 

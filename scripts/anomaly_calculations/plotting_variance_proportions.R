@@ -22,7 +22,7 @@ scale_colour_discrete <- ggthemes::scale_colour_colorblind
 scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
-setrcp <- c("rcp85")
+setrcp <- c("rcp60")
 
 anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/schmidt_annual_anomalies.csv")
 

@@ -21,8 +21,8 @@ mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_
 scale_colour_discrete <- ggthemes::scale_colour_colorblind
 scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
-
-anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
+lake_directory <- here::here()
+anomalies_master <- read.csv(file.path(lake_directory, "anomaly_calculations/multiple_annual_anomalies.csv"))
 
 
 anomalies_master$Scenario <- gsub("rcp26", "RCP 2.6", anomalies_master$rcp)
@@ -151,7 +151,7 @@ btempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
   labs(y = "Anomaly (Degrees C)") +
-  ylim(-1, 3) + 
+  ylim(-1, 4.5) + 
   mytheme + 
   ggtitle("Mean Summer Bottom Temperature") +
   geom_line(y = 0, col = "black") +
@@ -218,7 +218,7 @@ strat_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario
               linetype = .1)+
   labs(y = "Anomaly (Days)") +
   mytheme + 
-  ylim(-30, 100) + 
+  ylim(-30, 70) + 
   ggtitle("Summer Stratification Duration")  +
   geom_line(y = 0, col = "black") + 
   geom_vline(xintercept = 2006, linetype = "dashed")
@@ -416,7 +416,7 @@ icedur <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
   labs(y = "Anomaly (Days)") +
-  ylim(-100, 20) + 
+  ylim(-100, 35) + 
   mytheme + 
   ggtitle("Total Ice Duration") +
   geom_line(y = 0, col = "black") +
@@ -479,7 +479,7 @@ mixper  <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = rcp), alpha = 0.2,
               linetype = .1)+
   labs(y = "Anomaly (Days)") +
-  ylim(-50, 20) + 
+  ylim(-50, 35) + 
   mytheme + 
   ggtitle("Mixing Period") +
   geom_line(y = 0, col = "black") + 

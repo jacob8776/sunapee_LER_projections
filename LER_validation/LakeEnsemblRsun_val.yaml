@@ -1,0 +1,158 @@
+location:
+  name: Sunapee
+  latitude: 43.3808278
+  longitude: -72.0541359
+  elevation: 333
+  depth: 33.0
+  hypsograph: Data/sunapee_hypso.csv
+  init_depth: 33.0
+time:
+  start: 2015-06-11 00:00:00
+  stop: 2020-01-01 00:00:00
+  time_step: 3600
+config_files:
+  GOTM: GOTM/gotm.yaml
+  GLM: GLM/glm3.nml
+  Simstrat: Simstrat/simstrat.par
+  FLake: FLake/flake.nml
+  MyLake: MyLake/mylake.Rdata
+observations:
+  temperature:
+    file: Data/manual_buoy_temp_dpth.csv
+  ice_height:
+    file: ~
+input:
+  init_temp_profile:
+    file: ~
+  meteo:
+    file: Data/ewembimeti3.csv
+  light:
+    Kw: 0.74
+  ice:
+    use: true
+inflows:
+  use: false
+  file: infens.csv
+  scale_param: 1.0
+  mass-balance: false
+output:
+  file: ensemble_output
+  format: netcdf
+  depths: 1.0
+  compression: 4
+  time_unit: hour
+  time_step: 24.0
+  time_method: mean
+  variables:
+  - temp
+  - ice_height
+scaling_factors:
+  all:
+    wind_speed: 1
+    swr: 1
+  Simstrat:
+    wind_speed: 1.4684
+    swr: 0.93668
+  FLake:
+    wind_speed: 1.4686
+    swr: 0.7919
+  GLM:
+    wind_speed: 1.4167
+    swr: 0.89851
+  GOTM:
+    wind_speed: 0.7952
+    swr: 1.4135
+  MyLake:
+    wind_speed: 1.4255
+    swr: 1.2848
+model_parameters:
+  FLake:
+    LAKE_PARAMS/c_relax_C: 0.0009851
+    LAKE_PARAMS/depth_bs_lk: 0.37232
+    LAKE_PARAMS/T_bs_lk: 18.555
+  GLM:
+    morphometry/bsn_len: 12870
+    morphometry/bsn_wid: 3000
+    sediment/sed_temp_mean:
+    - 6.7002
+    - 11.854
+    glm_setup/min_layer_thick: 0.1
+    glm_setup/max_layer_thick: 0.21837
+    glm_setup/max_layers: 500
+    mixing/coef_mix_KH: 0.3
+    mixing/coef_mix_conv: 0.125
+    mixing/coef_mix_shear: 0.2
+    mixing/coef_mix_turb: 0.51
+    mixing/coef_wind_stir: 0.23
+    mixing/coef_mix_hyp: 0.5
+  GOTM:
+    turbulence/turb_param/k_min: 2.6303e-06
+  Simstrat:
+    ModelParameters/a_seiche: 0.0042714
+  MyLake:
+    Phys.par/C_shelter: 0.36905
+calibration:
+  met:
+    wind_speed:
+      lower: 0.5
+      upper: 1.5
+      initial: 1.0
+      log: false
+    swr:
+      lower: 0.5
+      upper: 1.5
+      initial: 1.0
+      log: false
+  FLake:
+    LAKE_PARAMS/c_relax_C:
+      lower: 0.0001
+      upper: 0.01
+      initial: 0.00505
+      log: false
+    LAKE_PARAMS/depth_bs_lk:
+      lower: 0.1
+      upper: 6
+      initial: 3
+      log: false
+    LAKE_PARAMS/T_bs_lk:
+      lower: 4
+      upper: 20
+      initial: 8
+      log: false
+  GLM:
+    sediment/sed_temp_mean:
+      lower:
+      - 0.4
+      - 0.4
+      upper:
+      - 20
+      - 20
+      initial:
+      - 7
+      - 14
+      log:
+      - false
+      - false
+    glm_setup/max_layer_thick:
+      lower: 0.2
+      upper: 0.75
+      initial: 0.4
+      log: false
+  GOTM:
+    turbulence/turb_param/k_min:
+      lower: 1.0e-12
+      upper: 1e-5
+      initial: 1.0e-07
+      log: true
+  Simstrat:
+    ModelParameters/a_seiche:
+      lower: 0.0001
+      upper: 0.01
+      initial: 0.003
+      log: true
+  MyLake:
+    Phys.par/C_shelter:
+      lower: 0.05
+      upper: 0.4
+      initial: 0.15
+      log: false

@@ -26,8 +26,10 @@ scale_colour_discrete <- ggthemes::scale_colour_colorblind
 scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
+choosercp <- "rcp60"
 
-model_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
+
+model_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (C)") +
@@ -38,7 +40,7 @@ model_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "r
 #
 #
 
-gcm_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
+gcm_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (C)") +
@@ -50,7 +52,7 @@ gcm_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == "rcp
 
 
 
-model_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
+model_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (C)") +
@@ -62,7 +64,7 @@ model_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == "r
 #
 #
 
-gcm_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
+gcm_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (C)") +
@@ -77,7 +79,7 @@ gcm_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == "rcp
 
 
 
-model_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
+model_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (Days)") +
@@ -89,7 +91,7 @@ model_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp =
 #
 #
 
-gcm_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
+gcm_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (Days)") +
@@ -104,7 +106,7 @@ gcm_strat <- ggplot(subset(anomalies_master, variable == "TotStratDur" & rcp == 
 
 
 
-model_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
+model_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (Days)") +
@@ -116,7 +118,7 @@ model_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "r
 #
 #
 
-gcm_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
+gcm_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (Days)") +
@@ -157,7 +159,7 @@ gcm_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == "rcp
 anomalies_master <- read.csv("../../anomaly_calculations/schmidt_annual_anomalies.csv")
 
 
-model_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
+model_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (J/m2)") +
@@ -169,7 +171,7 @@ model_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability"
 #
 #
 
-gcm_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
+gcm_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (J/m2)") +
@@ -185,7 +187,7 @@ gcm_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" &
 anomalies_master <- read.csv("../../anomaly_calculations/thermodepth_annual_anomalies.csv")
 
 
-model_thermo <- ggplot(subset(anomalies_master, variable == "thermo.depth" & rcp == "rcp85"), aes(year, mean_model, colour = gcm)) +
+model_thermo <- ggplot(subset(anomalies_master, variable == "thermo.depth" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (m)") +
@@ -197,7 +199,7 @@ model_thermo <- ggplot(subset(anomalies_master, variable == "thermo.depth" & rcp
 #
 #
 
-gcm_thermo <- ggplot(subset(anomalies_master, variable == "thermo.depth" & rcp == "rcp85"), aes(year, mean_gcm, colour = model)) +
+gcm_thermo <- ggplot(subset(anomalies_master, variable == "thermo.depth" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (m)") +
@@ -214,7 +216,7 @@ ggarrange(model_tsmean, model_tbmean, model_schmidt, model_thermo, model_strat, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('~/Dropbox/sundox/plots/model_uncertainty_means.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('~/Dropbox/sundox/plots/model_uncertainty_means_6.0.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 
@@ -222,6 +224,6 @@ ggarrange(gcm_tsmean, gcm_tbmean, gcm_schmidt, gcm_thermo, gcm_strat, gcm_ice,
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('~/Dropbox/sundox/plots/gcm_uncertainty_means.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('~/Dropbox/sundox/plots/gcm_uncertainty_means_6.0.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
