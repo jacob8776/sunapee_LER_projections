@@ -24,7 +24,7 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "TsMean", rcp == "rcp85")
+anomalies_master <- filter(anomalies_master, variable == "TsMean", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -107,7 +107,7 @@ tsmean_plot <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "TbMean", rcp == "rcp85")
+anomalies_master <- filter(anomalies_master, variable == "TbMean", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -178,7 +178,7 @@ btemp_plot <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "TotStratDur", rcp == "rcp85")
+anomalies_master <- filter(anomalies_master, variable == "TotStratDur", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -247,7 +247,7 @@ strat_plot <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp85")
+anomalies_master <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -318,7 +318,7 @@ prop_ice <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/schmidt_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp85")
+anomalies_master <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -390,7 +390,7 @@ schmidt_plot <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/thermodepth_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp85")
+anomalies_master <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -473,7 +473,7 @@ ggarrange(tsmean_plot, btemp_plot, schmidt_plot, thermodepth_plot, strat_plot, p
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('~/Dropbox/sundox/plots/variance_prop_rm_85.png', dpi = 300,width = 384,height = 280, units = 'mm')
+#ggsave('~/Dropbox/sundox/plots/variance_prop_rm_26.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 

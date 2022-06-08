@@ -7,7 +7,7 @@ library(ggplot2)
 
 
 
-setwd("~/Dropbox/sunapee_LER_projections/LER_projections/output/")
+setwd("LER_projections/output/")
 
 
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")

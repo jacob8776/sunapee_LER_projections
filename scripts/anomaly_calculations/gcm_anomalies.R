@@ -16,7 +16,7 @@ vars <- c("Relative_Humidity_percent", "Precipitation_millimeterPerDay", "Snowfa
           "Ten_Meter_Uwind_vector_meterPerSecond", "Ten_Meter_Vwind_vector_meterPerSecond")
 
 
-setwd("~/Dropbox/sunapee_LER_projections/met_files_processed")
+setwd("met_files_processed")
 
 anomalies <- data.frame("year" = numeric(0), "ann_mean" = numeric(0), 
                         "anom" = numeric(0), "model" = character(0), 
