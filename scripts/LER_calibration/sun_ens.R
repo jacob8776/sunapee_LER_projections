@@ -7,7 +7,7 @@
 #devtools::install_github("aemon-j/gotmtools")
 #devtools::install_github("aemon-j/SimstratR")
 #devtools::install_github("aemon-j/MyLakeR")
-devtools::install_github("FLARE-forecast/GLM3r")
+#devtools::install_github("FLARE-forecast/GLM3r")
 #remotes::install_github("aemon-j/FLakeR", ref = "inflow", force = TRUE)
 
 # Load libraries

@@ -51,3 +51,11 @@ LER_inputs/2007-2020_buoy_templine_v26Feb2021.csv
 /LER_calibration/.DS_Store
 
 **.Rproj
+
+# Images
+
+.png
+
+.jpeg
+
+.jpg

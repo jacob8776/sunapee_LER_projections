@@ -1,7 +1,8 @@
 
 library(dplyr)
+library(here)
 
-setwd("~/Dropbox/sunapee_LER_projections/LER_inputs/")
+setwd(paste0(here(), "/LER_inputs/"))
 
 oneday <- filter(manual_buoy_temptst, datetime == "1986-07-03 12:00:00")
 
@@ -39,7 +40,7 @@ str(ic_historical)
 write.csv(ic_historical, "ic_historical_hr0.csv", row.names = FALSE)
 
 
-setwd("~/Dropbox/sunapee_LER_projections/LER_inputs/")
+setwd(paste0(here(), "/LER_inputs/"))
 
 
 ic_projections <- read.csv("ic_projections.csv")
