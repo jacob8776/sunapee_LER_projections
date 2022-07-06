@@ -9,7 +9,11 @@ library(rLakeAnalyzer)
 library(reshape)
 library(RColorBrewer)
 library(scales)
-source("~/Dropbox/sunapee_LER_projections/scripts/source_scripts/geom_violin.r")
+library(here)
+
+setwd(here())
+
+source("./scripts/source_scripts/geom_violin.r")
 
 
 mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
@@ -26,7 +30,7 @@ level_order <- c("midcentury", "endcentury")
 
 
 
-anomalies <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/multiple_annual_anomalies.csv")
+anomalies <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
 
 ## total strat duration
 
@@ -441,7 +445,7 @@ mix_violin
 ####################################################################################
 ####################################################################################
 
-anomalies <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/schmidt_annual_anomalies.csv")
+anomalies <- read.csv("./anomaly_calculations/schmidt_annual_anomalies.csv")
 
 
 anomalies_master <- filter(anomalies, variable == "schmidt.stability")
@@ -521,7 +525,7 @@ schmidt_violin
 ####################################################################################
 ####################################################################################
 
-anomalies <- read.csv("~/Dropbox/sunapee_LER_projections/anomaly_calculations/thermodepth_annual_anomalies.csv")
+anomalies <- read.csv("./anomaly_calculations/thermodepth_annual_anomalies.csv")
 
 
 anomalies_master <- filter(anomalies, variable == "thermo.depth")
@@ -599,7 +603,7 @@ ggarrange(tsmean_violin, tbmean_violin, schmidt_violin, thermo_violin, stratdur_
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('~/Dropbox/sundox/plots/vioplots_6.0.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('figures/figureS5', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 
