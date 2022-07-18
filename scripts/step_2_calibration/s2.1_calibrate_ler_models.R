@@ -1,6 +1,6 @@
 Sys.setenv(TZ = "UTC")
 
-# remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
+# remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "sunp-isimip")
 # remotes::install_github("tadhg-moore/gotmtools", ref = "yaml")
 # remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "flare")
 # remotes::install_github("aemon-j/gotmtools", ref = "yaml", force = TRUE)
