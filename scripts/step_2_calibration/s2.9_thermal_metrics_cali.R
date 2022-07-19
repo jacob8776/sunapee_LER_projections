@@ -15,8 +15,12 @@ library(here)
 
 setwd(here())
 
+model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
+spin_up <- 180
+
 ncdf <- "./LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
 out <- load_var(ncdf = ncdf, var = "temp")
+
 
 
 ######################## Calculating Schmidt Stability ################################
@@ -148,21 +152,6 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 wideform$mean <- wideformmean
 
 write.csv(wideform ,"./LER_calibration/cali_calcs/thermodepth_cali_wideform.csv", row.names = FALSE)
-
-paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
-paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))
-paste0("Simstrat RMSE: ", rmse(wideform$Obs, wideform$Simstrat))
-paste0("MyLake RMSE: ", rmse(wideform$Obs, wideform$MyLake))
-paste0("GLM RMSE: ", rmse(wideform$Obs, wideform$GLM))
-paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
-
-paste0("FLake RMSE: ", bias(wideform$Obs, wideform$FLake))
-paste0("GOTM RMSE: ", bias(wideform$Obs, wideform$GOTM))
-paste0("Simstrat RMSE: ", bias(wideform$Obs, wideform$Simstrat))
-paste0("MyLake RMSE: ", bias(wideform$Obs, wideform$MyLake))
-paste0("GLM RMSE: ", bias(wideform$Obs, wideform$GLM))
-paste0("Ensemble RMSE: ", bias(wideform$Obs, wideform$mean))
-
 
 
 df <- df %>% 

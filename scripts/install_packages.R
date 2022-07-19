@@ -1,0 +1,15 @@
+## Packages needed to run sunapee_LER_projections
+
+remotes::install_github("tadhg-moore/gotmtools", ref = "yaml")
+remotes::install_github("tadhg-moore/LakeEnsemblR", ref = "sunp-isimip")
+install.packages("ggplot2")
+install.packages("ggpubr")
+install.packages("dplyr")
+install.packages("rLakeAnalyzer")
+install.packages("reshape")
+install.packages("reshape2")
+install.packages("RColorBrewer")
+install.packages("lubridate")
+install.packages("Metrics")
+install.packages("plotrix")
+install.packages("here")

@@ -24,12 +24,6 @@ config_file <- 'LakeEnsemblRsun.yaml'
 model <- c("Simstrat")
 ncdf <- "output/ensemble_output.nc"
 
-config_file
-
-# mantemp <- read.csv("Data/manual_buoy_temp_hrz.csv")
-# str(mantemp)
-# mantemp$datetime <- as.POSIXct(mantemp$datetime, format = "%Y-%m-%d %H:%M:%S")
-# write.csv(mantemp, "Data/manual_buoy_temp_hrz_psx.csv", row.names = FALSE)
 
 # LHC - Calibration ----
 
@@ -37,14 +31,12 @@ yaml <- read_yaml(config_file)
 configr::read.config(config_file)
 yaml$time$start <- "2005-06-27 00:00:00"
 yaml$time$stop <- "2015-01-01 00:00:00"
-# yaml$time$start <- "2007-06-11 12:00:00"
-# yaml$time$stop <- "2012-01-01 00:00:00"
 yaml$input$ice$use <- TRUE
 yaml$output$time_step <- 24
 yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
-spin_up <- 190
+spin_up <- 180
 out_f <- "change"
 
 cmethod <- "LHC"

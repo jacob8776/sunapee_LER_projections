@@ -14,15 +14,21 @@ library(plotrix)
 library(Metrics)
 library(here)
 
+setwd(paste0(here(), "/LER_calibration/cali_calcs/"))
 
 ####################### Calibration RMSE #############################################
 
 
-setwd(paste0(here(), "/LER_calibration/cali_calcs/"))
+model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
+spin_up <- 180
+
+ncdf <- "../output/ensemble_output_all_models_15Nov21.nc"
+
+fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
+fit # Results from running model with calib output as input
 
 
 wideform <- read.csv("surface_1m_wideform.csv")
-
 
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
@@ -94,6 +100,16 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 setwd(paste0(here(), "/LER_validation/vali_calcs/"))
 
 
+model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
+spin_up <- 180
+
+ncdf <- "../output/ensemble_output.nc"
+
+fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
+fit # Results from running model with calib output as input
+
+
+
 wideform <- read.csv("surface_1m_wideform_vali.csv")
 
 
@@ -116,6 +132,7 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("schmidt_vali_wideform.csv")
+
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
 paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))

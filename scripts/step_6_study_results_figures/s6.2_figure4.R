@@ -67,10 +67,10 @@ taylor.diagram(wideform$Obs, wideform$mean, add = TRUE, col = 6)
 
 wideform <- read.csv("thermodepth_cali_wideform.csv")
 
-taylor.diagram(wideform$Obs, wideform$Simstrat, main = "D) Summer Thermocline Depth", ref.sd = TRUE, col = 1, xlab = "Standard Deviation (Obs)", ylab = "Standard Deviation (Model)")
+taylor.diagram(wideform$Obs, wideform$MyLake, main = "D) Summer Thermocline Depth", ref.sd = TRUE, col = 4, xlab = "Standard Deviation (Obs)", ylab = "Standard Deviation (Model)")
 taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 2)
 taylor.diagram(wideform$Obs, wideform$FLake, add = TRUE, col = 3)
-taylor.diagram(wideform$Obs, wideform$MyLake, add = TRUE, col = 4)
+taylor.diagram(wideform$Obs, wideform$Simstrat, add = TRUE, col = 1)
 taylor.diagram(wideform$Obs, wideform$GOTM, add = TRUE, col = 5)
 taylor.diagram(wideform$Obs, wideform$mean, add = TRUE, col = 6)
 
