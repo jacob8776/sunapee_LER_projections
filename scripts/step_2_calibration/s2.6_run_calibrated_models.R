@@ -51,8 +51,10 @@ export_config(config_file, model)
 
 run_ensemble(config_file = config_file, model = model)
 
-# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_15Nov21.nc")
-# ncdf <- "output/ensemble_output_all_models_15Nov21.nc"
+Sys.Date()
+
+file.rename("output/ensemble_output.nc", paste0("output/ensemble_output_all_models_", as.character(Sys.Date())))
+ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()))
 
 lst <- load_var(ncdf, "temp")
 summary(lst$Obs)
@@ -74,84 +76,4 @@ fit
 ## Plot residuals
 plist <- plot_resid(ncdf = ncdf, var = "temp")
 ggarrange(plotlist = plist)
-
-
-# param_file <- "calibration_results_MyLake_081321/MyLake_LHC_202108131525"
-
-cali_ensemble(config_file, num = num, cmethod = cmethod, parallel = TRUE, model = model, folder = ".", 
-              spin_up = spin_up, job_name = model, out_f = out_f)
-
-cal_files <- list.files(out_f, full.names = TRUE)
-cal_files <- cal_files[c(1,2)]
-
-res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
-dim(res[[model]])
-
-
-df <- plyr::ldply(res, function(x) {
-  df <- x[, -c(3:7)]
-  reshape2::melt(df, id.vars = c("par_id", "rmse"))
-}, .id = "model")
-df$id_no <- as.numeric(gsub(".*?([0-9]+).*", "\\1", df$par_id)) 
-
-bst_par <- df$id_no[which.min(df$rmse)]
-sub <- df[df$id_no == bst_par, ]
-sub
-
-p1 <- ggplot(df) +
-  geom_point(aes(value, rmse)) +
-  facet_wrap(model~variable, scales = "free_x") +
-  geom_hline(yintercept = 2, linetype = "dashed") +
-  ylab("RMSE (\u00B0C)") +
-  geom_vline(data = sub, aes(xintercept = value)) +
-  geom_hline(yintercept = 3.5, color = "red", linetype = "dashed") +
-  # coord_cartesian(ylim = c(1, 4)) +
-  # scale_x_log10() +
-  theme_classic(base_size = 16)
-p1
-
-#
-sub <- df[df$id_no == bst_par, ]
-# sub <- df[df$id_no == 1, ] # Use this to try other parameter combinations
-sub
-
-#yaml$model_parameters$MyLake$`Phys.par/C_shelter` <- sub$value[3]
-#yaml$scaling_factors$MyLake$wind_speed <- sub$value[1]
-#yaml$scaling_factors$MyLake$swr <- sub$value[2]
-
-# yaml$model_parameters$FLake$`LAKE_PARAMS/c_relax_C` <- sub$value[3]
-# yaml$scaling_factors$FLake$wind_speed <- sub$value[1]
-# yaml$scaling_factors$FLake$swr <- sub$value[2]
-# yaml$model_parameters$FLake$`LAKE_PARAMS/depth_bs_lk` <- sub$value[4]
-# yaml$model_parameters$FLake$`LAKE_PARAMS/T_bs_lk` <- sub$value[5]
-
-# yaml$scaling_factors$GLM$wind_speed <- sub$value[1]
-# yaml$scaling_factors$GLM$swr <- sub$value[2]
-# yaml$model_parameters$GLM$`sediment/sed_temp_mean` <- c(sub$value[3], sub$value[4])
-# yaml$model_parameters$GLM$`glm_setup/max_layer_thick` <-  sub$value[5]
-
-# yaml$scaling_factors$GOTM$wind_speed <- sub$value[1]
-# yaml$scaling_factors$GOTM$swr <- sub$value[2]
-# yaml$model_parameters$GOTM$`turbulence/turb_param/k_min` <- sub$value[3]
-
-# yaml$scaling_factors$Simstrat$wind_speed <- sub$value[1]
-# yaml$scaling_factors$Simstrat$swr <- sub$value[2]
-# yaml$model_parameters$Simstrat$`ModelParameters/a_seiche` <-  sub$value[3]
-
-
-
-
-write_yaml(yaml, config_file)
-
-export_config(config_file, model)
-
-run_ensemble(config_file, model)
-
-fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
-fit # Results from running model with calib output as input
-sub # Calibration results
-
-plist <- plot_resid(ncdf = "output/ensemble_output.nc", var = "temp")
-ggarrange(plotlist = plist)
-#ggsave(file.path(out_f, "calib_results.png"), p1,  dpi = 300,width = 384, height = 280, units = 'mm')
 
