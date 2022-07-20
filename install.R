@@ -1,5 +1,5 @@
 ## Packages needed to run sunapee_LER_projections
-install.pacmages("remotes")
+install.packages("remotes")
 remotes::install_github("GLEON/rLakeAnalyzer")
 remotes::install_github("aemon-j/GLM3r", ref = "v3.1.1")
 remotes::install_github("USGS-R/glmtools", ref = "ggplot_overhaul")
