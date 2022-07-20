@@ -2,23 +2,24 @@
 library(dplyr)
 library(here)
 
-setwd(paste0(here(), "/LER_inputs/"))
+setwd(paste0(here::here(), "/LER_inputs/"))
 
-oneday <- filter(manual_buoy_temptst, datetime == "1986-07-03 12:00:00")
+manual_buoy_temp <- read.csv(file.path(here::here(), 'LER_calibration/Data/manual_buoy_temp_dpth.csv'))
+oneday <- filter(manual_buoy_temp, datetime == "1986-07-03 00:00:00")
 
 
 oneday$Water_Temperature_celsius <- 4
 
 
 
-oneday$datetime <- as.POSIXct("1975-01-01 12:00:00", format = "%Y-%m-%d %H:%M:%S")
+oneday$datetime <- as.POSIXct("1975-01-01 00:00:00", format = "%Y-%m-%d %H:%M:%S")
 
 write.csv(oneday, row.names = FALSE, file = "ic_historical.csv")
 
 
 onedayother <- oneday
 
-onedayother$datetime <- as.POSIXct("2006-01-01 12:00:00", format = "%Y-%m-%d %H:%M:%S")
+onedayother$datetime <- as.POSIXct("2006-01-01 00:00:00", format = "%Y-%m-%d %H:%M:%S")
 
 
 write.csv(onedayother, row.names = FALSE, file = "ic_projections.csv")
@@ -40,7 +41,7 @@ str(ic_historical)
 write.csv(ic_historical, "ic_historical_hr0.csv", row.names = FALSE)
 
 
-setwd(paste0(here(), "/LER_inputs/"))
+setwd(paste0(here::here(), "/LER_inputs/"))
 
 
 ic_projections <- read.csv("ic_projections.csv")
