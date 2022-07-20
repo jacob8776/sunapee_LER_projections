@@ -53,7 +53,7 @@ run_ensemble(config_file = config_file, model = model, verbose = TRUE)
 
 Sys.Date()
 
-file.rename("output/ensemble_output.nc", paste0("output/ensemble_output_all_models_", as.character(Sys.Date())))
+file.rename("output/ensemble_output.nc", paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc"))
 ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()))
 
 lst <- load_var(ncdf, "temp")
