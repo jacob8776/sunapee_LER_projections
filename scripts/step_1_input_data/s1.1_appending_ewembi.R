@@ -76,16 +76,9 @@ both <- select(both, -huss, -tasmax, -tasmin)
 both$Rainfall_millimeterPerDay <- both$precipitation_millimeterPerDay-both$Snowfall_millimeterPerDay
 
 str(both)
+both$datetime <- as.POSIXct(both$datetime)
 
 write.csv(both, "ewembimet.csv", row.names = FALSE)
-
-
-new <- read.csv("ewembimet.csv")
-
-str(new)
-new$datetime <- as.POSIXct(new$datetime)
-str(new)
-write.csv(new, "ewembimet.csv", row.names = FALSE)
 
 
 # ewembimet <- read.csv("ewembimet.csv")
