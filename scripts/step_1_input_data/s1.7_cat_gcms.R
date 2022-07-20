@@ -10,7 +10,7 @@ library(here)
 
 
 
-setwd(paste0(here(), "/met_files_processed/"))
+setwd(paste0(here::here(), "/met_files_processed/"))
 
 
 ## Extending GFDL
@@ -73,18 +73,4 @@ miroc_85_long <- rbind(miroc_hist, miroc_85)
 write.csv(miroc_26_long, "cat_files/MIROC5/MIROC5_rcp26.csv", row.names = FALSE)
 write.csv(miroc_60_long, "cat_files/MIROC5/MIROC5_rcp60.csv", row.names = FALSE)
 write.csv(miroc_85_long, "cat_files/MIROC5/MIROC5_rcp85.csv", row.names = FALSE)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
