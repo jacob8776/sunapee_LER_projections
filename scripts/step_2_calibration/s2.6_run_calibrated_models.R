@@ -17,7 +17,7 @@ library(ggpubr)
 library(here)
 # Set working directory
 getwd()
-setwd(paste0(here(), '/LER_calibration'))
+setwd(paste0(here::here(), '/LER_calibration'))
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
@@ -40,7 +40,7 @@ spin_up <- 180
 out_f <- "change"
 
 cmethod <- "LHC"
-model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
+model <- c("FLake", "GOTM", "MyLake", "GLM")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -49,7 +49,7 @@ dir.create(out_f, showWarnings = FALSE)
 # Run LER and inspect default output
 export_config(config_file, model)
 
-run_ensemble(config_file = config_file, model = model)
+run_ensemble(config_file = config_file, model = model, verbose = TRUE)
 
 Sys.Date()
 
