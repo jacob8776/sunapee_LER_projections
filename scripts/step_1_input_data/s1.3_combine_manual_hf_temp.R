@@ -79,3 +79,8 @@ data_nodups <- data_nodups %>%
   arrange(DateTime, Depth)
 
 write.csv(data_nodups, paste0(getwd(), "/LER_inputs/manual_buoy_temp.csv"), row.names = FALSE)
+
+data_format <- data_nodups
+colnames(data_format) <- c('datetime', 'Depth_meter', 'Water_Temperature_celsius')
+
+write.csv(data_nodups, paste0(here::here(), "/LER_inputs/manual_buoy_temp_hrz.csv"), row.names = FALSE)
