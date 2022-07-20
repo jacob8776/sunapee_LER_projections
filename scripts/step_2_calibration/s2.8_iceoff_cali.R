@@ -12,7 +12,7 @@ library(here)
 
 setwd(here())
 
-ncdf <- "./LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
+ncdf <- file.path(here::here(), paste0("LER_calibration/output/ensemble_output_all_models_", Sys.Date(), ".nc"))
 
 out <- load_var(ncdf = ncdf, var = "temp")
 
