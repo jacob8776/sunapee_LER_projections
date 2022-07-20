@@ -16,6 +16,7 @@ setwd(paste0(here(), '/LER_inputs/EWEMBI'))
 
 both <- as.data.frame(seq.Date(from = as.Date("1979-01-01"), by = "day", length.out = 13880))
 
+## ADD DESCRIPTION HERE OF WHERE EWEMBI DATA COME FROM
 
 for(value in seq(14)){
 flist <- list.files(pattern = "^.*\\.(nc|NC|Nc|Nc)$")
