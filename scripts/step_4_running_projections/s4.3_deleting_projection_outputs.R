@@ -24,11 +24,11 @@ rcp <- c("historical", "rcp26", "rcp85")
 
 for(i in 1:length(gcm)){
   # Sets working directory to each gcm 
-  setwd(file.path("./LER_projections/", gcm[[i]]))
+  setwd(file.path(here(), "/LER_projections/", gcm[[i]]))
   # Nested for loop goes into RCP scenarios for GCMs 
   for(l in 1:length(rcp)){
     # Sets working directory specifying GCM and RCP scenario
-    setwd(file.path("./LER_projections/", gcm[[i]], rcp[[l]]))
+    setwd(file.path(here(), "/LER_projections/", gcm[[i]], rcp[[l]]))
     # Ensure working directory is switching
     current_folder <- (file.path(paste0(getwd(), "/output/")))
     new_folder <- file.path("../../output")
