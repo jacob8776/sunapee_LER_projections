@@ -1,4 +1,23 @@
-
+library(rLakeAnalyzer)
+library(GLMr)
+library(glmtools)
+library(FLakeR)
+library(GOTMr)
+library(gotmtools)
+library(SimstratR)
+library(MyLakeR)
+library(LakeEnsemblR)
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(reshape2)
+library(RColorBrewer)
+library(lubridate)
+library(Metrics)
+library(plotrix)
+library(here)
+library(pacman)
+library(ncdf4)
 
 
 # Set working directory to the parent folder of all GCM/RCP combinations
@@ -26,11 +45,11 @@ yaml$location$hypsograph <- c(file.path("../../../LER_inputs/sunapee_hypso.csv")
 
 for(i in 1:length(gcm)){
   # Sets working directory to each gcm 
-  setwd(file.path("./LER_projections/", gcm[[i]]))
+  setwd(file.path(here(), "/LER_projections/", gcm[[i]]))
   # Nested for loop goes into RCP scenarios for GCMs 
   for(l in 1:length(rcp)){
     # Sets working directory specifying GCM and RCP scenario
-      setwd(file.path("./LER_projections/", gcm[[i]], rcp[[l]]))
+    setwd(file.path(here(), "/LER_projections/", gcm[[i]], rcp[[l]]))
     # Ensure working directory is switching
 
     yaml$time$start <- "1938-09-01 00:00:00"
