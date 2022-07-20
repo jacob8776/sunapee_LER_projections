@@ -8,6 +8,13 @@ setwd(here())
 sim_folder <- getwd()
 
 # download manual data from zenodo: https://zenodo.org/record/4652076#.YKKBbqhKg2x
+download.file(url = 'https://zenodo.org/record/4652076/files/Lake-Sunapee-Protective-Association/LMP-v2020.1.zip?download=1',
+              destfile = file.path(sim_folder, 'LER_inputs', 'LMP-v2020.1.zip'),
+              mode = 'wb')
+unzip(file.path(sim_folder, 'LER_inputs', 'LMP-v2020.1.zip'),
+      files = file.path('Lake-Sunapee-Protective-Association-LMP-271fcb0', 'master files', 'LSPALMP_1986-2020_v2021-03-29.csv'),
+      exdir = file.path(sim_folder, 'LER_inputs'),
+      junkpaths = TRUE)
 manual <- read.csv(paste0(sim_folder, "/LER_inputs/LSPALMP_1986-2020_v2021-03-29.csv"))
 manual <- manual %>% 
   filter(parameter == 'temp_C') %>% 
