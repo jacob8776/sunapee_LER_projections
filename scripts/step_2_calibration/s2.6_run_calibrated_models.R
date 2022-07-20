@@ -10,6 +10,7 @@ Sys.setenv(TZ = "UTC")
 
 # Load libraries
 library(gotmtools)
+library(GLMr)
 library(LakeEnsemblR)
 library(ggplot2)
 library(LakeEnsemblR)
@@ -41,6 +42,7 @@ out_f <- "change"
 
 cmethod <- "LHC"
 model <- c("FLake", "GOTM", "MyLake", "GLM")
+
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
