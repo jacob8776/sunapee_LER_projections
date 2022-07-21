@@ -14,7 +14,7 @@ library(plotrix)
 library(here)
 
 
-setwd(paste0(here()))
+setwd(here())
 
 ncdf <- file.path(here::here(), paste0("LER_calibration/output/ensemble_output_all_models_", Sys.Date(), ".nc"))
 out <- load_var(ncdf = ncdf, var = "temp")
