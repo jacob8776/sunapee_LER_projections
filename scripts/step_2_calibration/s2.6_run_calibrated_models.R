@@ -41,7 +41,7 @@ spin_up <- 180
 out_f <- "change"
 
 cmethod <- "LHC"
-model <- c("FLake", "GOTM", "MyLake", "GLM")
+model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 
 
 folder <- "."
@@ -56,7 +56,7 @@ run_ensemble(config_file = config_file, model = model, verbose = TRUE)
 Sys.Date()
 
 file.rename("output/ensemble_output.nc", paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc"))
-ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()))
+ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
 
 lst <- load_var(ncdf, "temp")
 summary(lst$Obs)
