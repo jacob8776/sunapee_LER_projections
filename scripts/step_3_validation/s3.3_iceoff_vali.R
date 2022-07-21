@@ -9,14 +9,15 @@ library(reshape)
 library(RColorBrewer)
 library(lubridate)
 library(here)
+library(scales)
 
 setwd(here())
 
-ncdf <- "./LER_validation/output/ensemble_output.nc"
+ncdf <- paste0("./LER_validation/output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
 
 out <- load_var(ncdf = ncdf, var = "temp")
 
- temp <- load_var(ncdf, "temp")
+temp <- load_var(ncdf, "temp")
 ice <- load_var(ncdf, "ice_height")
 out <- lapply(1:length(temp), function(x) {
   # x = 1 # for debugging
@@ -95,7 +96,7 @@ scale_colour_discrete <- ggthemes::scale_colour_colorblind
 scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 ggplot(df, aes(x = year, y = value, colour = model)) + geom_line() + 
-  ggtitle("Ice Off Dates Calibration Period") + 
+  ggtitle("Ice Off Dates Validation Period") + 
   scale_x_continuous(breaks = pretty_breaks()) +
   mytheme
 # ggsave('~/Dropbox/sundox/plots/iceoffcali.png', dpi = 300,width = 384,height = 280, units = 'mm')
