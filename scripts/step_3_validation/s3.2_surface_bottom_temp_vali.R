@@ -13,10 +13,10 @@ library(Metrics)
 library(plotrix)
 library(here)
 
-setwd(paste0(here()))
+setwd(paste0(here(), '/LER_validation'))
 
 
-ncdf <- "./LER_validation/output/ensemble_output.nc"
+ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
 out <- load_var(ncdf = ncdf, var = "temp")
 
 df <- melt(out, id.vars = 1)
@@ -36,7 +36,7 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 wideform$mean <- wideformmean
 
 
-write.csv(wideform ,"./LER_validation/vali_calcs/surface_1m_wideform_vali.csv", row.names = FALSE)
+write.csv(wideform ,"./vali_calcs/surface_1m_wideform_vali.csv", row.names = FALSE)
 
 
 
@@ -57,6 +57,6 @@ wideformmean <- (wideform$GLM + wideform$GOTM + wideform$MyLake + wideform$Simst
 wideform$mean <- wideformmean
 
 
-write.csv(wideform ,"./LER_validation/vali_calcs/bottom_33m_wideform_vali.csv", row.names = FALSE)
+write.csv(wideform ,"./vali_calcs/bottom_33m_wideform_vali.csv", row.names = FALSE)
 
 
