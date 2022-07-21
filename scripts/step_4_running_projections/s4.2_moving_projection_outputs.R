@@ -9,7 +9,8 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 rcp <- c("rcp26", "rcp60", "rcp85")
 
 
-
+# create folder to move all output into the main LER_projections directory
+dir.create(paste0(here::here(), "/LER_projections/output"))
 
 do.call(file.remove, list(list.files(paste0(here::here(), "/LER_projections/output/"), full.names = TRUE)))
 
