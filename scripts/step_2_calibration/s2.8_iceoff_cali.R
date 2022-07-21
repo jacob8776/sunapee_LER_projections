@@ -30,7 +30,7 @@ out <- lapply(1:length(temp), function(x) {
 names(out) <- names(temp)
 
 
-df <- melt(out[1:6], id.vars = 1)
+df <- melt(out[1:6], id.vars = 1) # change to out[1:5] if running without simstrat
 colnames(df)[4] <- "model"
 
 
@@ -59,7 +59,7 @@ df <- rbind(df, iceoff_obs)
 wideform <- dcast(df, year~model, value.var = "value")
 wideform <- filter(wideform, is.na(Obs) == FALSE &
                      is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
-                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+                     is.na(MyLake) == FALSE & is.na(Simstrat) == FALSE)
 
 wideformmean <- (wideform$FLake +  wideform$GOTM + wideform$MyLake + wideform$Simstrat)/4
 
