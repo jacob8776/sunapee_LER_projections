@@ -24,6 +24,8 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 lake_directory <- here::here()
 anomalies_master <- read.csv(file.path(lake_directory, "anomaly_calculations/multiple_annual_anomalies.csv"))
+anomalies_master_bot <- read.csv(file.path(lake_directory, "anomaly_calculations/bot_anomalies.csv"))
+anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations/surf_anomalies.csv"))
 
 
 anomalies_master$Scenario <- gsub("rcp26", "RCP 2.6", anomalies_master$rcp)
@@ -36,7 +38,7 @@ unique(anomalies_master$Scenario)
 
 ## RCP26
 
-tsmax26 <- filter(anomalies_master, variable == "TsMean", rcp == "rcp26")
+tsmax26 <- filter(anomalies_master_sur, rcp == "rcp26")
 tsmax26
 
 tsmax26 <- select(tsmax26, rcp, year, anom, sd_model, sd_gcm)
@@ -50,7 +52,7 @@ tsmax26 <- tsmax26 %>%
 
 ## RCP 60 
 
-tsmax60 <- filter(anomalies_master, variable == "TsMean", rcp == "rcp60")
+tsmax60 <- filter(anomalies_master_sur, rcp == "rcp60")
 tsmax60
 
 tsmax60 <- select(tsmax60, rcp, year, anom, sd_model, sd_gcm)
@@ -63,7 +65,7 @@ tsmax60 <- tsmax60 %>%
 
 ## RCP 85 
 
-tsmax85 <- filter(anomalies_master, variable == "TsMean", rcp == "rcp85")
+tsmax85 <- filter(anomalies_master_sur, rcp == "rcp85")
 tsmax85
 
 tsmax85 <- select(tsmax85, rcp, year, anom, sd_model, sd_gcm)
@@ -102,7 +104,7 @@ stempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)
 
 ## RCP26
 
-tbmax26 <- filter(anomalies_master, variable == "TbMean", rcp == "rcp26")
+tbmax26 <- filter(anomalies_master_bot, rcp == "rcp26")
 tbmax26
 
 tbmax26 <- select(tbmax26, rcp, year, anom, sd_model, sd_gcm)
@@ -116,7 +118,7 @@ tbmax26 <- tbmax26 %>%
 
 ## RCP 60 
 
-tbmax60 <- filter(anomalies_master, variable == "TbMean", rcp == "rcp60")
+tbmax60 <- filter(anomalies_master_bot, rcp == "rcp60")
 tbmax60
 
 tbmax60 <- select(tbmax60, rcp, year, anom, sd_model, sd_gcm)
@@ -129,7 +131,7 @@ tbmax60 <- tbmax60 %>%
 
 ## RCP 85 
 
-tbmax85 <- filter(anomalies_master, variable == "TbMean", rcp == "rcp85")
+tbmax85 <- filter(anomalies_master_bot, rcp == "rcp85")
 tbmax85
 
 tbmax85 <- select(tbmax85, rcp, year, anom, sd_model, sd_gcm)
