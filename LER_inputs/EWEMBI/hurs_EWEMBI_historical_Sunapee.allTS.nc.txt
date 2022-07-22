@@ -1,7 +1,7 @@
 File vas_EWEMBI_historical_Sunapee.allTS.nc (NC_FORMAT_NETCDF4_CLASSIC):
 
      1 variables (excluding dimension variables):
-        float vas[lon,lat,time]   (Chunking: [1,1,1])  
+        float vas[lon,lat,time]   
             standard_name: northward_wind
             long_name: Northward Near-Surface Wind
             units: m s-1
@@ -10,17 +10,17 @@ File vas_EWEMBI_historical_Sunapee.allTS.nc (NC_FORMAT_NETCDF4_CLASSIC):
             comment: over land and ocean: daily mean of bilinearly interpolated ERAI v10 at 0,3,6,9,12,15,18,21 UTC
 
      3 dimensions:
-        lon  Size:1 
+        lon  Size:1
             standard_name: longitude
             long_name: longitude
             units: degrees_east
             axis: X
-        lat  Size:1 
+        lat  Size:1
             standard_name: latitude
             long_name: latitude
             units: degrees_north
             axis: Y
-        time  Size:13880   *** is unlimited *** 
+        time  Size:13880   *** is unlimited ***
             standard_name: time
             long_name: time
             units: days since 1979-1-1 00:00:00
