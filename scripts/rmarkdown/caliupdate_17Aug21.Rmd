@@ -1,0 +1,735 @@
+---
+title: "calibration_update_17Aug21"
+author: "Jacob Wynne"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Calibration Update
+
+* Calibration period now from 2005-06-27 to 2015-01-01
+* Spin up still 190. Should this stay the same? 
+* GLM not producing any ice at all. GOTM not following the same ice trend as other models. 
+* Flake is not below RMSE of 2, currently sitting at 2.33. It has very negative residuals around the thermocline depth, all the way out to -15. Are there any other parameters that can be changed for this model? If not, is this an adequate RMSE or does FLake have to be removed?
+
+```{r}
+
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(reshape2)
+library(RColorBrewer)
+library(lubridate)
+library(Metrics)
+
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/")
+
+ncdf <- "output/ensemble_output_all_models_15Nov21.nc"
+
+model <- c("FLake", "GLM", "GOTM", "Simstrat", "MyLake")
+
+spin_up <- 190
+
+
+
+plot_heatmap(ncdf, model = model) +
+  scale_colour_gradientn(limits = c(0, 32),
+                         colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + theme_classic()
+
+plot_ensemble(ncdf, model = model, var = "ice_height")
+
+fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
+fit
+
+# out <- analyze_ncdf(ncdf, model, spin_up = 190)
+# out$stats 
+
+## Plot residuals
+plist <- plot_resid(ncdf = "output/ensemble_output_all_models_15Nov21.nc", var = "temp")
+ggarrange(plotlist = plist)
+
+
+```
+
+### Schmidt Stability
+
+* Not much to say about Schmidt Stability, observations seem to track well with the mean at the very least
+* RMSE shows that all models track relatively similarly in terms of GOF with the exception of FLake which has an excessively high RMSE at 239.7
+* Flake Schmidt stability looks quite low after changing bathymetry to include the surface value only. If possible a double check on my code for this section would be much appreciated to ensure a mistake wasn't made in the process. 
+
+
+```{r, echo=TRUE,warning=FALSE,message=FALSE,error=FALSE, fig.keep='all'}
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
+
+
+######################## Calculating Schmidt Stability ################################
+
+
+out <- load_var(ncdf = ncdf, var = "temp")
+# out <- as.data.frame(out[[1]])
+bathy <- read.csv('~/Dropbox/sunapee_LER_projections/LER_inputs/sunapee_hypso.csv')
+colnames(bathy) <- c("depths", "areas")
+ts.sch <- lapply(out, function(x) {
+  ts.schmidt.stability(x, bathy = bathy, na.rm = TRUE)
+})
+
+
+## Reshape to data.frame
+df <- melt(ts.sch, id.vars = 1)
+colnames(df)[4] <- "model"
+df$yday <- yday(df$datetime)
+df$year <- year(df$datetime)
+df <- filter(df, model != "FLake")
+
+
+## CALCULATING FLAKE SCHMIDT STABILITY
+listflake <- list(out[["FLake"]])
+flake_depth <- glmtools::get_nml_value(nml_file = "~/Dropbox/sunapee_LER_projections/LER_calibration/FLake/flake.nml", arg_name = "depth_w_lk")
+bathy <- filter(bathy, depths <= flake_depth)
+ts.sch <- lapply(listflake, function(x) {
+  ts.schmidt.stability(x, bathy = bathy, na.rm = TRUE)
+})
+
+dfflake <- melt(ts.sch, id.vars = 1)
+colnames(dfflake)[4] <- "model"
+dfflake$model <- "FLake"
+dfflake$yday <- yday(dfflake$datetime)
+dfflake$year <- year(dfflake$datetime)
+
+colnames(df)
+colnames(dfflake)
+
+df <- rbind(df, dfflake)
+########################## END CALCULATING FLAKE SCHMIDT STABILITY
+
+
+wideform <- dcast(df, datetime~model, value.var = "value")
+wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+                     is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+
+
+rmse <- c()
+models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM")
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$FLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GOTM)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$Simstrat)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$MyLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GLM)))
+
+models <- as.data.frame(models)
+rmse <- as.data.frame(rmse)
+
+model_rmse <- cbind(models, rmse)
+model_rmse
+
+dfobs <- filter(df, model == "Obs")
+df <- filter(df, model != "Obs")
+
+
+df <- df %>% 
+  dplyr :: group_by(yday, year) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+dfobs$mean <- NA
+dfobs$sd <- NA
+
+df <- rbind(df, dfobs)
+
+## plot results
+ggplot(df, aes(yday, value, colour = model)) +
+  # geom_line(data=df, aes(y=mean, x=yday), color = "black", size = 1) +
+  geom_line() +
+  # geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6, 
+  #             linetype = 0.1, 
+  #             color = "grey") +
+  facet_wrap(~year) +
+  labs(y = "Schmidt stability (J/m2)") +
+  theme_classic() + ylim(-50, 1000)
+
+ggplot(subset(df, model != "Obs"), aes(yday, mean)) + 
+  geom_line() + 
+  geom_ribbon(data = subset(df, model != "Obs"), aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+              linetype = 0.1,
+              color = "grey") + 
+  facet_wrap(~year) + 
+  labs(y = "Schmidt stability (J/m2)") +
+  theme_classic() + ylim(-50, 1000) + 
+  geom_line(data = subset(df, model == "Obs"), aes(yday, value, col = "Obs"))
+
+```
+
+
+
+
+
+
+
+### Thermocline Depth 
+
+* Similar update on thermocline depth. 
+* GLM appears to be the poorest performer most years based on the first figure. 
+* The extra years of observations give me more confidence, as 2009 and 2010 were a bit off. The thermocline seems to fit quite well from 2011 and on. 
+* FLake is the highest performer for RMSE, with MyLake being the lowest performer. When looking at MyLake on the plots however, it seems to perform relatively well with occassional anomalous jumps down to the max depth towards the end of the season. GLM may perform worse than MyLake during the overall season as the RMSE is 7 and GLM consistently models significantly lower than the observed thermocline depth. 
+
+
+```{r, echo=TRUE,warning=FALSE,message=FALSE,error=FALSE, fig.keep='all'}
+
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
+
+out <- load_var(ncdf = ncdf, var = "temp")
+## Same for thermocline depth
+ts.td <- lapply(out, function(x) {
+  ts.thermo.depth(x, Smin = 0.1, na.rm = TRUE)
+})
+
+df <- melt(ts.td, id.vars = 1)
+colnames(df)[4] <- "model"
+df$yday <- yday(df$datetime)
+df$month <- month(df$datetime)
+df$year <- year(df$datetime)
+
+wideform <- dcast(df, datetime~model, value.var = "value")
+wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+                     is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+
+
+rmse <- c()
+models <- c("FLake", "GOTM", "Simstrat", "MyLake", "GLM")
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$FLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GOTM)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$Simstrat)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$MyLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GLM)))
+
+models <- as.data.frame(models)
+rmse <- as.data.frame(rmse)
+
+model_rmse <- cbind(models, rmse)
+model_rmse
+
+dfobs <- filter(df, model == "Obs")
+df <- filter(df, model != "Obs")
+
+df <- df %>% 
+  dplyr :: group_by(yday, year) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+dfobs$mean <- NA
+dfobs$sd <- NA
+
+df <- rbind(df, dfobs)
+
+
+ggplot(subset(df, month >= 6 & month <= 8), aes(yday, value, colour = model)) +
+  facet_wrap(~year) +
+  geom_line() +
+  labs(y = "Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() 
+
+ggplot(subset(df, month >= 6 & month <= 8 & model != "Obs"), aes(yday, mean)) +
+  facet_wrap(~year) +
+  geom_line() +
+  geom_ribbon(data = subset(df, month >= 6 & month <= 8 & model != "Obs"), aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+              linetype = 0.1,
+              color = "grey") + 
+  labs(y = "Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() + 
+  geom_line(data = subset(df, month >= 6 & month <= 8 & model == "Obs"), aes(yday, value, col = "Obs"))
+
+
+dfsummer <- filter(df, month >=6 & month <=8)
+
+
+
+```
+
+
+### All other metrics
+
+* Observations are added for this group of metrics
+* There seems to be an issue with 2009 calculations, as shown by the printed dataframe. 
+* The only metric to be compared with ice will have to be added in - coming soon. 
+* There is very limited stratification data calculated for the observed data. 
+* Seems to very high uncertainty for bottom temperature. Reason to remove it from desired metrics? 
+
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE,error=FALSE, fig.keep='all'}
+
+mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
+                 axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
+                 axis.text.x=element_text(size=18, colour='black'), axis.text.y=element_text(size=18, colour='black'), 
+                 axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
+                 strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
+                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
+                 legend.title = element_text(size = 20))
+scale_colour_discrete <- ggthemes::scale_colour_colorblind
+scale_fill_discrete <- ggthemes::scale_fill_colorblind
+
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
+
+out <- load_var(ncdf = ncdf, var = "temp")
+
+temp <- load_var(ncdf, "temp")
+ice <- load_var(ncdf, "ice_height")
+out <- lapply(1:length(temp), function(x) {
+  # x = 1 # for debugging
+  mlt <- reshape::melt(temp[[x]], id.vars = 1)
+  mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
+  if(names(out)[x] == "Obs") {
+    analyze_strat(data = mlt, month = 6:8)
+  }
+  analyze_strat(data = mlt, H_ice = ice[[x]][, 2], month = 6:8)
+})
+names(out) <- names(temp)
+
+
+df <- melt(out[1:6], id.vars = 1)
+colnames(df)[4] <- "model"
+
+
+dfobs <- filter(df, model == "Obs")
+df <- filter(df, model != "Obs")
+
+df <- df %>% 
+  dplyr :: group_by(year, variable) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+
+dfobs$mean <- NA
+dfobs$sd <- NA
+
+df <- rbind(df, dfobs)
+
+ggplot(subset(df, variable == c("TsMax", "TsMin", "TbMax", "TbMin")), aes(x = year, y = value, colour = model)) + geom_line() + 
+mytheme + 
+  facet_wrap(~variable, scales = "free_y") + 
+  ylab("Degrees C")
+
+ggplot(subset(df, variable == "TotStratDur"), aes(x = year, y = value, colour = model)) + geom_line() + 
+mytheme + 
+  ylab("Days")
+
+ggplot(subset(df, variable == "TotIceDur"), aes(x = year, y = value, colour = model)) + geom_line() + 
+mytheme + 
+  ylab("Days")
+
+
+ggplot(df, aes(x = year, y = value, colour = model)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y")
+
+ggplot(df, aes(x = year, y = mean)) + geom_line() + 
+  facet_wrap(~variable, scales = "free_y") + 
+  geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+                                                         linetype = 0.1,
+                                                         color = "grey") + 
+  geom_line(data = subset(df, model == "Obs"), aes(year, value, col = "Obs"))
+
+
+checkthis <- filter(df, year == 2009, model == "Obs")
+checkthis
+
+
+
+```
+
+
+
+### Ice off
+
+* GLM does not model ice so is not present
+* FLake, MyLake and Simstrat do extremely well when comparing by plot and by RMSE, with all models hovering slightly above or below 5 RMSE. 
+* GOTM is performing poorly when modeling ice, with an RMSE of 59 and a consistently lower ice-off date than any of the other models. 
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE,error=FALSE, fig.keep='all'}
+
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+ncdf <- "~/Dropbox/sunapee_LER_projections/LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
+
+out <- load_var(ncdf = ncdf, var = "temp")
+
+temp <- load_var(ncdf, "temp")
+ice <- load_var(ncdf, "ice_height")
+out <- lapply(1:length(temp), function(x) {
+  # x = 1 # for debugging
+  mlt <- reshape::melt(temp[[x]], id.vars = 1)
+  mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
+  if(names(out)[x] == "Obs") {
+    analyze_strat(data = mlt)
+  }
+  analyze_strat(data = mlt, H_ice = ice[[x]][, 2])
+})
+names(out) <- names(temp)
+
+
+df <- melt(out[1:6], id.vars = 1)
+colnames(df)[4] <- "model"
+
+
+df <- df %>% 
+  dplyr :: group_by(year, variable) %>% 
+  dplyr :: mutate(mean = mean(value, na.rm = TRUE)) %>% 
+  dplyr :: mutate(sd = sd(value, na.rm = TRUE))
+
+
+df <- filter(df, variable == "IceOff" & model != "Obs" & is.na(value) == FALSE)
+
+iceoff_obs <- read.csv("~/Dropbox/sunapee_LER_projections/LER_analysis/iceoff_dates.csv")
+colnames(iceoff_obs) <- c("year", "value")
+
+iceoff_obs$variable <- "IceOff"
+iceoff_obs$model <- "Obs"
+iceoff_obs$mean <- NA
+iceoff_obs$sd <- NA
+
+iceoff_obs <- iceoff_obs %>% 
+  select(year, variable, value, model, mean, sd) %>% 
+  filter(year >= 2006 & year <= 2015)
+
+df <- rbind(df, iceoff_obs)
+
+wideform <- dcast(df, year~model, value.var = "value")
+wideform <- filter(wideform, is.na(Obs) == FALSE &
+                     is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+
+
+rmse <- c()
+models <- c("FLake", "GOTM", "Simstrat", "MyLake")
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$FLake)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$GOTM)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$Simstrat)))
+rmse <- c(rmse, (rmse(wideform$Obs, wideform$MyLake)))
+
+models <- as.data.frame(models)
+rmse <- as.data.frame(rmse)
+
+model_rmse <- cbind(models, rmse)
+model_rmse
+
+ggplot(df, aes(x = year, y = value, colour = model)) + geom_line() + 
+  ggtitle("Ice Off Dates Calibration Period") 
+
+
+
+```
+
+
+
+```{r}
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/calibration_results_FLake_083021_v2/")
+
+out_f <- "calibration_results_FLake_083021_v2"
+config_file <- 'LakeEnsemblRsun.yaml'
+model <- c("FLake")
+
+param_file <- "calibration_results_FLake_083021_v2/FLake_LHC_202108311031.csv"
+
+
+cal_files <- list.files(".", full.names = TRUE)
+cal_files <- cal_files[c(1,2)]
+
+res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
+dim(res[[model]])
+
+
+df <- plyr::ldply(res, function(x) {
+  df <- x[, -c(3:7)]
+  reshape2::melt(df, id.vars = c("par_id", "rmse"))
+}, .id = "model")
+df$id_no <- as.numeric(gsub(".*?([0-9]+).*", "\\1", df$par_id)) 
+
+bst_par <- df$id_no[which.min(df$rmse)]
+sub <- df[df$id_no == bst_par, ]
+sub
+
+p1 <- ggplot(df) +
+  geom_point(aes(value, rmse)) +
+  facet_wrap(model~variable, scales = "free_x") +
+  geom_hline(yintercept = 2, linetype = "dashed") +
+  ylab("RMSE (\u00B0C)") +
+  geom_vline(data = sub, aes(xintercept = value)) +
+  geom_hline(yintercept = 3.5, color = "red", linetype = "dashed") +
+  # coord_cartesian(ylim = c(1, 4)) +
+  # scale_x_log10() +
+  theme_classic(base_size = 16)
+p1
+
+```
+
+
+
+
+
+
+```{r}
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/calibration_results_GLM_082621/")
+
+out_f <- "calibration_results_GLM_082621"
+config_file <- 'LakeEnsemblRsun.yaml'
+model <- c("GLM")
+
+# param_file <- "calibration_results_FLake_083021_v2/FLake_LHC_202108311031.csv"
+
+
+cal_files <- list.files(".", full.names = TRUE)
+cal_files <- cal_files[c(1,2)]
+
+res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
+dim(res[[model]])
+
+
+df <- plyr::ldply(res, function(x) {
+  df <- x[, -c(3:7)]
+  reshape2::melt(df, id.vars = c("par_id", "rmse"))
+}, .id = "model")
+df$id_no <- as.numeric(gsub(".*?([0-9]+).*", "\\1", df$par_id)) 
+
+bst_par <- df$id_no[which.min(df$rmse)]
+sub <- df[df$id_no == bst_par, ]
+sub
+
+p1 <- ggplot(df) +
+  geom_point(aes(value, rmse)) +
+  facet_wrap(model~variable, scales = "free_x") +
+  geom_hline(yintercept = 2, linetype = "dashed") +
+  ylab("RMSE (\u00B0C)") +
+  geom_vline(data = sub, aes(xintercept = value)) +
+  geom_hline(yintercept = 3.5, color = "red", linetype = "dashed") +
+  # coord_cartesian(ylim = c(1, 4)) +
+  # scale_x_log10() +
+  theme_classic(base_size = 16)
+p1
+
+```
+
+
+
+```{r}
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/calibration_results_GOTM_081321/")
+
+out_f <- "calibration_results_GOTM_081321"
+config_file <- 'LakeEnsemblRsun.yaml'
+model <- c("GOTM")
+
+# param_file <- "calibration_results_FLake_083021_v2/FLake_LHC_202108311031.csv"
+
+
+cal_files <- list.files(".", full.names = TRUE)
+cal_files <- cal_files[c(1,2)]
+
+res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
+dim(res[[model]])
+
+
+df <- plyr::ldply(res, function(x) {
+  df <- x[, -c(3:7)]
+  reshape2::melt(df, id.vars = c("par_id", "rmse"))
+}, .id = "model")
+df$id_no <- as.numeric(gsub(".*?([0-9]+).*", "\\1", df$par_id)) 
+
+bst_par <- df$id_no[which.min(df$rmse)]
+sub <- df[df$id_no == bst_par, ]
+sub
+
+p1 <- ggplot(df) +
+  geom_point(aes(value, rmse)) +
+  facet_wrap(model~variable, scales = "free_x") +
+  geom_hline(yintercept = 2, linetype = "dashed") +
+  ylab("RMSE (\u00B0C)") +
+  geom_vline(data = sub, aes(xintercept = value)) +
+  geom_hline(yintercept = 3.5, color = "red", linetype = "dashed") +
+  # coord_cartesian(ylim = c(1, 4)) +
+  # scale_x_log10() +
+  theme_classic(base_size = 16)
+p1
+
+```
+
+
+
+```{r}
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/calibration_results_MyLake_081321/")
+
+out_f <- "calibration_results_MyLake_081321"
+config_file <- 'LakeEnsemblRsun.yaml'
+model <- c("MyLake")
+
+# param_file <- "calibration_results_FLake_083021_v2/FLake_LHC_202108311031.csv"
+
+
+cal_files <- list.files(".", full.names = TRUE)
+cal_files <- cal_files[c(1,2)]
+
+res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
+dim(res[[model]])
+
+
+df <- plyr::ldply(res, function(x) {
+  df <- x[, -c(3:7)]
+  reshape2::melt(df, id.vars = c("par_id", "rmse"))
+}, .id = "model")
+df$id_no <- as.numeric(gsub(".*?([0-9]+).*", "\\1", df$par_id)) 
+
+bst_par <- df$id_no[which.min(df$rmse)]
+sub <- df[df$id_no == bst_par, ]
+sub
+
+p1 <- ggplot(df) +
+  geom_point(aes(value, rmse)) +
+  facet_wrap(model~variable, scales = "free_x") +
+  geom_hline(yintercept = 2, linetype = "dashed") +
+  ylab("RMSE (\u00B0C)") +
+  geom_vline(data = sub, aes(xintercept = value)) +
+  geom_hline(yintercept = 3.5, color = "red", linetype = "dashed") +
+  # coord_cartesian(ylim = c(1, 4)) +
+  # scale_x_log10() +
+  theme_classic(base_size = 16)
+p1
+
+```
+
+
+
+```{r}
+library(gotmtools)
+library(LakeEnsemblR)
+library(ggplot2)
+library(LakeEnsemblR)
+library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(RColorBrewer)
+library(lubridate)
+
+setwd("~/Dropbox/sunapee_LER_projections/LER_calibration/calibration_results_Simstrat_081321/")
+
+out_f <- "calibration_results_Simstrat_081321"
+config_file <- 'LakeEnsemblRsun.yaml'
+model <- c("Simstrat")
+
+# param_file <- "calibration_results_FLake_083021_v2/FLake_LHC_202108311031.csv"
+
+
+cal_files <- list.files(".", full.names = TRUE)
+cal_files <- cal_files[c(1,2)]
+
+res <- load_LHC_results(config_file = config_file, model = model, res_files = cal_files)
+dim(res[[model]])
+
+
+df <- plyr::ldply(res, function(x) {
+  df <- x[, -c(3:7)]
+  reshape2::melt(df, id.vars = c("par_id", "rmse"))
+}, .id = "model")
+df$id_no <- as.numeric(gsub(".*?([0-9]+).*", "\\1", df$par_id)) 
+
+bst_par <- df$id_no[which.min(df$rmse)]
+sub <- df[df$id_no == bst_par, ]
+sub
+
+p1 <- ggplot(df) +
+  geom_point(aes(value, rmse)) +
+  facet_wrap(model~variable, scales = "free_x") +
+  geom_hline(yintercept = 2, linetype = "dashed") +
+  ylab("RMSE (\u00B0C)") +
+  geom_vline(data = sub, aes(xintercept = value)) +
+  geom_hline(yintercept = 3.5, color = "red", linetype = "dashed") +
+  # coord_cartesian(ylim = c(1, 4)) +
+  # scale_x_log10() +
+  theme_classic(base_size = 16)
+p1
+
+```
