@@ -1,4 +1,4 @@
-## Script for clearing outputs of projections
+## Script for organizing outputs of projections
 
 setwd(paste0(here::here(), "/LER_projections/"))
 

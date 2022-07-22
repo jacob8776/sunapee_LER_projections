@@ -13,7 +13,7 @@ setwd(paste0(here(), '/LER_calibration'))
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 
 
-ncdf <- "./output/ensemble_output_all_models_15Nov21.nc"
+ncdf <- paste0(getwd(), "/output/ensemble_output_all_models_2022-07-21.nc")
 
 lst <- load_var(ncdf, "temp")
 summary(lst$Obs)

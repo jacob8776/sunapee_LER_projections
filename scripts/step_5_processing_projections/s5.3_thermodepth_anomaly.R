@@ -16,9 +16,8 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 
 # 
 # # List of RCP's to run 
-# gcm <- c("GFDL-ESM2M")
 rcp <- c("rcp26", "rcp60", "rcp85")
-
+#rcp <- c("rcp85")
 
 
 
@@ -39,7 +38,7 @@ for(i in 1:length(gcm)){
     
     out <- load_var(ncdf = ncdf, var = "temp")
     #out <- as.data.frame(out[[1]])
-    bathy <- read.csv('./LER_inputs/sunapee_hypso.csv')
+    bathy <- read.csv(file.path(here::here(), 'LER_inputs/sunapee_hypso.csv'))
     colnames(bathy) <- c("depths", "areas")
     ts.td <- lapply(out, function(x) {
       ts.thermo.depth(x, Smin = 0.1, na.rm = TRUE)
@@ -112,17 +111,3 @@ anomalies_master <- anomalies_by_year %>%
 write.csv(anomalies_master, "../../anomaly_calculations/thermodepth_annual_anomalies.csv", row.names = F)
 
 
-
-
-ggplot(subset(anomalies_master, gcm == "GFDL-ESM2M"), aes(yday, anom, colour = model)) +
-  facet_wrap(~year) +
-  geom_line() +
-  labs(y = "Thermocline Depth (m)") +
-  theme_classic() 
-
-
-
-anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050) 
-anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099)
-mean(anomalies_midcentury$anom, na.rm = TRUE)
-mean(anom_endcentury$anom, na.rm = TRUE)

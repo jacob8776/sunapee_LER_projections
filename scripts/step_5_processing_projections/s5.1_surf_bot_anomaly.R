@@ -136,7 +136,6 @@ anomalies_master <- anomalies_by_year %>%
   dplyr::mutate(sd_rcp = sd(anom, na.rm = TRUE)) %>% 
   dplyr::mutate(var_rcp = var(anom, na.rm = TRUE))
 
+dir.create(file.path(here::here(), 'anomaly_calculations'))
 
 write.csv(anomalies_master, "../../anomaly_calculations/surf_bot_anomalies.csv", row.names = F)
-
-anomalies_master <- read.csv("../../anomaly_calculations/surf_bot_anomalies.csv")
