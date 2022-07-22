@@ -22,7 +22,7 @@ setwd(paste0(here(), "/LER_calibration/cali_calcs/"))
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 spin_up <- 180
 
-ncdf <- "../output/ensemble_output_all_models_15Nov21.nc"
+ncdf <- "../output/ensemble_output_all_models_2022-07-21.nc" #change to name of cali output file
 
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit # Results from running model with calib output as input
@@ -103,7 +103,7 @@ setwd(paste0(here(), "/LER_validation/vali_calcs/"))
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 spin_up <- 180
 
-ncdf <- "../output/ensemble_output.nc"
+ncdf <- "../output/ensemble_output_all_models_2022-07-21.nc" # change to name of validation output ncdf
 
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit # Results from running model with calib output as input
