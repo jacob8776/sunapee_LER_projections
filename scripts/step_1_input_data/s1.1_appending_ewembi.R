@@ -37,7 +37,6 @@ setwd(paste0(here(), '/LER_inputs/EWEMBI'))
 
 both <- as.data.frame(seq.Date(from = as.Date("1979-01-01"), by = "day", length.out = 13880))
 
-## ADD DESCRIPTION HERE OF WHERE EWEMBI DATA COME FROM
 
 for(value in seq(14)){
 flist <- list.files(pattern = "^.*\\.(nc|NC|Nc|Nc)$")
@@ -98,9 +97,16 @@ both <- select(both, -huss, -tasmax, -tasmin)
 both$Rainfall_millimeterPerDay <- both$precipitation_millimeterPerDay-both$Snowfall_millimeterPerDay
 
 str(both)
-both$datetime <- as.POSIXct(both$datetime)
 
 write.csv(both, "ewembimet.csv", row.names = FALSE)
+
+
+new <- read.csv("ewembimet.csv")
+
+str(new)
+new$datetime <- as.POSIXct(new$datetime)
+str(new)
+write.csv(new, "ewembimet.csv", row.names = FALSE)
 
 
 # ewembimet <- read.csv("ewembimet.csv")

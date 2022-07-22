@@ -16,7 +16,7 @@ library(here)
 setwd(here())
 
 
-ncdf <- paste0("./LER_validation/output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
+ncdf <- "./LER_validation/output/ensemble_output.nc"
 out <- load_var(ncdf = ncdf, var = "temp")
 
 

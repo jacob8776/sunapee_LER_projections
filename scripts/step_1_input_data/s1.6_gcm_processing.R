@@ -8,9 +8,8 @@ library(ncdf4)
 library(LakeMetabolizer)
 library(here)
 
-setwd(paste0(here::here(), "/met_files_nc"))
+setwd(paste0(here(), "/met_files_nc"))
 
-### ADD DESCRIPTION OF WHERE THESE FILES COME FROM
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR",
          "MIROC5")
 rcp <- c("rcp26", "rcp60", "rcp85")

@@ -57,8 +57,8 @@ export_config(config_file, model)
 
 run_ensemble(config_file = config_file, model = model, verbose = TRUE)
 
-file.rename("output/ensemble_output.nc", paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc"))
-ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
+# file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_15Nov21.nc")
+# ncdf <- "output/ensemble_output_all_models_15Nov21.nc"
 
 lst <- load_var(ncdf, "temp")
 summary(lst$Obs)
@@ -74,8 +74,8 @@ plot_ensemble(ncdf, model = model, var = "ice_height")
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit
 
-out <- analyze_ncdf(ncdf, model, spin_up = 190)
-out$stats 
+# out <- analyze_ncdf(ncdf, model, spin_up = 190)
+# out$stats 
 
 ## Plot residuals
 plist <- plot_resid(ncdf = ncdf, var = "temp")

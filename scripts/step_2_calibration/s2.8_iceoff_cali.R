@@ -12,7 +12,7 @@ library(here)
 
 setwd(here())
 
-ncdf <- file.path(here::here(), paste0("LER_calibration/output/ensemble_output_all_models_", Sys.Date(), ".nc"))
+ncdf <- "./LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
 
 out <- load_var(ncdf = ncdf, var = "temp")
 
@@ -30,7 +30,7 @@ out <- lapply(1:length(temp), function(x) {
 names(out) <- names(temp)
 
 
-df <- melt(out[1:6], id.vars = 1) # change to out[1:5] if running without simstrat
+df <- melt(out[1:6], id.vars = 1)
 colnames(df)[4] <- "model"
 
 
@@ -59,7 +59,7 @@ df <- rbind(df, iceoff_obs)
 wideform <- dcast(df, year~model, value.var = "value")
 wideform <- filter(wideform, is.na(Obs) == FALSE &
                      is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
-                     is.na(MyLake) == FALSE & is.na(Simstrat) == FALSE)
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
 
 wideformmean <- (wideform$FLake +  wideform$GOTM + wideform$MyLake + wideform$Simstrat)/4
 
