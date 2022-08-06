@@ -9,7 +9,7 @@ library(ggpubr)
 library(here)
 # Set working directory
 getwd()
-setwd(paste0(here(), '/LER_calibration'))
+setwd(paste0(here::here(), '/LER_calibration'))
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
@@ -18,7 +18,6 @@ ncdf <- "output/ensemble_output.nc"
 config_file
 
 # LHC - Calibration ----
-
 yaml <- read_yaml(config_file)
 configr::read.config(config_file)
 yaml$time$start <- "2005-06-27 00:00:00"
@@ -88,9 +87,9 @@ p1
 ##############################################################################################
 
 ## Run LER and inspect default output
-#export_config(config_file, model)
+export_config(config_file, model)
 #
-#run_ensemble(config_file = config_file, model = model)
+run_ensemble(config_file = config_file, model = model)
 #
 #lst <- load_var(ncdf, "temp")
 #summary(lst$Obs)

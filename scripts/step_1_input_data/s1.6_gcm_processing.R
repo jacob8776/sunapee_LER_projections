@@ -8,7 +8,7 @@ library(ncdf4)
 library(LakeMetabolizer)
 library(here)
 
-setwd(paste0(here(), "/met_files_nc"))
+setwd(paste0(here::here(), "/met_files_nc"))
 
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR",
          "MIROC5")

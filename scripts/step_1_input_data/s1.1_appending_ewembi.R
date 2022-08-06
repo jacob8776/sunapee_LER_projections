@@ -8,7 +8,7 @@
 # library(here)
 
 library(rLakeAnalyzer)
-library(GLMr)
+library(GLM3r)
 library(glmtools)
 library(FLakeR)
 library(GOTMr)
@@ -27,11 +27,6 @@ library(plotrix)
 library(here)
 library(pacman)
 library(ncdf4)
-
-rm(list=ls())
-
-
-getwd()
 
 setwd(paste0(here(), '/LER_inputs/EWEMBI'))
 

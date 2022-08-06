@@ -19,6 +19,7 @@ model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 spin_up <- 180
 
 ncdf <- "./LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
+ncdf <- paste0("LER_calibration/output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
 out <- load_var(ncdf = ncdf, var = "temp")
 
 
