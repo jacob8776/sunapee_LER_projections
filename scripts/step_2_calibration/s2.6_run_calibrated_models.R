@@ -10,7 +10,7 @@ Sys.setenv(TZ = "UTC")
 
 # Load libraries
 library(gotmtools)
-library(GLMr)
+library(GLM3r)
 library(LakeEnsemblR)
 library(ggplot2)
 library(LakeEnsemblR)
@@ -22,7 +22,7 @@ setwd(paste0(here(), '/LER_calibration'))
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun.yaml'
-model <- c("Simstrat")
+model <- c("FLake", "GLM", "GOTM", "MyLake", "Simstrat")
 ncdf <- "output/ensemble_output.nc"
 
 
@@ -41,7 +41,7 @@ spin_up <- 180
 out_f <- "change"
 
 cmethod <- "LHC"
-model <- c("GLM")
+# model <- c("GLM")
 
 folder <- "."
 dir.create(out_f, showWarnings = FALSE)
@@ -50,12 +50,12 @@ dir.create(out_f, showWarnings = FALSE)
 # Run LER and inspect default output
 export_config(config_file, model)
 
-run_ensemble(config_file = config_file, model = model)
+run_ensemble(config_file = config_file, model = model, parallel = TRUE)
 
 Sys.Date()
 
-file.rename("output/ensemble_output.nc", paste0("output/ensemble_output_all_models_", as.character(Sys.Date())))
-ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()))
+file.rename("output/ensemble_output.nc", paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc"))
+ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
 
 lst <- load_var(ncdf, "temp")
 summary(lst$Obs)

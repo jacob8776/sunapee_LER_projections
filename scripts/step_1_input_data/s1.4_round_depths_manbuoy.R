@@ -3,7 +3,7 @@ library(dplyr)
 library(plyr)
 library(here)
 
-setwd(paste0(here(), "/LER_calibration/Data/"))
+setwd(paste0(here::here(), "/LER_calibration/Data/"))
 
 manbuoy <- read.csv("manual_buoy_temp_hrz.csv")
 unique(manbuoy$Depth_meter)
@@ -38,14 +38,15 @@ head(manbuoy)
 
 # manbuoy$datetime <- as.POSIXct(manbuoy$datetime)
 
-tst <- paste0(dat$datetime, dat$Depth_meter)
+# tst <- paste0(dat$datetime, dat$Depth_meter)
 
-idx <- duplicated(tst)
-sum(idx)
+# idx <- duplicated(tst)
+# sum(idx)
 
 ggplot(manbuoy) +
   # geom_line(aes(datetime, Water_Temperature_celsius, color = as.factor(Depth_meter))) +
-  geom_point(aes(datetime, Water_Temperature_celsius, color = as.factor(Depth_meter))) +
+  geom_point(aes(as.POSIXct(datetime), Water_Temperature_celsius, color = as.factor(Depth_meter))) +
   coord_cartesian(xlim = as.POSIXct(c("2005-01-01", "2014-01-01")))
 
 write.csv(manbuoy, "manual_buoy_temp_dpth.csv", row.names = FALSE)
+

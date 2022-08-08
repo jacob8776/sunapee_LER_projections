@@ -55,7 +55,8 @@ dir.create(out_f, showWarnings = FALSE)
 # Run LER and inspect default output
 export_config(config_file, model)
 
-run_ensemble(config_file = config_file, model = model, verbose = TRUE)
+run_ensemble(config_file = config_file, model = model, verbose = TRUE,
+             parallel = TRUE)
 
 # file.rename("output/ensemble_output.nc", "output/ensemble_output_all_models_15Nov21.nc")
 # ncdf <- "output/ensemble_output_all_models_15Nov21.nc"

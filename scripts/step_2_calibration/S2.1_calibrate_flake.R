@@ -41,7 +41,7 @@ cmethod <- "LHC"
 model <- c("FLake")
 
 folder <- "."
-dir.create(out_f, showWarnings = FALSE)
+# dir.create(out_f, showWarnings = FALSE)
 
 
 

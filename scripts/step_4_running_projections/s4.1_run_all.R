@@ -1,5 +1,5 @@
 library(rLakeAnalyzer)
-library(GLMr)
+library(GLM3r)
 library(glmtools)
 library(FLakeR)
 library(GOTMr)
@@ -35,6 +35,9 @@ config_file <- 'LakeEnsemblR.yaml'
 # Set which models for all simulations
 model <- c("FLake", "MyLake", "GLM", "Simstrat", "GOTM")
 
+init_prof <- data.frame(datetime = rep("1938-09-01 00:00:00", 2), Depth_meter = c(0, 25), Water_Temperature_celsius = c(4,4))
+write.csv(init_prof, "../LER_inputs/ic_historical_hr0.csv", row.names = FALSE, quote = FALSE)
+
 
 yaml <- read_yaml(config_file)
 yaml$output$time_step <- "hour"
@@ -67,7 +70,7 @@ for(i in 1:length(gcm)){
     export_config(config_file = config_file, model = model)
 
     # 2. Run ensemble lake models for all simulations
-    run_ensemble(config_file = config_file, model = model)
+    run_ensemble(config_file = config_file, model = model, parallel = TRUE)
     
   }
 }

@@ -16,7 +16,8 @@ library(here)
 
 setwd(paste0(here()))
 
-ncdf <- "./LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
+# ncdf <- list.files("./LER_calibration/output", full.names = TRUE)
+ncdf <- paste0("LER_calibration/output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
 out <- load_var(ncdf = ncdf, var = "temp")
 
 df <- melt(out, id.vars = 1)
@@ -35,7 +36,7 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 
 wideform$mean <- wideformmean
 
-
+dir.create("LER_calibration/cali_calcs")
 write.csv(wideform ,"./LER_calibration/cali_calcs/surface_1m_wideform.csv", row.names = FALSE)
 
 
