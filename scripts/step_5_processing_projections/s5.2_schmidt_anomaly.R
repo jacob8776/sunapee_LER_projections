@@ -22,16 +22,9 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
-#
 # # List of RCP's to run
-# gcm <- c("GFDL-ESM2M")
 rcp <- c("rcp26", "rcp60", "rcp85")
 
-# gcm <- c("GFDL-ESM2M")
-# # 
-# # # List of RCP's to run 
-# # gcm <- c("GFDL-ESM2M")
-# rcp <- c("rcp85")
 
 
 
@@ -52,7 +45,7 @@ anomalies_master <- data.frame("year" = numeric(0), "month" = numeric(0), "yday"
       
       out <- load_var(ncdf = ncdf, var = "temp")
       #out <- as.data.frame(out[[1]])
-      bathy <- read.csv('./LER_inputs/sunapee_hypso.csv')
+      bathy <- read.csv(paste0(here::here(), '/LER_inputs/sunapee_hypso.csv'))
       colnames(bathy) <- c("depths", "areas")
       ts.sch <- lapply(out, function(x) {
         ts.schmidt.stability(x, bathy = bathy, na.rm = TRUE)
@@ -112,8 +105,6 @@ anomalies_by_year <- anomalies_master %>%
   summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
 
 
-########################### COULD AFFECT VARIANCE DIFFERENCES ###############################################
-
 
 # Model uncertainty grouped by all relevant columns except for lake model. Calculations are then carried out across lake models 
 # for mean, standard deviation and variance. Same method for gcm uncertainty and rcp uncertainty. 
@@ -169,137 +160,5 @@ anomalies_master <- anomalies_by_year %>%
   dplyr::mutate(sd_rcp = sd(anom, na.rm = TRUE)) %>% 
   dplyr::mutate(var_rcp = var(anom, na.rm = TRUE))
 
-##################################################################################################################
-
 
 write.csv(anomalies_master, "../../anomaly_calculations/schmidt_annual_anomalies.csv", row.names = F)
-
-anomalies_master <- read.csv("../../anomaly_calculations/schmidt_annual_anomalies.csv")
-
-ggplot(anomalies_master, aes(year, anom, colour = model)) +
-  facet_wrap(gcm~rcp) +
-  geom_line() +
-  labs(y = "Schmidt stability (J/m2)") +
-  geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
-              linetype = 0.1,
-              color = "grey") 
-
-
-
-ggplot(subset(anomalies_master, year <= 2010), aes(yday, mean_model, colour = gcm)) + 
-  facet_wrap(~year) + 
-  geom_line() + 
-  geom_ribbon(data = subset(anomalies_master, year <= 2010), aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
-              linetype = 0.1,
-              color = "grey") 
-
-
-ggplot(subset(anomalies_master), aes(yday, mean_gcm, colour = model)) + 
-  facet_wrap(~year) + 
-  geom_line() + 
-  geom_ribbon(data = subset(anomalies_master), aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm), alpha = 0.4,
-              linetype = 0.1,
-              color = "grey") 
-
-anom_midcentury <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
-anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
-
-mean(anom_midcentury$mean_model, na.rm = TRUE)
-max(anom_midcentury$mean_model, na.rm = TRUE)
-median(anom_midcentury$mean_model, na.rm = TRUE)
-sum(anom_midcentury$var_model)
-mean(anom_endcentury$mean_model, na.rm = TRUE)
-max(anom_endcentury$mean_model, na.rm = TRUE)
-median(anom_endcentury$mean_model, na.rm = TRUE)
-sum(anom_endcentury$var_model)
-
-
-
-mean(anom_midcentury$mean_gcm, na.rm = TRUE)
-max(anom_midcentury$mean_gcm, na.rm = TRUE)
-median(anom_midcentury$mean_gcm, na.rm = TRUE)
-sum(anom_midcentury$var_gcm)
-mean(anom_endcentury$mean_gcm, na.rm = TRUE)
-max(anom_endcentury$mean_gcm, na.rm = TRUE)
-median(anom_endcentury$mean_gcm, na.rm = TRUE)
-sum(anom_endcentury$var_gcm)
-
-
-
-# 
-# ggplot(data = anomalies_master, aes(x = sd_model, y = sd_gcm)) + geom_point()
-# 
-# linearmodel <- lm(anomalies_master$sd_gcm~anomalies_master$sd_model)
-# summary(linearmodel)
-# 
-# 
-# ggplot(data = anomalies_master, aes(x = yday, y = mean_model)) + geom_line() + 
-#          geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model), alpha = 0.4,
-#                      linetype = 0.1,
-#                      color = "grey") +
-#   geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_gcm, ymax=mean_model+sd_gcm), alpha = 0.4,
-#               linetype = 0.1,
-#               color = "red")
-# 
-# ggplot(anomalies_by_year, aes(x = year, y = mean_model, col = gcm)) +
-#   geom_line() +
-#   geom_ribbon(data = anomalies_by_year, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = gcm), alpha = 0.2,
-#               linetype = .1) +
-#   facet_wrap(~rcp)  
-#   
-# 
-# ggplot(anomalies_by_year, aes(x = year, y = mean_gcm, col = model)) +
-#   geom_line() +
-#   geom_ribbon(data = anomalies_by_year, aes(ymin = mean_gcm-sd_gcm, ymax = mean_gcm+sd_gcm), alpha = 0.4,
-#               linetype = 0.1,
-#               col = "grey") + 
-#   facet_wrap(~rcp)
-# 
-# 
-# 
-# ggplot(anomalies_by_year, aes(x = year, y = var_model, col = "model")) + geom_point()+
-#   geom_point(data = anomalies_by_year, aes(x = year, y = var_rcp, col = "rcp")) +
-#   geom_point(data = anomalies_by_year, aes(x = year, y = var_gcm, col = "gcm")) 
-# 
-# 
-
-
-  
-ggplot(subset(anomalies_master), aes(year, mean_model, colour = rcp)) +
-  facet_wrap(~gcm) +
-  geom_line() +
-  geom_ribbon(data = anomalies_master, aes(ymin = mean_model-sd_model, ymax=mean_model+sd_model, fill = rcp), alpha = 0.2,
-              linetype = .1)+
-  labs(y = "Schmidt stability (J/m2)") +
-  mytheme + 
-  geom_line(y = 0, col = "black") + 
-  geom_vline(xintercept=2006, linetype = "dashed")
-
-ggsave('../../../sundox/plots/schmidt_anom_year_fgcm.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-ggplot(subset(anomalies_master), aes(year, mean_gcm, colour = rcp)) +
-  facet_wrap(~model) +
-  geom_line() +
-  labs(y = "Schmidt stability (J/m2)") +
-  geom_ribbon(data = anomalies_master, aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
-              linetype = .1) +
-  mytheme + 
-  geom_hline(yintercept = 0) +
-  geom_vline(xintercept=2006, linetype = "dashed")
-
-
-ggsave('../../../sundox/plots/schmidt_anom_year_fler_rcp85.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-
-
-
-
-
-
-
-
-
-
-

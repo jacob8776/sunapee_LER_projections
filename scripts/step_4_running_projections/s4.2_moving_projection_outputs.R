@@ -1,4 +1,4 @@
-## Script for clearing outputs of projections
+## Script for organizing outputs of projections
 
 setwd(paste0(here::here(), "/LER_projections/"))
 
@@ -9,7 +9,17 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 rcp <- c("rcp26", "rcp60", "rcp85")
 
 
+folder <- paste0(here::here(), "/LER_projections/output/")
 
+if (file.exists(folder)) {
+  
+  cat("The folder already exists")
+  
+} else {
+  
+  dir.create(folder)
+  
+}
 
 do.call(file.remove, list(list.files(paste0(here::here(), "/LER_projections/output/"), full.names = TRUE)))
 
