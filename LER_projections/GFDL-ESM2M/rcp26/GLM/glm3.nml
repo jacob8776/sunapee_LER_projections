@@ -44,10 +44,10 @@
 /
 &init_profiles
    lake_depth = 33
-   num_depths = 9
-   the_depths = 0, 0.5, 2, 5, 10, 13, 15, 20, 25
-   the_temps = 4, 4, 4, 4, 4, 4, 4, 4, 4
-   the_sals = 0, 0, 0, 0, 0, 0, 0, 0, 0
+   num_depths = 2
+   the_depths = 0, 25
+   the_temps = 4, 4
+   the_sals = 0, 0
 /
 &meteorology
    met_sw = .true.
