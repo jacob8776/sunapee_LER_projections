@@ -15,7 +15,7 @@ library(ggpubr)
 library(here)
 # Set working directory
 getwd()
-setwd(paste0(here(), "/LER_validation/"))
+setwd(paste0(here::here(), "/LER_validation/"))
 
 # Set config file & models
 config_file <- 'LakeEnsemblRsun_val.yaml'

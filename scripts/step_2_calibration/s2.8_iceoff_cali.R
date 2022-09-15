@@ -10,10 +10,10 @@ library(RColorBrewer)
 library(lubridate)
 library(here)
 
-setwd(here())
+setwd(here::here())
 
-ncdf <- "./LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
-ncdf <- paste0("LER_calibration/output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
+fils <- list.files("./LER_calibration/output", full.names = TRUE)
+ncdf <- fils[-1]
 
 out <- load_var(ncdf = ncdf, var = "temp")
 

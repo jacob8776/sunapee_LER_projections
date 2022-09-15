@@ -15,7 +15,7 @@ library(Metrics)
 library(here)
 
 
-setwd(paste0(here(), "/LER_validation/vali_calcs/"))
+setwd(paste0(here::here(), "/LER_validation/vali_calcs/"))
 
 # 
 png("../../figures/figureS3.png", width = 5,height = 7, units = 'in', res = 200)
@@ -87,7 +87,7 @@ taylor.diagram(wideform$Obs, wideform$mean, add = TRUE, col = 6)
 wideform <- read.csv("toticedur_vali_wideform.csv")
 
 taylor.diagram(wideform$Obs, wideform$Simstrat, main = "Ice Off", col = 1, ref.sd = TRUE, xlab = "Standard Deviation (Obs)", ylab = "Standard Deviation (Model)")
-taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 2)
+#taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 2)
 taylor.diagram(wideform$Obs, wideform$FLake, add = TRUE, col = 3)
 taylor.diagram(wideform$Obs, wideform$MyLake, add = TRUE, col = 4)
 taylor.diagram(wideform$Obs, wideform$GOTM, add = TRUE, col = 5)

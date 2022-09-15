@@ -13,7 +13,7 @@ library(Metrics)
 library(plotrix)
 library(here)
 
-setwd(here())
+setwd(here::here())
 
 
 ncdf <- "./LER_validation/output/ensemble_output.nc"
@@ -200,20 +200,46 @@ dfsummer <- filter(df, month >=6 & month <=8)
 temp <- load_var(ncdf, "temp")
 ice <- load_var(ncdf, "ice_height")
 out <- lapply(1:length(temp), function(x) {
-  x = 1 # for debugging
+  temp <- load_var(ncdf = ncdf, var = "temp")
+  temp$MyLake$wtr_33 <- NA
+  temp$MyLake$wtr_33
+  #x = 1 # for debugging
   mlt <- reshape::melt(temp[[x]], id.vars = 1)
   mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
   if(names(temp)[x] == "Obs") {
-    analyse_strat(data = mlt)
+    analyze_strat(data = mlt)
   }
-  analyze_strat(data = mlt, H_ice = ice[[x]][, 2], month = 6:8)
+  analyze_strat(data = mlt, H_ice = ice[[x]][, 2])
 })
 names(out) <- names(temp)
 out
 
 
-df <- melt(out[1:6], id.vars = 1)
+df <- melt(out[1:5], id.vars = 1)
 colnames(df)[4] <- "model"
+
+
+temp <- load_var(ncdf = ncdf, var = "temp")
+#out$MyLake[data$Model == "MyLake" & data$depth == -33] <- NA
+temp$MyLake$wtr_33 <- NA
+temp$MyLake$wtr_33
+temp <- temp$Obs
+
+mlt <- reshape::melt(temp, id.vars = 1)
+mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
+
+mlt <- filter(mlt, variable <= 10)
+
+data = mlt
+#analyse_strat(data = mlt)
+
+obs_out <- analyse_strat(data = mlt)
+
+df_obs <- melt(obs_out, id.vars = 1)
+df_obs$model <- "Obs"
+
+df <- rbind(df, df_obs)
+
 
 
 df <- df %>% 
@@ -229,11 +255,25 @@ ggplot(df, aes(x = year, y = value, colour = model)) + geom_line() +
 ggplot(df, aes(x = year, y = mean)) + geom_line() + 
   facet_wrap(~variable, scales = "free_y") + 
   geom_ribbon(data = df, aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
-                                                         linetype = 0.1,
-                                                         color = "grey") + 
+              linetype = 0.1,
+              color = "grey") + 
   geom_line(data = subset(df, model == "Obs"), aes(year, value, col = "Obs"))
 
+df$variable
 
+
+wideform <- dcast(subset(df, variable == "TotStratDur"), year~model, value.var = "value")
+wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+                     is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+wideform <- wideform[2:8,]
+
+wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake + wideform$Simstrat)/5
+
+wideform$mean <- wideformmean
+
+
+write.csv(wideform ,"./vali_calcs/cali_calcs/totstratdur_vali_wideform.csv", row.names = FALSE)
 
 
 

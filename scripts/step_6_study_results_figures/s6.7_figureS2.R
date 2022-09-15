@@ -1,11 +1,21 @@
+library(gotmtools)
+library(LakeEnsemblR)
 library(ggplot2)
-library(dplyr)
-library(broom)
+library(LakeEnsemblR)
 library(ggpubr)
+library(dplyr)
+library(rLakeAnalyzer)
+library(reshape)
+library(reshape2)
+library(RColorBrewer)
+library(lubridate)
+library(Metrics)
+library(zoo) # moving averages        
+library(tidyverse) # all tidyverse packages
+library(dplyr)
 library(here)
 
-
-setwd(paste0(here(), "/met_data_comparison/"))
+setwd(paste0(here::here(), "/met_data_comparison/"))
 
 era5 <- read.csv("era5.csv")
 ewembi <- read.csv("ewembimet.csv")
@@ -109,7 +119,7 @@ airtemp_plot <- ggplot(boundmets, aes(y = era5_Air_Temperature_celsius, x = ewem
 ggarrange(relhum_plot, rainfall_plot, pressure_plot, lwradiation_plot, swradiation_plot, wind_plot, airtemp_plot, 
           labels = c("A", "B", "C", "D", "E", "F", "G"), 
           ncol = 2, nrow = 4, common.legend = TRUE, legend = "bottom")
-ggsave('./figures/figureS2.png', dpi = 300,width = 384,height = 500, units = 'mm')
+ggsave('../figures/figureS2.png', dpi = 300,width = 384,height = 500, units = 'mm')
 
 
 

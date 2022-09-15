@@ -36,6 +36,17 @@ unique(anomalies_master$Scenario)
 
 ######## TsMax ###########
 
+tsmaxhist <- filter(anomalies_master_sur, rcp == "historical")
+tsmaxhist
+
+tsmaxhist <- select(tsmaxhist, rcp, year, anom, sd_model, sd_gcm)
+
+
+tsmaxhist <- tsmaxhist %>% 
+  group_by(year) %>% 
+  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
+  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
+
 ## RCP26
 
 tsmax26 <- filter(anomalies_master_sur, rcp == "rcp26")
@@ -77,18 +88,20 @@ tsmax85 <- tsmax85 %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmax <- rbind(tsmax26, tsmax60, tsmax85)
+tsmax <- rbind(tsmaxhist, tsmax26, tsmax60, tsmax85)
 
+tsmax$Scenario <- gsub("historical", "Historical", tsmax$rcp)
 tsmax$Scenario <- gsub("rcp26", "RCP 2.6", tsmax$rcp)
 tsmax$Scenario <- gsub("rcp60", "RCP 6.0", tsmax$Scenario)
 tsmax$Scenario <- gsub("rcp85", "RCP 8.5", tsmax$Scenario)
+
 
  
 stempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
-  labs(y = "Anomaly (Degrees C)") +
+  labs(y = "Anomaly (ºC)") +
   ylim(-2, 7) + 
   mytheme + 
   ggtitle("Mean Summer Surface Temperature") +
@@ -153,7 +166,7 @@ btempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
-  labs(y = "Anomaly (Degrees C)") +
+  labs(y = "Anomaly (ºC)") +
   ylim(-1, 4.5) + 
   mytheme + 
   ggtitle("Mean Summer Bottom Temperature") +
@@ -283,11 +296,13 @@ tsmax$Scenario <- gsub("rcp26", "RCP 2.6", tsmax$rcp)
 tsmax$Scenario <- gsub("rcp60", "RCP 6.0", tsmax$Scenario)
 tsmax$Scenario <- gsub("rcp85", "RCP 8.5", tsmax$Scenario)
 
+y_expression <- expression(Anomaly~(J/m^2))
+
 schmidt_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
-  labs(y = "Anomaly (J/m2)") +
+  labs(y = y_expression) +
   mytheme + 
   ylim(-45, 230) + 
   ggtitle("Schmidt Stability") + 
@@ -496,5 +511,9 @@ ggarrange(stempplot, btempplot, schmidt_plot, thermo_plot, strat_plot, icedur,
 
 ggsave(paste0(lake_directory, '/figures/figure5.png'), dpi = 300,width = 384,height = 280, units = 'mm')
 
+ggarrange(stempplot, icedur, 
+          labels = c("A", "B"), 
+          ncol = 2, nrow = 1, common.legend = TRUE, legend = "bottom")
+ggsave(paste0(lake_directory, '/figures/testfig.png'), dpi = 300,width = 384,height = 93, units = 'mm')
 
 

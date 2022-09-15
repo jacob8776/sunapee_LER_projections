@@ -19,7 +19,7 @@ library(tidyverse) # all tidyverse packages
 library(dplyr)
 library(here)
 
-setwd(here())
+setwd(here::here())
 
 
 mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
@@ -35,8 +35,11 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 ### mean surface temperature
 
 anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
+anomalies_master_bot <- read.csv(file.path(lake_directory, "anomaly_calculations/bot_anomalies.csv"))
+anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations/surf_anomalies.csv"))
 
-anomalies_master <- filter(anomalies_master, variable == "TsMean", rcp == "rcp85")
+
+anomalies_master <- filter(anomalies_master_sur, rcp == "rcp85")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -117,9 +120,7 @@ tsmean_plot <- ggplot(data = mlt) +
 
 # mean bottom temperature
 
-anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
-
-anomalies_master <- filter(anomalies_master, variable == "TbMean", rcp == "rcp85")
+anomalies_master <- filter(anomalies_master_bot, rcp == "rcp85")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 

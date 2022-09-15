@@ -14,7 +14,7 @@ library(plotrix)
 library(Metrics)
 library(here)
 
-setwd(paste0(here(), "/LER_calibration/cali_calcs/"))
+setwd(paste0(here::here(), "/LER_calibration/cali_calcs/"))
 
 ####################### Calibration RMSE #############################################
 
@@ -22,7 +22,7 @@ setwd(paste0(here(), "/LER_calibration/cali_calcs/"))
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 spin_up <- 180
 
-ncdf <- "../output/ensemble_output_all_models_15Nov21.nc"
+ncdf <- "../output/ensemble_output_all_models_2022-08-16.nc"
 
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit # Results from running model with calib output as input
@@ -45,6 +45,7 @@ wideform <- read.csv("bottom_33m_wideform.csv")
 paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))
 paste0("Simstrat RMSE: ", rmse(wideform$Obs, wideform$Simstrat))
 paste0("MyLake RMSE: ", rmse(wideform$Obs, wideform$MyLake))
+
 paste0("GLM RMSE: ", rmse(wideform$Obs, wideform$GLM))
 paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
@@ -97,7 +98,7 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 ####################### Validation RMSE #############################################
 
 
-setwd(paste0(here(), "/LER_validation/vali_calcs/"))
+setwd(paste0(here::here(), "/LER_validation/vali_calcs/"))
 
 
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
@@ -174,6 +175,9 @@ paste0("Simstrat RMSE: ", rmse(wideform$Obs, wideform$Simstrat))
 paste0("MyLake RMSE: ", rmse(wideform$Obs, wideform$MyLake))
 paste0("GLM RMSE: ", rmse(wideform$Obs, wideform$GLM))
 paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
+
+
+
 
 
 

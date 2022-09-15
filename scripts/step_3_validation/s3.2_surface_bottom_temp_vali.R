@@ -13,7 +13,7 @@ library(Metrics)
 library(plotrix)
 library(here)
 
-setwd(paste0(here()))
+setwd(paste0(here::here()))
 
 
 ncdf <- "./LER_validation/output/ensemble_output.nc"

@@ -21,7 +21,7 @@ library(ncdf4)
 
 
 # Set working directory to the parent folder of all GCM/RCP combinations
-setwd(paste0(here(), "/LER_projections/"))
+setwd(paste0(here::here(), "/LER_projections/"))
 
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 
@@ -29,11 +29,16 @@ gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
 rcp <- c("rcp26", "rcp60", "rcp85")
 
 
+
+
 # set config file for all simulations
 config_file <- 'LakeEnsemblR.yaml'
 
 # Set which models for all simulations
 model <- c("FLake", "MyLake", "GLM", "Simstrat", "GOTM")
+
+
+
 
 init_prof <- data.frame(datetime = rep("1938-09-01 00:00:00", 2), Depth_meter = c(0, 25), Water_Temperature_celsius = c(4,4))
 write.csv(init_prof, "../LER_inputs/ic_historical_hr0.csv", row.names = FALSE, quote = FALSE)
@@ -48,11 +53,11 @@ yaml$location$hypsograph <- c(file.path("../../../LER_inputs/sunapee_hypso.csv")
 
 for(i in 1:length(gcm)){
   # Sets working directory to each gcm 
-  setwd(file.path(here(), "/LER_projections/", gcm[[i]]))
+  setwd(file.path(here::here(), "/LER_projections/", gcm[[i]]))
   # Nested for loop goes into RCP scenarios for GCMs 
   for(l in 1:length(rcp)){
     # Sets working directory specifying GCM and RCP scenario
-    setwd(file.path(here(), "/LER_projections/", gcm[[i]], rcp[[l]]))
+    setwd(file.path(here::here(), "/LER_projections/", gcm[[i]], rcp[[l]]))
     # Ensure working directory is switching
 
     yaml$time$start <- "1938-09-01 00:00:00"

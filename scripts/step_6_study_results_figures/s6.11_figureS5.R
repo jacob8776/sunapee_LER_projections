@@ -11,9 +11,9 @@ library(RColorBrewer)
 library(scales)
 library(here)
 
-setwd(here())
+setwd(here::here())
 
-source("./scripts/source_scripts/geom_violin.r")
+source("./scripts/misc/source_scripts/geom_violin.r")
 
 
 mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
@@ -31,6 +31,8 @@ level_order <- c("midcentury", "endcentury")
 
 
 anomalies <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
+anomalies_master_bot <- read.csv(file.path(lake_directory, "anomaly_calculations/bot_anomalies.csv"))
+anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations/surf_anomalies.csv"))
 
 ## total strat duration
 
@@ -122,7 +124,7 @@ stratdur_violin_test <- ggplot(data = anom_midcentury_8.5, mapping = aes(x = fac
 
 
 
-anomalies_master <- filter(anomalies, variable == "TsMean")
+anomalies_master <- anomalies_master_sur
 
 anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
 anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
@@ -210,7 +212,7 @@ ggplot(sub) +
 
 
 
-anomalies_master <- filter(anomalies, variable == "TbMean")
+anomalies_master <- anomalies_master_bot
 
 anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
 anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
@@ -510,11 +512,13 @@ endcentury_6.0$time <- "endcentury"
 
 rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
 
+y_expression <- expression(Anomaly~(J/m^2))
+
 schmidt_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
   ggtitle("Schmidt Stability") + 
-  labs(y = "Anomaly (J/m2)", x = "Time Period") + geom_hline(yintercept = 0)
+  labs(y = y_expression, x = "Time Period") + geom_hline(yintercept = 0)
 
 schmidt_violin
 

@@ -17,8 +17,8 @@ mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_
                  strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
                  panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
                  legend.title = element_text(size = 20))
-scale_colour_discrete <- ggthemes::scale_colour_colorblind
-scale_fill_discrete <- ggthemes::scale_fill_colorblind
+#scale_colour_discrete <- ggthemes::scale_colour_colorblind
+#scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
 gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")

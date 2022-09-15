@@ -11,9 +11,11 @@ library(RColorBrewer)
 library(scales)
 library(here)
 
-setwd(paste0(here(), "/LER_projections/output/"))
+setwd(paste0(here::here(), "/LER_projections/output/"))
 
 anomalies_master <- read.csv("../../anomaly_calculations/multiple_annual_anomalies.csv")
+anomalies_master_bot <- read.csv(file.path(lake_directory, "anomaly_calculations/bot_anomalies.csv"))
+anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations/surf_anomalies.csv"))
 
 
 mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
@@ -30,10 +32,10 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 choosercp <- "rcp60"
 
 
-model_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
+model_tsmean <- ggplot(subset(anomalies_master_sur, rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
-  labs(y = "Anomaly (C)") +
+  labs(y = "Anomaly (ºC)") +
   ggtitle("Summer Mean Surface Temperature") + 
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
@@ -41,10 +43,10 @@ model_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == ch
 #
 #
 
-gcm_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
+gcm_tsmean <- ggplot(subset(anomalies_master_sur, rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
-  labs(y = "Anomaly (C)") +
+  labs(y = "Anomaly (ºC)") +
   ggtitle("Summer Mean Surface Temperature") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
@@ -53,10 +55,10 @@ gcm_tsmean <- ggplot(subset(anomalies_master, variable == "TsMean" & rcp == choo
 
 
 
-model_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
+model_tbmean <- ggplot(subset(anomalies_master_bot,  rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
-  labs(y = "Anomaly (C)") +
+  labs(y = "Anomaly (ºC)") +
   ggtitle("Summer Mean Bottom Temperature") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
@@ -65,10 +67,10 @@ model_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == ch
 #
 #
 
-gcm_tbmean <- ggplot(subset(anomalies_master, variable == "TbMean" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
+gcm_tbmean <- ggplot(subset(anomalies_master_bot, rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
-  labs(y = "Anomaly (C)") +
+  labs(y = "Anomaly (ºC)") +
   ggtitle("Summer Mean Bottom Temperature") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
@@ -159,11 +161,12 @@ gcm_ice <- ggplot(subset(anomalies_master, variable == "TotIceDur" & rcp == choo
 
 anomalies_master <- read.csv("../../anomaly_calculations/schmidt_annual_anomalies.csv")
 
+y_expression <- expression(Anomaly~(J/m^2))
 
 model_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
-  labs(y = "Anomaly (J/m2)") +
+  labs(y = y_expression) +
   ggtitle("Schmidt Stability") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
@@ -175,7 +178,7 @@ model_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability"
 gcm_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" & rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
-  labs(y = "Anomaly (J/m2)") +
+  labs(y = y_expression) +
   ggtitle("Schmidt Stability") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,

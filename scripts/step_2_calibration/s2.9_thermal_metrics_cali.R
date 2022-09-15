@@ -13,16 +13,17 @@ library(Metrics)
 library(plotrix)
 library(here)
 
-setwd(here())
+setwd(here::here())
 
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 spin_up <- 180
 
-ncdf <- "./LER_calibration/output/ensemble_output_all_models_15Nov21.nc"
-ncdf <- paste0("LER_calibration/output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
+fils <- list.files("./LER_calibration/output", full.names = TRUE)
+ncdf <- fils[-1]
 out <- load_var(ncdf = ncdf, var = "temp")
-
-
+#out$MyLake[data$Model == "MyLake" & data$depth == -33] <- NA
+out$MyLake$wtr_33 <- NA
+out$MyLake$wtr_33
 
 ######################## Calculating Schmidt Stability ################################
 
@@ -93,7 +94,7 @@ models <- as.data.frame(models)
 rmse <- as.data.frame(rmse)
 
 model_rmse <- cbind(models, rmse)
-
+model_rmse
 
 df <- df %>% 
   dplyr :: group_by(yday, year) %>% 
@@ -186,23 +187,51 @@ dfsummer <- filter(df, month >=6 & month <=8)
 
 ###################################### Calculating stratification & ice metrics #####################
 
+
+
 temp <- load_var(ncdf, "temp")
 ice <- load_var(ncdf, "ice_height")
 out <- lapply(1:length(temp), function(x) {
-  x = 1 # for debugging
+  temp <- load_var(ncdf = ncdf, var = "temp")
+  temp$MyLake$wtr_33 <- NA
+  temp$MyLake$wtr_33
+  #x = 1 # for debugging
   mlt <- reshape::melt(temp[[x]], id.vars = 1)
   mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
   if(names(temp)[x] == "Obs") {
-    analyse_strat(data = mlt)
+    analyze_strat(data = mlt)
   }
-  analyze_strat(data = mlt, H_ice = ice[[x]][, 2], month = 6:8)
+  analyze_strat(data = mlt, H_ice = ice[[x]][, 2])
 })
 names(out) <- names(temp)
 out
 
 
-df <- melt(out[1:6], id.vars = 1)
+df <- melt(out[1:5], id.vars = 1)
 colnames(df)[4] <- "model"
+
+
+temp <- load_var(ncdf = ncdf, var = "temp")
+#out$MyLake[data$Model == "MyLake" & data$depth == -33] <- NA
+temp$MyLake$wtr_33 <- NA
+temp$MyLake$wtr_33
+temp <- temp$Obs
+
+mlt <- reshape::melt(temp, id.vars = 1)
+mlt[, 2] <- as.numeric(gsub("wtr_", "", mlt[, 2]))
+
+mlt <- filter(mlt, variable <= 10)
+
+data = mlt
+#analyse_strat(data = mlt)
+
+obs_out <- analyse_strat(data = mlt)
+
+df_obs <- melt(obs_out, id.vars = 1)
+df_obs$model <- "Obs"
+
+df <- rbind(df, df_obs)
+
 
 
 df <- df %>% 
@@ -222,7 +251,21 @@ ggplot(df, aes(x = year, y = mean)) + geom_line() +
                                                          color = "grey") + 
   geom_line(data = subset(df, model == "Obs"), aes(year, value, col = "Obs"))
 
+df$variable
 
+
+wideform <- dcast(subset(df, variable == "TotStratDur"), year~model, value.var = "value")
+wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
+                     is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
+                     is.na(Simstrat) == FALSE & is.na(MyLake) == FALSE)
+wideform <- wideform[2:8,]
+
+wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake + wideform$Simstrat)/5
+
+wideform$mean <- wideformmean
+
+
+write.csv(wideform ,"./LER_calibration/cali_calcs/totstratdur_cali_wideform.csv", row.names = FALSE)
 
 
 

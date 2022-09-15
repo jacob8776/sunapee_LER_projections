@@ -11,7 +11,7 @@ library(lubridate)
 library(here)
 library(scales)
 
-setwd(here())
+setwd(here::here())
 
 ncdf <- "./LER_validation/output/ensemble_output.nc"
 
