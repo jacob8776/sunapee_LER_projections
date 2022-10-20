@@ -20,7 +20,7 @@ summary(lst$Obs)
 lst$MyLake$wtr_33 <- NA
 summary(lst$MyLake)
 
-png("../figures/figure3.png", width = 5,height = 5, units = 'in', res = 500)
+png("../figures/figure3.png", width = 9,height = 5, units = 'in', res = 500)
 #plot_heatmap(ncdf, model = model) +
 #  scale_colour_gradientn(limits = c(0, 32),
 #                         colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + theme_classic()
@@ -91,10 +91,10 @@ plot_heatmap <- function(ncdf = NULL, var = "temp", dim = "model", dim_index = 1
 
 plot_heatmap(ncdf, model = model) +
   scale_colour_gradientn(name = "Temperature ºC", limits = c(0, 32),
-                         colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + theme_classic() + 
+  colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + 
+  theme_classic() + 
   ylab("Depth (m)") + 
-  xlab("Year")
-
+  xlab("Year") 
 
 dev.off()
 

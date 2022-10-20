@@ -20,11 +20,12 @@ anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations
 
 mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
                  axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
-                 axis.text.x=element_text(size=18, colour='black'), axis.text.y=element_text(size=18, colour='black'), 
+                 axis.text.x=element_text(size=22, colour='black'), axis.text.y=element_text(size=22, colour='black'), 
                  axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
-                 strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
-                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
-                 legend.title = element_text(size = 20))
+                 strip.text.x = element_text(20), strip.text.y = element_text(size=20),
+                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=25),
+                 legend.title = element_text(size = 25), 
+                 plot.title = element_text(size=25))
 scale_colour_discrete <- ggthemes::scale_colour_colorblind
 scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
