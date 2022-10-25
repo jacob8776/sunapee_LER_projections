@@ -29,7 +29,7 @@ scale_colour_discrete <- ggthemes::scale_colour_colorblind
 scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
-choosercp <- "rcp26"
+choosercp <- "rcp85"
 
 
 model_tsmean <- ggplot(subset(anomalies_master_sur, rcp == choosercp), aes(year, mean_model, colour = gcm)) +
@@ -55,7 +55,7 @@ gcm_tsmean <- ggplot(subset(anomalies_master_sur, rcp == choosercp), aes(year, m
 
 
 
-model_tbmean <- ggplot(subset(anomalies_master_bot,  rcp == choosercp), aes(year, mean_model, colour = gcm)) +
+model_tbmean <- ggplot(subset(anomalies_master_bot, rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (ºC)") +
@@ -67,7 +67,7 @@ model_tbmean <- ggplot(subset(anomalies_master_bot,  rcp == choosercp), aes(year
 #
 #
 
-gcm_tbmean <- ggplot(subset(anomalies_master_bot,  rcp == choosercp), aes(year, mean_gcm, colour = model)) +
+gcm_tbmean <- ggplot(subset(anomalies_master_bot, rcp == choosercp), aes(year, mean_gcm, colour = model)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (ºC)") +
@@ -220,7 +220,7 @@ ggarrange(model_tsmean, model_tbmean, model_schmidt, model_thermo, model_strat, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('../../figures/figureS9.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('../../figures/figureS8.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 
@@ -228,6 +228,6 @@ ggarrange(gcm_tsmean, gcm_tbmean, gcm_schmidt, gcm_thermo, gcm_strat, gcm_ice,
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('../../figures/figureS8.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('../../figures/figureS7.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 

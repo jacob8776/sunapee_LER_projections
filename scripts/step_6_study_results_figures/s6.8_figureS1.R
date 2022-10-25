@@ -81,14 +81,19 @@ relhum_plot <- ggplot(boundmets, aes(y = era5_Relative_Humidity_percent, x = ewe
   geom_point()+
   geom_smooth(method="lm", col = "blue") + 
   stat_regline_equation(label.x = 40, label.y = 85)+
-  stat_regline_equation(label.x = 40, label.y = 80, aes(label = ..rr.label..)) + mytheme
+  stat_regline_equation(label.x = 40, label.y = 80, aes(label = ..rr.label..)) + mytheme + 
+  ylab("ERA5 relhum (%)") +
+  xlab("EWEMBI relhum (%)")
 
 
 rainfall_plot <- ggplot(boundmets, aes(y = era5_Rainfall_millimeterPerDay, x = ewembi_Rainfall_millimeterPerDay))+ 
   geom_point()+
   geom_smooth(method="lm", col = "blue")+  
   stat_regline_equation(label.x = .0003, label.y = 0.0009)+
-  stat_regline_equation(label.x = 0.0003, label.y = 0.00099, aes(label = ..rr.label..)) + mytheme
+  stat_regline_equation(label.x = 0.0003, label.y = 0.00099, aes(label = ..rr.label..)) + mytheme + 
+  ylab("ERA5 rainfall (mm/day)") +
+  xlab("EWEMBI rainfall (mm/day)") 
+  
 
 
 
@@ -96,34 +101,44 @@ pressure_plot <- ggplot(boundmets, aes(y = era5_Surface_Level_Barometric_Pressur
   geom_point()+
   geom_smooth(method="lm", col = "blue") + 
   stat_regline_equation(label.x = 94000, label.y = 99000)+
-  stat_regline_equation(label.x = 94000, label.y = 100000, aes(label = ..rr.label..)) + mytheme
+  stat_regline_equation(label.x = 94000, label.y = 100000, aes(label = ..rr.label..)) + mytheme +
+  ylab("ERA5 Baro (pascal)") +
+  xlab("EWEMBI Baro (pascal)")
 
 lwradiation_plot <- ggplot(boundmets, aes(y = era5_Longwave_Radiation_Downwelling_wattPerMeterSquared, x = ewembi_Longwave_Radiation_Downwelling_wattPerMeterSquared))+ 
   geom_point()+
   geom_smooth(method="lm", col = "blue") + 
   stat_regline_equation(label.x = 70, label.y = 300)+
-  stat_regline_equation(label.x = 70, label.y = 350, aes(label = ..rr.label..)) + mytheme
+  stat_regline_equation(label.x = 70, label.y = 350, aes(label = ..rr.label..)) + mytheme +
+  ylab("ERA5 LW Radiation (w/m^2)") + 
+  xlab("EWEMBI LW Raditiation (w/m^2)")
 
 
 swradiation_plot <- ggplot(boundmets, aes(y = era5_Shortwave_Radiation_Downwelling_wattPerMeterSquared, x = ewembi_Shortwave_Radiation_Downwelling_wattPerMeterSquared))+ 
   geom_point()+
   geom_smooth(method="lm", col = "blue") + 
   stat_regline_equation(label.x = 70, label.y = 300)+
-  stat_regline_equation(label.x = 70, label.y = 350, aes(label = ..rr.label..)) + mytheme
+  stat_regline_equation(label.x = 70, label.y = 350, aes(label = ..rr.label..)) + mytheme +
+  ylab("ERA5 SW Radiation (w/m^2)") + 
+  xlab("EWEMBI SW Radiation (w/m^2)")
 
 
 wind_plot <- ggplot(boundmets, aes(y = era5_Ten_Meter_Elevation_Wind_Speed_meterPerSecond, x = ewembi_Ten_Meter_Elevation_Wind_Speed_meterPerSecond))+ 
   geom_point()+
   geom_smooth(method="lm", col = "blue") + 
   stat_regline_equation(label.x = 2, label.y = 7.5)+
-  stat_regline_equation(label.x = 2, label.y = 8.5, aes(label = ..rr.label..)) + mytheme
+  stat_regline_equation(label.x = 2, label.y = 8.5, aes(label = ..rr.label..)) + mytheme + 
+  ylab("ERA5 Windspeed (m/s)") + 
+  xlab("EWEMBI Windspeed (m/s)")
 
 
 airtemp_plot <- ggplot(boundmets, aes(y = era5_Air_Temperature_celsius, x = ewembi_Air_Temperature_celsius))+ 
   geom_point()+
   geom_smooth(method="lm", col = "blue") + 
   stat_regline_equation(label.x = -10, label.y = 20)+
-  stat_regline_equation(label.x = -10, label.y = 25, aes(label = ..rr.label..)) + mytheme
+  stat_regline_equation(label.x = -10, label.y = 25, aes(label = ..rr.label..)) + mytheme + 
+  ylab("ERA5 air temperature (C)") +
+  xlab("EWEMBI air temperature (C)")
 
 
 
@@ -131,7 +146,7 @@ airtemp_plot <- ggplot(boundmets, aes(y = era5_Air_Temperature_celsius, x = ewem
 ggarrange(relhum_plot, rainfall_plot, pressure_plot, lwradiation_plot, swradiation_plot, wind_plot, airtemp_plot, 
           labels = c("A", "B", "C", "D", "E", "F", "G"), 
           ncol = 2, nrow = 4, common.legend = TRUE, legend = "bottom")
-ggsave('../figures/figureS2.png', dpi = 300,width = 384,height = 500, units = 'mm') 
+ggsave('../figures/figureS1.png', dpi = 300,width = 384,height = 500, units = 'mm') 
 
 
 

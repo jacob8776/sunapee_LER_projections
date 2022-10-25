@@ -39,7 +39,7 @@ anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.c
 anomalies_master_bot <- read.csv(file.path(lake_directory, "anomaly_calculations/bot_anomalies.csv"))
 anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations/surf_anomalies.csv"))
 
-anomalies_master <- filter(anomalies_master_sur, rcp == "rcp60")
+anomalies_master <- filter(anomalies_master_sur, rcp == "rcp26") 
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -82,7 +82,6 @@ rvar_df$tvar <- rvar_df$rvar_model + rvar_df$rvar_gcm
 rvar_df$pvar_model <- rvar_df$rvar_model/rvar_df$tvar
 rvar_df$pvar_gcm <- rvar_df$rvar_gcm/rvar_df$tvar
 
-library(reshape2)
 
 mlt <- pivot_longer(rvar_df, 
                     cols = starts_with("pvar"))
@@ -120,8 +119,7 @@ tsmean_plot <- ggplot(data = mlt) +
 
 # mean bottom temperature
 
-
-anomalies_master <- filter(anomalies_master_bot, rcp == "rcp60")
+anomalies_master <- filter(anomalies_master_bot, rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -192,7 +190,7 @@ btemp_plot <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "TotStratDur", rcp == "rcp60")
+anomalies_master <- filter(anomalies_master, variable == "TotStratDur", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -261,7 +259,7 @@ strat_plot <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp60")
+anomalies_master <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -332,7 +330,7 @@ prop_ice <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("./anomaly_calculations/schmidt_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp60")
+anomalies_master <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -404,7 +402,7 @@ schmidt_plot <- ggplot(data = mlt) +
 
 anomalies_master <- read.csv("./anomaly_calculations/thermodepth_annual_anomalies.csv")
 
-anomalies_master <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp60")
+anomalies_master <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp26")
 
 anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
 
@@ -476,7 +474,7 @@ ggarrange(tsmean_plot, btemp_plot, schmidt_plot, thermodepth_plot, strat_plot, p
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('./figures/figureS7.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('./figures/figureS11.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 

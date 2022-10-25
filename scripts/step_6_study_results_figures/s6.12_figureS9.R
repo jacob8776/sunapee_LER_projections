@@ -624,7 +624,7 @@ ggarrange(tsmean_violin, tbmean_violin, schmidt_violin, thermo_violin, stratdur_
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('./figures/figureS4.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('./figures/figureS9.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 
