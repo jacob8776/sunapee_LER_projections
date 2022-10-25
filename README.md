@@ -2,10 +2,10 @@
 Repository for creating projections of lake thermal metrics at Lake Sunapee using GCM/RCP scenarios from 2006 - 2099. These scripts were developed and run on R.4.0.2. 
 
 
-To run this repository using premade projections and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and step through the scripts folder from steps 5-6. In order for steps 5-6 to be successfully run without completing steps 1-4, PLEASE RUN "s1-4_projection_outputs.R" in the "step_5_processing_projections" folder. 
+To run this repository using premade projections and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and step through the scripts folder from steps 5-6. In order for steps 5-6 to be successfully run without completing steps 1-4, PLEASE RUN "s1-4_projection_outputs.R" in the main "scripts" folder. 
 
-To run this repository from scratch and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and then step through steps through the scripts folder from step 1-6. DO NOT RUN "s1-4_projection_outputs.R" in the "step_5_processing_projections" folder. This script will externally download projection files published on Zenodo. RUNNING STEPS 1-6 will take multiple days on a local computer with the speed varying from 
-computer to computer.
+To run this repository from scratch and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and then step through steps through the scripts folder from step 1-6. DO NOT RUN "s1-4_projection_outputs.R" in the main "scripts" folder. This script will externally download projection files published on Zenodo. RUNNING STEPS 1-6 will take multiple days on a local computer with the speed varying depending on 
+processing power.
 
 
 Folders:
@@ -36,7 +36,9 @@ sub-steps (e.g., 1.1, 1.2), which must be run in order for this analysis to be s
  from those in our study.\
  &nbsp;&nbsp; `step_3_validation`\: This folder contains the scripts used to run and analyze the validation from 2015-2020.\
  &nbsp;&nbsp; `step_4_running_projections`\: This folder contains the scripts used to run long term projections from 1938-2099. It also contains a script that moves the projections to an output folder and deletes the duplicates in their respective original places.\
- &nbsp;&nbsp; `step_5_processing_projections`\: This folder contains scripts required to process each metric's anomaly values from the projections. It also contains the script "s1-4_projection_outputs.R" which can be run to to download previously run projection output from Zenodo.\
+ &nbsp;&nbsp; `s1-4_projection_outputs.R`\: This script downloads prerun external projection output from zenodo, 
+ allowing steps 5 and 6 to be run without steps 1-4. 
+ &nbsp;&nbsp; `step_5_processing_projections`\: This folder contains scripts required to process each metric's anomaly values from the projections. \
  &nbsp;&nbsp; `step_6_study_results_figures`\: This folder contains the scripts that generate all of the figures and table 
  in the study (with the exception of conceptual figures). Each script is labeled with the corresponding figure or table 
  numbering in the study. 
