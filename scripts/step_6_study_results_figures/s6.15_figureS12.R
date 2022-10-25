@@ -88,7 +88,7 @@ mlt <- pivot_longer(rvar_df,
                     cols = starts_with("pvar"))
 
 mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "GCM")
+mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
 
 colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
 
@@ -170,7 +170,7 @@ mlt <- pivot_longer(rvar_df,
                     cols = starts_with("pvar"))
 
 mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "GCM")
+mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
 
 colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
 
@@ -242,7 +242,7 @@ mlt <- pivot_longer(rvar_df,
 
 
 mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "GCM")
+mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
 
 colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
 
@@ -311,7 +311,7 @@ mlt <- pivot_longer(rvar_df,
 
 
 mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "GCM")
+mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
 
 colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
 
@@ -382,7 +382,7 @@ mlt <- pivot_longer(rvar_df,
 
 
 mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "GCM")
+mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
 
 colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
 
@@ -453,7 +453,7 @@ mlt <- pivot_longer(rvar_df,
                     cols = starts_with("pvar"))
 
 mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "GCM")
+mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
 
 colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
 

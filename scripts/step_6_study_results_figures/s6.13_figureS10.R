@@ -85,7 +85,7 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
 anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_model_6.0$uncertainty <- "Climate Model"
 anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
@@ -99,7 +99,7 @@ midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
 anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
 anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
@@ -170,7 +170,7 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
 anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_model_6.0$uncertainty <- "Climate Model"
 anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
@@ -184,7 +184,7 @@ midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
 anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
 anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
@@ -258,7 +258,7 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
 anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_model_6.0$uncertainty <- "Climate Model"
 anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
@@ -272,7 +272,7 @@ midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
 anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
 anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
@@ -338,7 +338,7 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
 anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_model_6.0$uncertainty <- "Climate Model"
 anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
@@ -352,7 +352,7 @@ midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
 anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
 anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
@@ -417,7 +417,7 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
 anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_model_6.0$uncertainty <- "Climate Model"
 anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
@@ -431,7 +431,7 @@ midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
 anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
 anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
@@ -496,7 +496,7 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
 anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_model_6.0$uncertainty <- "Climate Model"
 anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
@@ -510,7 +510,7 @@ midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
 anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
 anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
@@ -578,7 +578,7 @@ anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
 anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
 
-anomaly_model_6.0$uncertainty <- "GCM"
+anomaly_model_6.0$uncertainty <- "Climate Model"
 anomaly_gcm_6.0$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
@@ -592,7 +592,7 @@ midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
 anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
 anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
 
-anomaly_model_6.0_end$uncertainty <- "GCM"
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
 anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
 
 colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
