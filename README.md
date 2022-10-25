@@ -2,7 +2,7 @@
 Repository for creating projections of lake thermal metrics at Lake Sunapee using GCM/RCP scenarios from 2006 - 2099. These scripts were developed and run on R.4.0.2. 
 
 
-To run this repository using premade projections and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and step through the scripts folder from steps 5-6. In order for steps 5-6 to be successfully run without completing steps 1-4, PLEASE RUN "s1-4_projection_outputs.R."
+To run this repository using premade projections and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and step through the scripts folder from steps 5-6. In order for steps 5-6 to be successfully run without completing steps 1-4, PLEASE RUN "s1-4_projection_outputs.R" in the "step_5_processing_projections" folder. 
 
 To run this repository from scratch and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and then step through steps through the scripts folder from step 1-6. DO NOT RUN "s1-4_projection_outputs.R" in the "step_5_processing_projections" folder. This script will externally download projection files published on Zenodo. RUNNING STEPS 1-6 will take multiple days on a local computer with the speed varying from 
 computer to computer.
