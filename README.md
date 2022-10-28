@@ -1,6 +1,7 @@
 # sunapee_LER_projections
 Repository for creating projections of lake thermal metrics at Lake Sunapee using GCM/RCP scenarios from 2006 - 2099. These scripts were developed and run on R.4.0.2. 
 
+REPRODUCING THE STUDY
 Ensure that you run install.R in the main 'sunapee_LER_projections' folder before running any other script. The results from this study can be reproduced in 2 ways: 1) analyzing the output of the ensemble projections by downloading it from this repository: https://zenodo.org/record/7232735#.Y1wk2C2B0W0 (either manually or running scripts/s1-4_projection_outputs.R). If you download manually, ensure that the output folder is in the '/sunapee_LER_projections/LER_projections' folder. Then run steps 5 and 6 in the scripts folder to reproduce all manuscript figures OR 2) recreate the ensemble projections by running steps 1-6 in the 'scripts' folder, resulting in the manuscript figures. We recommend using method #1 as method #2 can take several days to run depending on individual computer processing capabilities.
 
 
