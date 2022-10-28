@@ -1,12 +1,7 @@
 # sunapee_LER_projections
 Repository for creating projections of lake thermal metrics at Lake Sunapee using GCM/RCP scenarios from 2006 - 2099. These scripts were developed and run on R.4.0.2. 
 
-The results from this study can be reproduced in 2 ways: 1) analyzing the output of the ensemble projections by downloading it from this repository (either manually or running scripts/s1-4_projection_outputs.R) and then running steps 5 and 6 in the scripts folder to reproduce all manuscript figures OR 2) recreating the ensemble projections and then proceeding to reproduce the manuscript figures. We recommend using method #1 as method #2 can take several days to run depending on individual computer processing capabilities.
-
-1) To run this repository using premade projections and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and step through the scripts folder from steps 5-6. In order for steps 5-6 to be successfully run without completing steps 1-4, PLEASE RUN "s1-4_projection_outputs.R" in the main "scripts" folder. 
-
-2) To run this repository from scratch and reproduce the results in the study "Uncertainty in projections of future lake thermal dynamics is differentially driven by global climate models and lake models", run the script "install.R" in the main sunapee_LER_projections repository and then step through steps through the scripts folder from step 1-6. DO NOT RUN "s1-4_projection_outputs.R" in the main "scripts" folder. This script will externally download projection files published on Zenodo. RUNNING STEPS 1-6 will take multiple days on a local computer with the speed varying depending on 
-processing power.
+Ensure that you run install.R in the main 'sunapee_LER_projections' folder before running any other script. The results from this study can be reproduced in 2 ways: 1) analyzing the output of the ensemble projections by downloading it from this repository: https://zenodo.org/record/7232735#.Y1wk2C2B0W0 (either manually or running scripts/s1-4_projection_outputs.R). If you download manually, ensure that the output folder is in the '/sunapee_LER_projections/LER_projections' folder. Then run steps 5 and 6 in the scripts folder to reproduce all manuscript figures OR 2) recreate the ensemble projections by running steps 1-6 in the 'scripts' folder, resulting in the manuscript figures. We recommend using method #1 as method #2 can take several days to run depending on individual computer processing capabilities.
 
 
 Folders:
