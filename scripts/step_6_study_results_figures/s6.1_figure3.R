@@ -6,6 +6,20 @@ library(ggpubr)
 library(here)
 # Set working directory
 getwd()
+setwd(paste0(here::here()))
+
+
+folder <- "figures"
+
+if (file.exists(folder)) {
+  
+  cat("The folder already exists")
+  
+} else {
+  
+  dir.create(folder)
+  
+}
 setwd(paste0(here::here(), '/LER_calibration'))
 
 
@@ -19,6 +33,8 @@ lst <- load_var(ncdf, "temp")
 summary(lst$Obs)
 lst$MyLake$wtr_33 <- NA
 summary(lst$MyLake)
+
+
 
 png("../figures/figure3.png", width = 9,height = 5, units = 'in', res = 500)
 #plot_heatmap(ncdf, model = model) +
