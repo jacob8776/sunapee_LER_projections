@@ -21,7 +21,7 @@ mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_
 #scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
-gcm <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
+gcm <- c("IPSL-CM5A-LR", "MIROC5", "GFDL-ESM2M", "HADGEM2-ES")
 # # List of RCP's to run
 rcp <- c("rcp26", "rcp60", "rcp85")
 

@@ -295,7 +295,9 @@ for(i in 1:length(gcm)){
     df$year <- year(df$datetime)
     df$month <- month(df$datetime)
     df <- df %>% 
-      filter(variable == "wtr_0" | variable == "wtr_32")
+      filter(variable == "wtr_1" | variable == "wtr_30")
+    df <- df %>% filter(month >= 6 & month <= 8)
+    
     
     
     
@@ -364,8 +366,8 @@ write.csv(anomalies_master, "../../anomaly_calculations/surf_bot_anomalies.csv",
 anomalies_master <- read.csv("../../anomaly_calculations/surf_bot_anomalies.csv")
 
 
-anomalies_master_bot <- filter(anomalies_master, variable == "wtr_32")
-anomalies_master_sur <- filter(anomalies_master, variable == "wtr_0")
+anomalies_master_bot <- filter(anomalies_master, variable == "wtr_30")
+anomalies_master_sur <- filter(anomalies_master, variable == "wtr_1")
 
 write.csv(anomalies_master_bot, "../../anomaly_calculations/bot_anomalies.csv", row.names = F)
 write.csv(anomalies_master_sur, "../../anomaly_calculations/surf_anomalies.csv", row.names = F)

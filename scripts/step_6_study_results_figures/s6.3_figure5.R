@@ -116,7 +116,7 @@ stempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
   labs(y = "Anomaly (ºC)") +
-  ylim(-2, 7) + 
+  ylim(-2, 8) + 
   mytheme + 
   ggtitle("Mean Summer Surface Temperature") +
   geom_line(y = 0, col = "black") + 
@@ -181,7 +181,7 @@ btempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
   labs(y = "Anomaly (ºC)") +
-  ylim(-1, 4.5) + 
+  ylim(-1.5, 4.5) + 
   mytheme + 
   ggtitle("Mean Summer Bottom Temperature") +
   geom_line(y = 0, col = "black") +

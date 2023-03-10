@@ -21,6 +21,10 @@ setwd(paste0(here(), "/LER_calibration/cali_calcs/"))
 png("../../figures/figure4.png", width = 5,height = 7, units = 'in', res = 200)
 par(mfrow=c(3,2))
 wideform <- read.csv("surface_1m_wideform.csv")
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 # red simstrat 
 # green glm 
@@ -45,11 +49,15 @@ taylor.diagram(wideform$Obs, wideform$mean, add = TRUE, col = 6)
 
 
 wideform <- read.csv("bottom_33m_wideform.csv")
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
-taylor.diagram(wideform$Obs, wideform$Simstrat, main = "B) Summer Bottom Temperature", ref.sd = TRUE, col = 1, xlab = "Standard Deviation (Obs)", ylab = "Standard Deviation (Model)")
+taylor.diagram(wideform$Obs, wideform$GOTM, main = "B) Summer Bottom Temperature", ref.sd = TRUE, col = 5, xlab = "Standard Deviation (Obs)", ylab = "Standard Deviation (Model)")
 taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 2)
 taylor.diagram(wideform$Obs, wideform$MyLake, add = TRUE, col = 4)
-taylor.diagram(wideform$Obs, wideform$GOTM, add = TRUE, col = 5)
+taylor.diagram(wideform$Obs, wideform$Simstrat, add = TRUE, col = 1)
 taylor.diagram(wideform$Obs, wideform$mean, add = TRUE, col = 6)
 
 
@@ -66,6 +74,10 @@ taylor.diagram(wideform$Obs, wideform$mean, add = TRUE, col = 6)
 
 
 wideform <- read.csv("thermodepth_cali_wideform.csv")
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 taylor.diagram(wideform$Obs, wideform$MyLake, main = "D) Summer Thermocline Depth", ref.sd = TRUE, col = 4, xlab = "Standard Deviation (Obs)", ylab = "Standard Deviation (Model)")
 taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 2)

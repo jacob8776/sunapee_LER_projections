@@ -30,6 +30,10 @@ fit # Results from running model with calib output as input
 
 wideform <- read.csv("surface_1m_wideform.csv")
 
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
 paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))
@@ -40,6 +44,10 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("bottom_33m_wideform.csv")
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 
 paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))
@@ -62,7 +70,10 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("thermodepth_cali_wideform.csv")
-
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
 paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))
@@ -112,6 +123,10 @@ fit # Results from running model with calib output as input
 
 
 wideform <- read.csv("surface_1m_wideform_vali.csv")
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
@@ -123,6 +138,10 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("bottom_33m_wideform_vali.csv")
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 
 paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))
@@ -144,6 +163,10 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("thermodepth_vali_wideform.csv")
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
