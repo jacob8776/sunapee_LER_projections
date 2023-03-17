@@ -296,7 +296,7 @@ for(i in 1:length(gcm)){
     df$month <- month(df$datetime)
     df <- df %>% 
       filter(variable == "wtr_1" | variable == "wtr_30")
-    df <- df %>% filter(month >= 6 & month <= 8)
+#    df <- df %>% filter(month >= 6 & month <= 8)
     
     
     

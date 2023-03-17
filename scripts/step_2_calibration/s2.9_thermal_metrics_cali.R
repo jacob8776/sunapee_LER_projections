@@ -133,6 +133,7 @@ ggplot(df, aes(yday, mean)) +
 #################################### Calculating thermocline depth ######################################
 
 
+
 ## Same for thermocline depth
 ts.td <- lapply(out, function(x) {
   ts.thermo.depth(x, Smin = 0.1, na.rm = TRUE)
@@ -143,6 +144,7 @@ colnames(df)[4] <- "model"
 df$yday <- yday(df$datetime)
 df$month <- month(df$datetime)
 df$year <- year(df$datetime)
+df <- filter(df, month >= 6 & month <= 8)
 
 wideform <- dcast(df, datetime~model, value.var = "value")
 wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
@@ -170,7 +172,26 @@ ggplot(subset(df, month >= 6 & month <= 8), aes(yday, value, colour = model)) +
   scale_y_continuous(trans = "reverse") +
   theme_classic() 
 
+ggplot(subset(df), aes(yday, value, colour = model)) +
+  facet_wrap(~year) +
+  geom_line() +
+  labs(y = "Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() 
+
+
 ggplot(subset(df, month >= 6 & month <= 8 & model != "Obs"), aes(yday, mean)) +
+  facet_wrap(~year) +
+  geom_line() +
+  geom_ribbon(data = subset(df, month >= 6 & month <= 8), aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,
+              linetype = 0.1,
+              color = "grey") + 
+  labs(y = "Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() + 
+  geom_line(data = subset(df, month >= 6 & month <= 8 & model == "Obs"), aes(yday, value, col = "Obs"))
+
+ggplot(subset(df, model != "Obs"), aes(yday, mean)) +
   facet_wrap(~year) +
   geom_line() +
   geom_ribbon(data = subset(df, month >= 6 & month <= 8), aes(ymin = mean-sd, ymax = mean+sd), alpha = 0.6,

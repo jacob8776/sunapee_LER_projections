@@ -57,6 +57,7 @@ Sys.Date()
 file.rename("output/ensemble_output.nc", paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc"))
 ncdf <- paste0("output/ensemble_output_all_models_", as.character(Sys.Date()), ".nc")
 
+
 lst <- load_var(ncdf, "temp")
 summary(lst$Obs)
 
@@ -71,10 +72,42 @@ plot_ensemble(ncdf, model = model, var = "ice_height")
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit
 
+
+analyse_df <- analyze_ncdf(ncdf = ncdf, spin_up = 180, model = model)
+  
+  
 # out <- analyze_ncdf(ncdf, model, spin_up = 190)
 # out$stats 
 
 ## Plot residuals
-plist <- plot_resid(ncdf = ncdf, var = "temp")
+plist <- plot_resid_altered(ncdf = ncdf, var = "temp")
 ggarrange(plotlist = plist)
 
+
+p4 <- ggplot(plist, aes(yday, res, colour = depth)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_point(alpha = 0.1) +
+  scale_colour_gradientn(colours = c("black", dep_cols[2], dep_cols[1])) +
+  ggtitle("Year day vs. Residuals") +
+  facet_wrap(~C4)
+
+str(plist)
+
+ggplot(subset(plist), aes(x = datetime, y = res)) + geom_point() 
+
+first180 <- filter(plist, datetime <= "2005-12-24")
+
+later <- filter(plist, datetime > "2005-12-24")
+
+first180$spinup <- "spinup"
+later$spinup <- "post-spinup"
+
+together <- rbind(first180, later)
+
+ggplot(subset(together), aes(x = datetime, y = res, col = spinup)) + 
+  mytheme + 
+  geom_point() 
+
+
+
+# "2005-12-24"
