@@ -48,28 +48,28 @@ anomalies_master$Scenario <- gsub("rcp85", "RCP 8.5", anomalies_master$Scenario)
 
 unique(anomalies_master$Scenario)
 
-######## TsMax ###########
+######## tsmean ###########
 
-tsmaxhist <- filter(anomalies_master_sur, rcp == "historical")
-tsmaxhist
+tsmeanhist <- filter(anomalies_master_sur, rcp == "historical")
+tsmeanhist
 
-tsmaxhist <- select(tsmaxhist, rcp, year, anom, sd_model, sd_gcm)
+tsmeanhist <- select(tsmeanhist, rcp, year, anom, sd_model, sd_gcm)
 
 
-tsmaxhist <- tsmaxhist %>% 
+tsmeanhist <- tsmeanhist %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 ## RCP26
 
-tsmax26 <- filter(anomalies_master_sur, rcp == "rcp26")
-tsmax26
+tsmean26 <- filter(anomalies_master_sur, rcp == "rcp26")
+tsmean26
 
-tsmax26 <- select(tsmax26, rcp, year, anom, sd_model, sd_gcm)
+tsmean26 <- select(tsmean26, rcp, year, anom, sd_model, sd_gcm)
 
 
-tsmax26 <- tsmax26 %>% 
+tsmean26 <- tsmean26 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
@@ -77,67 +77,67 @@ tsmax26 <- tsmax26 %>%
 
 ## RCP 60 
 
-tsmax60 <- filter(anomalies_master_sur, rcp == "rcp60")
-tsmax60
+tsmean60 <- filter(anomalies_master_sur, rcp == "rcp60")
+tsmean60
 
-tsmax60 <- select(tsmax60, rcp, year, anom, sd_model, sd_gcm)
+tsmean60 <- select(tsmean60, rcp, year, anom, sd_model, sd_gcm)
 
 
-tsmax60 <- tsmax60 %>% 
+tsmean60 <- tsmean60 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 ## RCP 85 
 
-tsmax85 <- filter(anomalies_master_sur, rcp == "rcp85")
-tsmax85
+tsmean85 <- filter(anomalies_master_sur, rcp == "rcp85")
+tsmean85
 
-tsmax85 <- select(tsmax85, rcp, year, anom, sd_model, sd_gcm)
+tsmean85 <- select(tsmean85, rcp, year, anom, sd_model, sd_gcm)
 
 
-tsmax85 <- tsmax85 %>% 
+tsmean85 <- tsmean85 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmax <- rbind(tsmaxhist, tsmax26, tsmax60, tsmax85)
+tsmean <- rbind(tsmeanhist, tsmean26, tsmean60, tsmean85)
 
-tsmax$Scenario <- gsub("historical", "Historical", tsmax$rcp)
-tsmax$Scenario <- gsub("rcp26", "RCP 2.6", tsmax$rcp)
-tsmax$Scenario <- gsub("rcp60", "RCP 6.0", tsmax$Scenario)
-tsmax$Scenario <- gsub("rcp85", "RCP 8.5", tsmax$Scenario)
+tsmean$Scenario <- gsub("historical", "Historical", tsmean$rcp)
+tsmean$Scenario <- gsub("rcp26", "RCP 2.6", tsmean$rcp)
+tsmean$Scenario <- gsub("rcp60", "RCP 6.0", tsmean$Scenario)
+tsmean$Scenario <- gsub("rcp85", "RCP 8.5", tsmean$Scenario)
 
 
  
-stempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
+stempplot <- ggplot(subset(tsmean), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
   labs(y = "Anomaly (ºC)") +
   ylim(-2, 8) + 
   mytheme + 
-  ggtitle("Mean Summer Surface Temperature") +
+  ggtitle("Mean Surface Temperature") +
   geom_line(y = 0, col = "black") + 
   geom_vline(xintercept = 2006, linetype = "dashed")
 
+stempplot
+# ggsave('../../../sundox/plots/mean_tsmean.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
-# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
-
-################# TbMax ########################
+################# tbmean ########################
 
 
 ## RCP26
 
-tbmax26 <- filter(anomalies_master_bot, rcp == "rcp26")
-tbmax26
+tbmean26 <- filter(anomalies_master_bot, rcp == "rcp26")
+tbmean26
 
-tbmax26 <- select(tbmax26, rcp, year, anom, sd_model, sd_gcm)
+tbmean26 <- select(tbmean26, rcp, year, anom, sd_model, sd_gcm)
 
 
-tbmax26 <- tbmax26 %>% 
+tbmean26 <- tbmean26 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
@@ -145,51 +145,51 @@ tbmax26 <- tbmax26 %>%
 
 ## RCP 60 
 
-tbmax60 <- filter(anomalies_master_bot, rcp == "rcp60")
-tbmax60
+tbmean60 <- filter(anomalies_master_bot, rcp == "rcp60")
+tbmean60
 
-tbmax60 <- select(tbmax60, rcp, year, anom, sd_model, sd_gcm)
+tbmean60 <- select(tbmean60, rcp, year, anom, sd_model, sd_gcm)
 
 
-tbmax60 <- tbmax60 %>% 
+tbmean60 <- tbmean60 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 ## RCP 85 
 
-tbmax85 <- filter(anomalies_master_bot, rcp == "rcp85")
-tbmax85
+tbmean85 <- filter(anomalies_master_bot, rcp == "rcp85")
+tbmean85
 
-tbmax85 <- select(tbmax85, rcp, year, anom, sd_model, sd_gcm)
+tbmean85 <- select(tbmean85, rcp, year, anom, sd_model, sd_gcm)
 
 
-tbmax85 <- tbmax85 %>% 
+tbmean85 <- tbmean85 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmax <- rbind(tbmax26, tbmax60, tbmax85)
+tbmean <- rbind(tbmean26, tbmean60, tbmean85)
 
-tsmax$Scenario <- gsub("rcp26", "RCP 2.6", tsmax$rcp)
-tsmax$Scenario <- gsub("rcp60", "RCP 6.0", tsmax$Scenario)
-tsmax$Scenario <- gsub("rcp85", "RCP 8.5", tsmax$Scenario)
+tbmean$Scenario <- gsub("rcp26", "RCP 2.6", tbmean$rcp)
+tbmean$Scenario <- gsub("rcp60", "RCP 6.0", tbmean$Scenario)
+tbmean$Scenario <- gsub("rcp85", "RCP 8.5", tbmean$Scenario)
 
-btempplot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
+btempplot <- ggplot(subset(tbmean), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
   labs(y = "Anomaly (ºC)") +
   ylim(-1.5, 4.5) + 
   mytheme + 
-  ggtitle("Mean Summer Bottom Temperature") +
+  ggtitle("Mean Bottom Temperature") +
   geom_line(y = 0, col = "black") +
   geom_vline(xintercept = 2006, linetype = "dashed")
 
+btempplot
 
-
-# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+# ggsave('../../../sundox/plots/mean_tsmean.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 ################# totstratdur ##################
@@ -235,14 +235,14 @@ totstrat85 <- totstrat85 %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmax <- rbind(totstrat26, totstrat60, totstrat85)
+tsmean <- rbind(totstrat26, totstrat60, totstrat85)
 
-tsmax$Scenario <- gsub("rcp26", "RCP 2.6", tsmax$rcp)
-tsmax$Scenario <- gsub("rcp60", "RCP 6.0", tsmax$Scenario)
-tsmax$Scenario <- gsub("rcp85", "RCP 8.5", tsmax$Scenario)
+tsmean$Scenario <- gsub("rcp26", "RCP 2.6", tsmean$rcp)
+tsmean$Scenario <- gsub("rcp60", "RCP 6.0", tsmean$Scenario)
+tsmean$Scenario <- gsub("rcp85", "RCP 8.5", tsmean$Scenario)
 
 
-strat_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
+strat_plot <- ggplot(subset(tsmean), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
@@ -253,9 +253,10 @@ strat_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario
   geom_line(y = 0, col = "black") + 
   geom_vline(xintercept = 2006, linetype = "dashed")
 
+strat_plot
 
 
-# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+# ggsave('../../../sundox/plots/mean_tsmean.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 ######## Schmidt Stability ###########
@@ -304,15 +305,15 @@ schmidt85 <- schmidt85 %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmax <- rbind(schmidt26, schmidt60, schmidt85)
+tsmean <- rbind(schmidt26, schmidt60, schmidt85)
 
-tsmax$Scenario <- gsub("rcp26", "RCP 2.6", tsmax$rcp)
-tsmax$Scenario <- gsub("rcp60", "RCP 6.0", tsmax$Scenario)
-tsmax$Scenario <- gsub("rcp85", "RCP 8.5", tsmax$Scenario)
+tsmean$Scenario <- gsub("rcp26", "RCP 2.6", tsmean$rcp)
+tsmean$Scenario <- gsub("rcp60", "RCP 6.0", tsmean$Scenario)
+tsmean$Scenario <- gsub("rcp85", "RCP 8.5", tsmean$Scenario)
 
 y_expression <- expression(Anomaly~(J/m^2))
 
-schmidt_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
+schmidt_plot <- ggplot(subset(tsmean), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
@@ -323,8 +324,8 @@ schmidt_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenar
   geom_line(y = 0, col = "black") + 
   geom_vline(xintercept = 2006, linetype = "dashed")
 
-
-# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
+schmidt_plot
+# ggsave('../../../sundox/plots/mean_tsmean.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 ######## Thermocline Depth ###########
@@ -334,13 +335,13 @@ anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/th
 
 ## RCP26
 
-schmidt26 <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp26")
-schmidt26
-
-schmidt26 <- select(schmidt26, rcp, year, anom, sd_model, sd_gcm)
+thermo26 <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp26")
 
 
-schmidt26 <- schmidt26 %>% 
+thermo26 <- select(schmidt26, rcp, year, anom, sd_model, sd_gcm)
+
+
+thermo26 <- thermo26 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
@@ -348,38 +349,38 @@ schmidt26 <- schmidt26 %>%
 
 ## RCP 60 
 
-schmidt60 <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp60")
-schmidt60
+thermo60 <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp60")
+thermo60
 
-schmidt60 <- select(schmidt60, rcp, year, anom, sd_model, sd_gcm)
+thermo60 <- select(thermo60, rcp, year, anom, sd_model, sd_gcm)
 
 
-schmidt60 <- schmidt60 %>% 
+thermo60 <- thermo60 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 ## RCP 85 
 
-schmidt85 <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp85")
-schmidt85
+thermo85 <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp85")
+thermo85
 
-schmidt85 <- select(schmidt85, rcp, year, anom, sd_model, sd_gcm)
+thermo85 <- select(thermo85, rcp, year, anom, sd_model, sd_gcm)
 
 
-schmidt85 <- schmidt85 %>% 
+thermo85 <- thermo85 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmax <- rbind(schmidt26, schmidt60, schmidt85)
+thermo <- rbind(thermo26, thermo60, thermo85)
 
-tsmax$Scenario <- gsub("rcp26", "RCP 2.6", tsmax$rcp)
-tsmax$Scenario <- gsub("rcp60", "RCP 6.0", tsmax$Scenario)
-tsmax$Scenario <- gsub("rcp85", "RCP 8.5", tsmax$Scenario)
+thermo$Scenario <- gsub("rcp26", "RCP 2.6", thermo$rcp)
+thermo$Scenario <- gsub("rcp60", "RCP 6.0", thermo$Scenario)
+thermo$Scenario <- gsub("rcp85", "RCP 8.5", thermo$Scenario)
 
-thermo_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
+thermo_plot <- ggplot(subset(thermo), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
@@ -390,7 +391,7 @@ thermo_plot <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenari
   geom_line(y = 0, col = "black") + 
   geom_vline(xintercept = 2006, linetype = "dashed")
 
-
+thermo_plot
 anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/multiple_annual_anomalies.csv"))
 
 
@@ -398,13 +399,13 @@ anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/mu
 
 ## RCP26
 
-tsmax26 <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp26")
-tsmax26
+ice26 <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp26")
+ice26
 
-tsmax26 <- select(tsmax26, rcp, year, anom, sd_model, sd_gcm)
+ice26 <- select(ice26, rcp, year, anom, sd_model, sd_gcm)
 
 
-tsmax26 <- tsmax26 %>% 
+ice26 <- ice26 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
@@ -412,38 +413,38 @@ tsmax26 <- tsmax26 %>%
 
 ## RCP 60 
 
-tsmax60 <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp60")
-tsmax60
+ice60 <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp60")
+ice60
 
-tsmax60 <- select(tsmax60, rcp, year, anom, sd_model, sd_gcm)
+ice60 <- select(ice60, rcp, year, anom, sd_model, sd_gcm)
 
 
-tsmax60 <- tsmax60 %>% 
+ice60 <- ice60 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 ## RCP 85 
 
-tsmax85 <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp85")
-tsmax85
+ice85 <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp85")
+ice85
 
-tsmax85 <- select(tsmax85, rcp, year, anom, sd_model, sd_gcm)
+ice85 <- select(ice85, rcp, year, anom, sd_model, sd_gcm)
 
 
-tsmax85 <- tsmax85 %>% 
+ice85 <- ice85 %>% 
   group_by(year) %>% 
   dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmax <- rbind(tsmax26, tsmax60, tsmax85)
-tsmax$Scenario <- gsub("rcp26", "RCP 2.6", tsmax$rcp)
-tsmax$Scenario <- gsub("rcp60", "RCP 6.0", tsmax$Scenario)
-tsmax$Scenario <- gsub("rcp85", "RCP 8.5", tsmax$Scenario)
+ice <- rbind(ice26, ice60, ice85)
+ice$Scenario <- gsub("rcp26", "RCP 2.6", ice$rcp)
+ice$Scenario <- gsub("rcp60", "RCP 6.0", ice$Scenario)
+ice$Scenario <- gsub("rcp85", "RCP 8.5", ice$Scenario)
 
 
-icedur <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
+icedur <- ggplot(subset(ice), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
@@ -454,71 +455,13 @@ icedur <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line(y = 0, col = "black") +
   geom_vline(xintercept = 2006, linetype = "dashed")
 
+icedur
 
-
-# ggsave('../../../sundox/plots/mean_tsmax.png', dpi = 300,width = 384,height = 280, units = 'mm')
-
-
-### Mixing period
-
-
-## RCP26
-
-tsmax26 <- filter(anomalies_master, variable == "MixPer", rcp == "rcp26")
-tsmax26
-
-tsmax26 <- select(tsmax26, rcp, year, anom, sd_model, sd_gcm)
-
-tsmax26 <- tsmax26 %>% 
-  group_by(year) %>% 
-  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
-  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
-
-
-## RCP 60 
-
-tsmax60 <- filter(anomalies_master, variable == "MixPer", rcp == "rcp60")
-tsmax60
-
-tsmax60 <- select(tsmax60, rcp, year, anom, sd_model, sd_gcm)
-
-
-tsmax60 <- tsmax60 %>% 
-  group_by(year) %>% 
-  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
-  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
-
-## RCP 85 
-
-tsmax85 <- filter(anomalies_master, variable == "MixPer", rcp == "rcp85")
-tsmax85
-
-tsmax85 <- select(tsmax85, rcp, year, anom, sd_model, sd_gcm)
-
-
-tsmax85 <- tsmax85 %>% 
-  group_by(year) %>% 
-  dplyr::mutate(mean_mean_model = mean(anom, na.rm = TRUE)) %>%
-  dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
-
-
-tsmax <- rbind(tsmax26, tsmax60, tsmax85)
+# ggsave('../../../sundox/plots/mean_tsmean.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 
-mixper  <- ggplot(subset(tsmax), aes(year, mean_mean_model, colour = rcp)) +
-  geom_line() +
-  geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = rcp), alpha = 0.2,
-              linetype = .1)+
-  labs(y = "Anomaly (Days)") +
-  ylim(-50, 35) + 
-  mytheme + 
-  ggtitle("Mixing Period") +
-  geom_line(y = 0, col = "black") + 
-  geom_vline(xintercept = 2006, linetype = "dashed")
-
-
-
+## combined plot
 ggarrange(stempplot, btempplot, schmidt_plot, thermo_plot, strat_plot, icedur, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
