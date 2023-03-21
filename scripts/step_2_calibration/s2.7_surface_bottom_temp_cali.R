@@ -17,7 +17,7 @@ library(here)
 setwd(paste0(here::here()))
 
 fils <- list.files("./LER_calibration/output", full.names = TRUE)
-ncdf <- fils[-1]
+ncdf <- fils[1]
 
 out <- load_var(ncdf = ncdf, var = "temp")
 
