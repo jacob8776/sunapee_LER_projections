@@ -19,7 +19,7 @@ model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 spin_up <- 180
 
 fils <- list.files("./LER_calibration/output", full.names = TRUE)
-ncdf <- fils[-1]
+ncdf <- fils[1]
 out <- load_var(ncdf = ncdf, var = "temp")
 #out$MyLake[data$Model == "MyLake" & data$depth == -33] <- NA
 out$MyLake$wtr_33 <- NA
