@@ -15,8 +15,8 @@ library(here)
 
 setwd(here::here())
 
-
-ncdf <- "./LER_validation/output/ensemble_output.nc"
+fils <- list.files("./LER_validation/vali_calcs/output", full.names = TRUE)
+ncdf <- fils[1]
 out <- load_var(ncdf = ncdf, var = "temp")
 
 
@@ -139,7 +139,6 @@ df$yday <- yday(df$datetime)
 df$month <- month(df$datetime)
 df$year <- year(df$datetime)
 
-df <- filter(df, month >= 6 & month <= 8)
 
 wideform <- dcast(df, datetime~model, value.var = "value")
 wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
