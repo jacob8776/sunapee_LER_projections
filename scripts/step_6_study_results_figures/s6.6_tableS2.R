@@ -137,7 +137,7 @@ paste0("GLM RMSE: ", rmse(wideform$Obs, wideform$GLM))
 paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
-#wideform <- read.csv("bottom_33m_wideform_vali.csv")
+wideform <- read.csv("bottom_33m_wideform_vali.csv")
 #wideform$datetime <- as.Date(wideform$datetime)
 #str(wideform)
 #wideform$month <- month(wideform$datetime)
