@@ -139,7 +139,7 @@ df$yday <- yday(df$datetime)
 df$month <- month(df$datetime)
 df$year <- year(df$datetime)
 
-df <- filter(df, month >= 6 & month <= 8)
+#df <- filter(df, month >= 6 & month <= 8)
 
 wideform <- dcast(df, datetime~model, value.var = "value")
 wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
