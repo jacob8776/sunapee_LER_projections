@@ -73,7 +73,7 @@ taylor.diagram(wideform$Obs, wideform$mean, add = TRUE, col = 6)
 
 
 
-wideform <- read.csv("thermodepth_cali_wideform.csv")
+wideform <- read.csv("thermodepth_cali_wideform_summer.csv")
 wideform$datetime <- as.Date(wideform$datetime)
 str(wideform)
 wideform$month <- month(wideform$datetime)
