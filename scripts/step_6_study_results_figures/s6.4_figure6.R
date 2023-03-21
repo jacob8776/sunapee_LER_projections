@@ -42,8 +42,8 @@ level_order <- c("midcentury", "endcentury")
 
 
 anomalies <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
-anomalies_master_bot <- read.csv(file.path(lake_directory, "anomaly_calculations/bot_anomalies.csv"))
-anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations/surf_anomalies.csv"))
+anomalies_master_bot <- read.csv(file.path("./anomaly_calculations/bot_anomalies.csv"))
+anomalies_master_sur <- read.csv(file.path("./anomaly_calculations/surf_anomalies.csv"))
 
 
 ## total strat duration
@@ -201,7 +201,7 @@ rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
 tsmean_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
-  ggtitle("Mean Summer Surface Temperature") + 
+  ggtitle("Mean Surface Temperature") + 
   labs(y = "Anomaly (ºC)", x = "Time Period")+ geom_hline(yintercept = 0)
 
 tsmean_violin
@@ -288,7 +288,7 @@ rcp8.5 <- rbind(midcentury_8.5, endcentury_8.5)
 tbmean_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
-  ggtitle("Mean Summer Bottom Temperature") + 
+  ggtitle("Mean Bottom Temperature") + 
   labs(y = "Anomaly (ºC)", x = "Time Period")+ geom_hline(yintercept = 0)
 
 tbmean_violin

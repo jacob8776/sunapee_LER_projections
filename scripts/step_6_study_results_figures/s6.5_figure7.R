@@ -46,8 +46,8 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 ### mean surface temperature
 
 anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
-anomalies_master_bot <- read.csv(file.path(lake_directory, "anomaly_calculations/bot_anomalies.csv"))
-anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations/surf_anomalies.csv"))
+anomalies_master_bot <- read.csv(file.path("./anomaly_calculations/bot_anomalies.csv"))
+anomalies_master_sur <- read.csv(file.path("./anomaly_calculations/surf_anomalies.csv"))
 
 
 anomalies_master <- filter(anomalies_master_sur, rcp == "rcp85")
@@ -121,7 +121,7 @@ colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "val
 tsmean_plot <- ggplot(data = mlt) + 
   geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
   mytheme + 
-  ggtitle("Summer Surface Temperature Mean")+   
+  ggtitle("Surface Temperature Mean")+   
   ylab("Proportional Variance") + 
   xlab("Year")
 
@@ -191,7 +191,7 @@ colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "val
 btemp_plot <- ggplot(data = mlt) + 
   geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
   mytheme + 
-  ggtitle("Summer Bottom Temperature Mean")+   
+  ggtitle("Bottom Temperature Mean")+   
   ylab("Proportional Variance") + 
   xlab("Year")
 

@@ -105,7 +105,7 @@ paste0("Ensemble bias: ", bias(wideform$Obs, wideform$mean))
 ####################### Validation bias #############################################
 
 
-setwd(paste0(here(), "/LER_validation/vali_calcs/"))
+setwd(paste0(here::here(), "/LER_validation/vali_calcs/"))
 
 
 #wideform <- read.csv("surface_1m_wideform_vali.csv")

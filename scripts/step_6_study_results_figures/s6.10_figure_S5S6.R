@@ -14,8 +14,8 @@ library(here)
 setwd(paste0(here::here(), "/LER_projections/output/"))
 
 anomalies_master <- read.csv("../../anomaly_calculations/multiple_annual_anomalies.csv")
-anomalies_master_bot <- read.csv(file.path(lake_directory, "anomaly_calculations/bot_anomalies.csv"))
-anomalies_master_sur <- read.csv(file.path(lake_directory, "anomaly_calculations/surf_anomalies.csv"))
+anomalies_master_bot <- read.csv(file.path("../../anomaly_calculations/bot_anomalies.csv"))
+anomalies_master_sur <- read.csv(file.path("../../anomaly_calculations/surf_anomalies.csv"))
 
 
 mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
@@ -37,7 +37,7 @@ model_tsmean <- ggplot(subset(anomalies_master_sur, rcp == choosercp), aes(year,
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (ºC)") +
-  ggtitle("Summer Mean Surface Temperature") + 
+  ggtitle("Mean Surface Temperature") + 
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
   mytheme
@@ -48,7 +48,7 @@ gcm_tsmean <- ggplot(subset(anomalies_master_sur, rcp == choosercp), aes(year, m
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (ºC)") +
-  ggtitle("Summer Mean Surface Temperature") + 
+  ggtitle("Mean Surface Temperature") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
@@ -60,7 +60,7 @@ model_tbmean <- ggplot(subset(anomalies_master_bot,  rcp == choosercp), aes(year
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (ºC)") +
-  ggtitle("Summer Mean Bottom Temperature") + 
+  ggtitle("Mean Bottom Temperature") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
@@ -72,7 +72,7 @@ gcm_tbmean <- ggplot(subset(anomalies_master_bot, rcp == choosercp), aes(year, m
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (ºC)") +
-  ggtitle("Summer Mean Bottom Temperature") + 
+  ggtitle("Mean Bottom Temperature") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +

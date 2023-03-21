@@ -163,10 +163,10 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("thermodepth_vali_wideform.csv")
-wideform$datetime <- as.Date(wideform$datetime)
-str(wideform)
-wideform$month <- month(wideform$datetime)
-wideform <- filter(wideform, month >= 6 & month <= 8)
+#wideform$datetime <- as.Date(wideform$datetime)
+#str(wideform)
+#wideform$month <- month(wideform$datetime)
+#wideform <- filter(wideform, month >= 6 & month <= 8)
 
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
