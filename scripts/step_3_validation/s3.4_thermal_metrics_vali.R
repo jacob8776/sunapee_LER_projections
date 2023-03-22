@@ -16,7 +16,9 @@ library(here)
 setwd(here::here())
 
 
-ncdf <- "./LER_validation/output/ensemble_output.nc"
+fils <- list.files("./LER_validation/vali_calcs/output", full.names = TRUE)
+ncdf <- fils[1]
+
 out <- load_var(ncdf = ncdf, var = "temp")
 
 
@@ -66,13 +68,6 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 wideform$mean <- wideformmean
 
 write.csv(wideform ,"./LER_validation/vali_calcs/schmidt_vali_wideform.csv", row.names = FALSE)
-
-# 
-# taylor.diagram(wideform$Obs, wideform$Simstrat)
-# taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 3)
-# taylor.diagram(wideform$Obs, wideform$FLake, add = TRUE, col = 5)
-# taylor.diagram(wideform$Obs, wideform$MyLake, add = TRUE, col = 7)
-# taylor.diagram(wideform$Obs, wideform$GOTM, add = TRUE, col = 9)
 
 
 rmse <- c()
@@ -139,8 +134,6 @@ df$yday <- yday(df$datetime)
 df$month <- month(df$datetime)
 df$year <- year(df$datetime)
 
-#df <- filter(df, month >= 6 & month <= 8)
-
 wideform <- dcast(df, datetime~model, value.var = "value")
 wideform <- filter(wideform, is.na(Obs) == FALSE & is.na(GLM) == FALSE &
                      is.na(GOTM) == FALSE & is.na(FLake) == FALSE & 
@@ -178,7 +171,14 @@ df <- df %>%
 ggplot(subset(df, month >= 6 & month <= 8), aes(yday, value, colour = model)) +
   facet_wrap(~year) +
   geom_line() +
-  labs(y = "Thermocline depth (m)") +
+  labs(y = "Summer Thermocline depth (m)") +
+  scale_y_continuous(trans = "reverse") +
+  theme_classic() 
+
+ggplot(df, aes(yday, value, colour = model)) +
+  facet_wrap(~year) +
+  geom_line() +
+  labs(y = "Summer Thermocline depth (m)") +
   scale_y_continuous(trans = "reverse") +
   theme_classic() 
 
@@ -192,9 +192,6 @@ ggplot(subset(df, month >= 6 & month <= 8 & model != "Obs"), aes(yday, mean)) +
   scale_y_continuous(trans = "reverse") +
   theme_classic() + 
   geom_line(data = subset(df, month >= 6 & month <= 8 & model == "Obs"), aes(yday, value, col = "Obs"))
-
-
-dfsummer <- filter(df, month >=6 & month <=8)
 
 
 ###################################### Calculating stratification & ice metrics #####################
@@ -275,7 +272,7 @@ wideformmean <- (wideform$FLake + wideform$GLM + wideform$GOTM + wideform$MyLake
 wideform$mean <- wideformmean
 
 
-write.csv(wideform ,"./vali_calcs/cali_calcs/totstratdur_vali_wideform.csv", row.names = FALSE)
+write.csv(wideform ,"./LER_validation/vali_calcs//totstratdur_vali_wideform.csv", row.names = FALSE)
 
 
 
