@@ -29,7 +29,7 @@ yaml$output$time_step <- 24
 yaml$output$time_unit <- "hour"
 write_yaml(yaml, config_file)
 num <- 500
-spin_up <- 190
+spin_up <- 180
 
 # UNCOMMENT BELOW LINE AND TITLE IT FOR CALIBRATION
 #out_f <- ""
