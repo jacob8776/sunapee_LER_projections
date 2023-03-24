@@ -330,7 +330,7 @@ schmidt_plot
 
 ######## Thermocline Depth ###########
 
-anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/thermodepth_annual_anomalies.csv"))
+anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/thermodepth_annual_anomalies_summer.csv"))
 
 
 ## RCP26
@@ -338,7 +338,7 @@ anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/th
 thermo26 <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp26")
 
 
-thermo26 <- select(schmidt26, rcp, year, anom, sd_model, sd_gcm)
+thermo26 <- select(thermo26, rcp, year, anom, sd_model, sd_gcm)
 
 
 thermo26 <- thermo26 %>% 
@@ -392,10 +392,10 @@ thermo_plot <- ggplot(subset(thermo), aes(year, mean_mean_model, colour = Scenar
   geom_vline(xintercept = 2006, linetype = "dashed")
 
 thermo_plot
-anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/multiple_annual_anomalies.csv"))
 
 
 ######## Ice ###########
+anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/multiple_annual_anomalies.csv"))
 
 ## RCP26
 
