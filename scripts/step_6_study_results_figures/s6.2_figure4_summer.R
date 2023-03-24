@@ -64,6 +64,11 @@ taylor.diagram(wideform$Obs, wideform$mean, add = TRUE, col = 6)
 
 wideform <- read.csv("schmidt_cali_wideform.csv")
 
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
+
 taylor.diagram(wideform$Obs, wideform$Simstrat, main = "C) Schmidt Stability", ref.sd = TRUE, col = 1, xlab = "Standard Deviation (Obs)", ylab = "Standard Deviation (Model)")
 taylor.diagram(wideform$Obs, wideform$GLM, add = TRUE, col = 2)
 taylor.diagram(wideform$Obs, wideform$FLake, add = TRUE, col = 3)
