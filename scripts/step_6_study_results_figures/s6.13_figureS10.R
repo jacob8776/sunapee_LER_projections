@@ -541,7 +541,7 @@ schmidt_violin
 ####################################################################################
 ####################################################################################
 
-anomalies <- read.csv("./anomaly_calculations/thermodepth_annual_anomalies.csv")
+anomalies <- read.csv("./anomaly_calculations/thermodepth_annual_anomalies_summer.csv")
 
 
 anomalies_master <- filter(anomalies, variable == "thermo.depth")
@@ -609,7 +609,7 @@ rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
 thermo_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
-  ggtitle("Thermocline Depth") + 
+  ggtitle("Summer Thermocline Depth") + 
   labs(y = "Anomaly (m)", x = "Time Period") + geom_hline(yintercept = 0)
 
 thermo_violin

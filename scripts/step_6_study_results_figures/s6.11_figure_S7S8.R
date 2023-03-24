@@ -188,14 +188,14 @@ gcm_schmidt <- ggplot(subset(anomalies_master, variable == "schmidt.stability" &
 
 
 
-anomalies_master <- read.csv("../../anomaly_calculations/thermodepth_annual_anomalies.csv")
+anomalies_master <- read.csv("../../anomaly_calculations/thermodepth_annual_anomalies_summer.csv")
 
 
 model_thermo <- ggplot(subset(anomalies_master, variable == "thermo.depth" & rcp == choosercp), aes(year, mean_model, colour = gcm)) +
   geom_hline(yintercept = 0) +
   geom_line() +
   labs(y = "Anomaly (m)") +
-  ggtitle("Thermocline Depth") + 
+  ggtitle("Summer Thermocline Depth") + 
   
   #   geom_ribbon(aes(ymin = mean_gcm-sd_gcm, ymax=mean_gcm+sd_gcm, fill = rcp), alpha = 0.2,
   #               linetype = .1) +
