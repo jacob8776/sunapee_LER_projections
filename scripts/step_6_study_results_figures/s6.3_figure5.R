@@ -387,7 +387,7 @@ thermo_plot <- ggplot(subset(thermo), aes(year, mean_mean_model, colour = Scenar
   labs(y = "Anomaly (m)") +
   mytheme + 
   # ylim(-45, 230) + 
-  ggtitle("Thermocline Depth") + 
+  ggtitle("Summer Thermocline Depth") + 
   geom_line(y = 0, col = "black") + 
   geom_vline(xintercept = 2006, linetype = "dashed")
 
