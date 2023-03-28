@@ -129,4 +129,5 @@ pressure_plot <- ggplot(overlap, aes(y = Temp_buoy, x = Temp_manual))+
   ylab("Buoy temperature") +
   xlab("Manual temperature")
 
+ggsave('../figures/figureS1.png', dpi = 300,width = 384,height = 500, units = 'mm') 
 

@@ -472,7 +472,7 @@ ggarrange(tsmean_plot, btemp_plot, schmidt_plot, thermodepth_plot, strat_plot, p
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('./figures/figureS12.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('./figures/figureS13.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 

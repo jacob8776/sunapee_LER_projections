@@ -220,7 +220,7 @@ ggarrange(model_tsmean, model_tbmean, model_schmidt, model_thermo, model_strat, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('../../figures/figureS4.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('../../figures/figureS5.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
 
@@ -228,6 +228,6 @@ ggarrange(gcm_tsmean, gcm_tbmean, gcm_schmidt, gcm_thermo, gcm_strat, gcm_ice,
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('../../figures/figureS3.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('../../figures/figureS4.png', dpi = 300,width = 384,height = 280, units = 'mm')
 
 
