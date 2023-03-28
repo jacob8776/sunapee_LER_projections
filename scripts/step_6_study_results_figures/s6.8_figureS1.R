@@ -21,7 +21,9 @@ library(tidyverse) # all tidyverse packages
 library(dplyr)
 library(here)
 
-setwd(here())
+setwd(paste0(here::here(), "/LER_inputs/"))
+
+
 
 sim_folder <- getwd()
 
@@ -38,7 +40,7 @@ scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 
 # download manual data from zenodo: https://zenodo.org/record/4652076#.YKKBbqhKg2x
-manual <- read.csv(paste0(sim_folder, "/LER_inputs/LSPALMP_1986-2020_v2021-03-29.csv"))
+manual <- read.csv(paste0(sim_folder, "/LSPALMP_1986-2020_v2021-03-29.csv"))
 manual <- manual %>% 
   filter(parameter == 'temp_C') %>% 
   mutate(date = as.Date(date)) %>% 
@@ -61,7 +63,7 @@ manual$site <- as.character(manual$site)
 manual$DateDepth <- paste0(manual$DateTime, " ", manual$Depth)
 
 
-buoy <- read.csv(paste0(sim_folder, '/LER_inputs/field_temp_noon_obs.csv'))
+buoy <- read.csv(paste0(sim_folder, '/field_temp_noon_obs.csv'))
 buoy$DateTime <- as.POSIXct(buoy$DateTime)
 buoy$site <- as.character('210') # set up buoy site to 210?
 buoy$method <- 'buoy'
@@ -138,8 +140,8 @@ overlap <- ggplot(overlap, aes(y = Temp_buoy, x = Temp_manual))+
   geom_smooth(method="lm", col = "blue") + 
 #  stat_regline_equation(label.x = 12, label.y = 24)+
   stat_regline_equation(label.x = 12, label.y = 24, aes(label = ..rr.label..)) + mytheme +
-  ylab("Buoy temperature") +
-  xlab("Manual temperature")
+  ylab("Buoy temperature (ºC)") +
+  xlab("Manual temperature (ºC)")
 
-ggsave('../figures/figureS1.png', dpi = 300,width = 384,height = 500, units = 'mm') 
+ggsave('../figures/figureS1.png', dpi = 300,width = 647,height = 434, units = 'mm') 
 
