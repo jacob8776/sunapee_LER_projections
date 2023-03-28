@@ -25,6 +25,18 @@ setwd(here())
 
 sim_folder <- getwd()
 
+mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
+                 axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
+                 axis.text.x=element_text(size=14, colour='black'), axis.text.y=element_text(size=14, colour='black'), 
+                 axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
+                 strip.text.x = element_text(20), strip.text.y = element_text(size=20),
+                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=25),
+                 legend.title = element_text(size = 25), 
+                 plot.title = element_text(size=25))
+scale_colour_discrete <- ggthemes::scale_colour_colorblind
+scale_fill_discrete <- ggthemes::scale_fill_colorblind
+
+
 # download manual data from zenodo: https://zenodo.org/record/4652076#.YKKBbqhKg2x
 manual <- read.csv(paste0(sim_folder, "/LER_inputs/LSPALMP_1986-2020_v2021-03-29.csv"))
 manual <- manual %>% 
@@ -94,7 +106,7 @@ buoy <- as.data.frame(buoy)
 str(manual)
 str(buoy)
 
-temp_data <- full_join(manual, buoy, by = join_by("DateTime", "Depth"))
+temp_data <- full_join(manual, buoy, by = c("DateTime", "Depth"))
 
 overlap <- filter(temp_data, is.na(Temp_manual) == F & is.na(Temp_buoy) == F)
 
@@ -121,10 +133,10 @@ summary(model)
 
 
 
-pressure_plot <- ggplot(overlap, aes(y = Temp_buoy, x = Temp_manual))+ 
+overlap <- ggplot(overlap, aes(y = Temp_buoy, x = Temp_manual))+ 
   geom_point()+
   geom_smooth(method="lm", col = "blue") + 
-  stat_regline_equation(label.x = 12, label.y = 24)+
+#  stat_regline_equation(label.x = 12, label.y = 24)+
   stat_regline_equation(label.x = 12, label.y = 24, aes(label = ..rr.label..)) + mytheme +
   ylab("Buoy temperature") +
   xlab("Manual temperature")
