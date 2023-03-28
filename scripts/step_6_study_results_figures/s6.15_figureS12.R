@@ -114,7 +114,6 @@ tsmean_plot <- ggplot(data = mlt) +
   ylab("Proportional Variance") + 
   xlab("Year")
 
-?geom_area()
 
 
 
@@ -185,7 +184,6 @@ btemp_plot <- ggplot(data = mlt) +
   ylab("Proportional Variance") + 
   xlab("Year")
 
-?geom_area()
 
 
 # total ice duration
@@ -255,7 +253,6 @@ strat_plot <- ggplot(data = mlt) +
   ylab("Proportional Variance") + 
   xlab("Year")
 
-?geom_area()
 
 # total ice duration
 
@@ -402,7 +399,7 @@ schmidt_plot <- ggplot(data = mlt) +
 # Thermocline depth
 
 
-anomalies_master <- read.csv("./anomaly_calculations/thermodepth_annual_anomalies.csv")
+anomalies_master <- read.csv("./anomaly_calculations/thermodepth_annual_anomalies_summer.csv")
 
 anomalies_master <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp60")
 
@@ -463,11 +460,10 @@ colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "val
 thermodepth_plot <- ggplot(data = mlt) + 
   geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
   mytheme + 
-  ggtitle("Thermocline Depth")+   
+  ggtitle("Summer Thermocline Depth")+   
   ylab("Proportional Variance") + 
   xlab("Year")
 
-?geom_area()
 
 
 

@@ -51,7 +51,7 @@ for(i in 1:length(gcm)){
     df$month <- month(df$datetime)
     df$gcm <- gcm[[i]]
     df$rcp <- rcp[[l]]
-    #df <- df %>% filter(month >= 6 & month <= 8)
+    df <- df %>% filter(month >= 6 & month <= 8)
     
 
     hmeans <- df %>%  dplyr::group_by(model, gcm, rcp) %>% 
@@ -94,7 +94,7 @@ anomalies_by_year <- anomalies_master %>%
   group_by(year, rcp, gcm, model, variable, mean) %>% 
   summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
 
-anomalies_master <- anomalies_by_year %>% 
+anomalies_master2 <- anomalies_by_year %>% 
   group_by(rcp, gcm, variable, year) %>% 
   dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>%
   dplyr::mutate(sd_model = sd(anom, na.rm = TRUE)) %>% 
@@ -108,6 +108,6 @@ anomalies_master <- anomalies_by_year %>%
   dplyr::mutate(sd_rcp = sd(anom, na.rm = TRUE)) %>% 
   dplyr::mutate(var_rcp = var(anom, na.rm = TRUE))
 
-write.csv(anomalies_master, "../../anomaly_calculations/thermodepth_annual_anomalies.csv", row.names = F)
+write.csv(anomalies_master2, "../../anomaly_calculations/thermodepth_annual_anomalies.csv", row.names = F)
 
 

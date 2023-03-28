@@ -71,10 +71,10 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("thermodepth_cali_wideform.csv")
-#wideform$datetime <- as.Date(wideform$datetime)
-#str(wideform)
-#wideform$month <- month(wideform$datetime)
-#wideform <- filter(wideform, month >= 6 & month <= 8)
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
 paste0("GOTM RMSE: ", rmse(wideform$Obs, wideform$GOTM))
@@ -116,7 +116,8 @@ setwd(paste0(here::here(), "/LER_validation/vali_calcs/"))
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 spin_up <- 180
 
-ncdf <- "../output/ensemble_output.nc"
+fils <- list.files("./output", full.names = TRUE)
+ncdf <- fils[1]
 
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit # Results from running model with calib output as input
@@ -164,10 +165,10 @@ paste0("Ensemble RMSE: ", rmse(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("thermodepth_vali_wideform.csv")
-#wideform$datetime <- as.Date(wideform$datetime)
-#str(wideform)
-#wideform$month <- month(wideform$datetime)
-#wideform <- filter(wideform, month >= 6 & month <= 8)
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 
 paste0("FLake RMSE: ", rmse(wideform$Obs, wideform$FLake))
