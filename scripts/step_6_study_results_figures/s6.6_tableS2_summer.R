@@ -22,7 +22,8 @@ setwd(paste0(here::here(), "/LER_calibration/cali_calcs/"))
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 spin_up <- 180
 
-ncdf <- "../output/ensemble_output_all_models_2022-08-16.nc"
+fils <- list.files("./output", full.names = TRUE)
+ncdf <- fils[1]
 
 fit <- calc_fit(ncdf, model = model, spin_up = spin_up)
 fit # Results from running model with calib output as input
