@@ -1,26 +1,30 @@
-# install.packages("zoo")
-# install.packages("roll")
-
-
+library(LakeEnsemblR)
+library(lubridate)
+library(plyr)
 library(gotmtools)
-library(LakeEnsemblR)
 library(ggplot2)
-library(LakeEnsemblR)
 library(ggpubr)
 library(dplyr)
 library(rLakeAnalyzer)
 library(reshape)
-library(reshape2)
 library(RColorBrewer)
-library(lubridate)
-library(Metrics)
-library(zoo) # moving averages        
-library(tidyverse) # all tidyverse packages
-library(dplyr)
+library(scales)
 library(here)
 
 setwd(here::here())
 
+source("./scripts/misc/source_scripts/geom_violin.r")
+
+
+# mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
+#                  axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
+#                  axis.text.x=element_text(size=18, colour='black'), axis.text.y=element_text(size=18, colour='black'), 
+#                  axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
+#                  strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
+#                  panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
+#                  legend.title = element_text(size = 20))
+# scale_colour_discrete <- ggthemes::scale_colour_colorblind
+# scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
 mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
                  axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
@@ -33,444 +37,592 @@ mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_
 scale_colour_discrete <- ggthemes::scale_colour_colorblind
 scale_fill_discrete <- ggthemes::scale_fill_colorblind
 
-### mean surface temperature
 
-anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
+level_order <- c("midcentury", "endcentury")
+
+
+
+anomalies <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
 anomalies_master_bot <- read.csv(file.path("./anomaly_calculations/bot_anomalies.csv"))
 anomalies_master_sur <- read.csv(file.path("./anomaly_calculations/surf_anomalies.csv"))
 
-anomalies_master <- filter(anomalies_master_sur, rcp == "rcp26") 
+## total strat duration
 
-anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
+anomalies_master <- filter(anomalies, variable == "TotStratDur")
 
+anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
+anom_midcentury_8.5 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
 
+anom_midcentury <- rbind(anom_midcentury_2.6, anom_midcentury_6.0, anom_midcentury_8.5)
 
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
 
-rvar_gcm <- anomalies_master %>% 
-  dplyr::group_by(rcp, gcm, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -model) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = gcm, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_gcm = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
+anom_endcentury_2.6 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
+anom_endcentury_6.0 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp60")
+anom_endcentury_8.5 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
 
+anom_endcentury <- rbind(anom_endcentury_2.6, anom_endcentury_6.0, anom_endcentury_8.5)
 
+# par(mfrow=c(2,2))
 
-rvar_model <- anomalies_master %>% 
-  dplyr::group_by(rcp, model, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -gcm) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = model, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_model = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
-
-
-rvar_gcm <- select(rvar_gcm, year, rvar_gcm)
-rvar_model <- select(rvar_model, year, rvar_model)
-  
-
-
-rvar_df <- merge(rvar_gcm, rvar_model, by = "year")
-
-
-rvar_df$tvar <- rvar_df$rvar_model + rvar_df$rvar_gcm
-
-rvar_df$pvar_model <- rvar_df$rvar_model/rvar_df$tvar
-rvar_df$pvar_gcm <- rvar_df$rvar_gcm/rvar_df$tvar
-
-
-mlt <- pivot_longer(rvar_df, 
-                    cols = starts_with("pvar"))
-
-mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
-
-colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
-
-
-mytheme <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),  
-                 axis.line.x = element_line(colour = "black"), axis.line.y = element_line(colour = "black"), 
-                 axis.text.x=element_text(size=18, colour='black'), axis.text.y=element_text(size=18, colour='black'), 
-                 axis.title.x=element_text(size=18), axis.title.y=element_text(size=18),
-                 strip.text.x = element_text(size=14), strip.text.y = element_text(size=14),
-                 panel.background = element_rect(fill = NA, color = "black"), legend.text=element_text(size=16),
-                 legend.title = element_text(size = 20))
-scale_colour_discrete <- ggthemes::scale_colour_colorblind
-scale_fill_discrete <- ggthemes::scale_fill_colorblind
+# rcp 2.6
+anomaly_model_2.6 <- anom_midcentury_2.6$mean_model
+anomaly_gcm_2.6 <- anom_midcentury_2.6$mean_gcm
 
 
 
 
 
-tsmean_plot <- ggplot(data = mlt) + 
-  geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
+#### rcp 6.0 
+anomaly_model_6.0 <- anom_midcentury_6.0$mean_model
+anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
+
+
+
+#### for plot
+
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
+
+anomaly_model_6.0$uncertainty <- "Climate Model"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
+
+
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
+
+#############################################################
+
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
+
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
+
+
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
+
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
+
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+
+stratdur_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+  geom_split_violin() + 
   mytheme + 
-  ggtitle("Surface Temperature Mean")+   
-  ylab("Proportional Variance") + 
-  xlab("Year")
+  ggtitle("Summer Stratification Duration") + 
+  labs(y = "Anomaly (Days)", x = "Time Period") + geom_hline(yintercept = 0)
 
+anom_midcentury_8.5$time <- as.character("midcentury")
 
-
-
-# mean bottom temperature
-
-anomalies_master <- filter(anomalies_master_bot, rcp == "rcp26")
-
-anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
-
-
-
-
-rvar_gcm <- anomalies_master %>% 
-  dplyr::group_by(rcp, gcm, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -model) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = gcm, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_gcm = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
-
-
-
-rvar_model <- anomalies_master %>% 
-  dplyr::group_by(rcp, model, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -gcm) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = model, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_model = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
-
-
-rvar_gcm <- select(rvar_gcm, year, rvar_gcm)
-rvar_model <- select(rvar_model, year, rvar_model)
-
-
-
-rvar_df <- merge(rvar_gcm, rvar_model, by = "year")
-
-
-rvar_df$tvar <- rvar_df$rvar_model + rvar_df$rvar_gcm
-
-rvar_df$pvar_model <- rvar_df$rvar_model/rvar_df$tvar
-rvar_df$pvar_gcm <- rvar_df$rvar_gcm/rvar_df$tvar
-
-library(reshape2)
-
-mlt <- pivot_longer(rvar_df, 
-                    cols = starts_with("pvar"))
-
-mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
-
-colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
-
-
-
-
-
-btemp_plot <- ggplot(data = mlt) + 
-  geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
+stratdur_violin_test <- ggplot(data = anom_midcentury_8.5, mapping = aes(x = factor(time, level = level_order), y = anom, fill = model, col = model)) + 
+  geom_split_violin(alpha = 0.2) + 
   mytheme + 
-  ggtitle("Bottom Temperature Mean")+   
-  ylab("Proportional Variance") + 
-  xlab("Year")
-
-
-
-# total ice duration
-
-anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
-
-anomalies_master <- filter(anomalies_master, variable == "TotStratDur", rcp == "rcp26")
-
-anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
+  ggtitle("Summer Stratification Duration") + 
+  labs(y = "Anomaly (Days)", x = "Time Period") + geom_hline(yintercept = 0)
 
 
 
 
-rvar_gcm <- anomalies_master %>% 
-  dplyr::group_by(rcp, gcm, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -model) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = gcm, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_gcm = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
+####################################################################################
+####################################################################################
+####################################################################################
 
 
 
-rvar_model <- anomalies_master %>% 
-  dplyr::group_by(rcp, model, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -gcm) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = model, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_model = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
+anomalies_master <- anomalies_master_sur
+
+anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
+anom_midcentury_8.5 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+
+anom_midcentury <- rbind(anom_midcentury_2.6, anom_midcentury_6.0, anom_midcentury_8.5)
+
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury_2.6 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
+anom_endcentury_6.0 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp60")
+anom_endcentury_8.5 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury <- rbind(anom_endcentury_2.6, anom_endcentury_6.0, anom_endcentury_8.5)
+
+# par(mfrow=c(2,2))
+
+# rcp 2.6
+anomaly_model_2.6 <- anom_midcentury_2.6$mean_model
+anomaly_gcm_2.6 <- anom_midcentury_2.6$mean_gcm
 
 
-rvar_gcm <- select(rvar_gcm, year, rvar_gcm)
-rvar_model <- select(rvar_model, year, rvar_model)
-
-
-
-rvar_df <- merge(rvar_gcm, rvar_model, by = "year")
-
-
-rvar_df$tvar <- rvar_df$rvar_model + rvar_df$rvar_gcm
-
-rvar_df$pvar_model <- rvar_df$rvar_model/rvar_df$tvar
-rvar_df$pvar_gcm <- rvar_df$rvar_gcm/rvar_df$tvar
-
-library(reshape2)
-
-mlt <- pivot_longer(rvar_df, 
-                    cols = starts_with("pvar"))
-
-
-mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
-
-colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
+#### rcp 6.0 
+anomaly_model_6.0 <- anom_midcentury_6.0$mean_model
+anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-strat_plot <- ggplot(data = mlt) + 
-  geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
+#### for plot
+
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
+
+anomaly_model_6.0$uncertainty <- "Climate Model"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
+
+
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
+
+#############################################################
+
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
+
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
+
+
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
+
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
+
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+anom_midcentury_8.5$time <- as.character("midcentury")
+
+tsmean_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+  geom_split_violin() + 
   mytheme + 
-  ggtitle("Total Stratification Duration")+    
-  ylab("Proportional Variance") + 
-  xlab("Year")
+  ggtitle("Mean Surface Temperature") + 
+  labs(y = "Anomaly (Degrees C)", x = "Time Period")+ geom_hline(yintercept = 0)
+
+tsmean_violin
+
+sub <- anomalies_master[anomalies_master$rcp == "rcp85", ]
+
+ggplot(sub) +
+  geom_line(aes(year, mean_gcm, color = model)) +
+  facet_wrap(~gcm)
+
+ggplot(sub) +
+  geom_line(aes(year, mean_model, color = gcm)) +
+  facet_wrap(~model)
 
 
-# total ice duration
-
-anomalies_master <- read.csv("./anomaly_calculations/multiple_annual_anomalies.csv")
-
-anomalies_master <- filter(anomalies_master, variable == "TotIceDur", rcp == "rcp26")
-
-anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
-
-
-
-
-rvar_gcm <- anomalies_master %>% 
-  dplyr::group_by(rcp, gcm, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -model) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = gcm, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_gcm = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
+####################################################################################
+####################################################################################
+####################################################################################
 
 
 
-rvar_model <- anomalies_master %>% 
-  dplyr::group_by(rcp, model, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -gcm) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = model, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_model = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
+anomalies_master <- anomalies_master_bot
+
+anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
+anom_midcentury_8.5 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+
+anom_midcentury <- rbind(anom_midcentury_2.6, anom_midcentury_6.0, anom_midcentury_8.5)
+
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury_2.6 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
+anom_endcentury_6.0 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp60")
+anom_endcentury_8.5 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury <- rbind(anom_endcentury_2.6, anom_endcentury_6.0, anom_endcentury_8.5)
+
+# par(mfrow=c(2,2))
+
+# rcp 2.6
+anomaly_model_2.6 <- anom_midcentury_2.6$mean_model
+anomaly_gcm_2.6 <- anom_midcentury_2.6$mean_gcm
 
 
-rvar_gcm <- select(rvar_gcm, year, rvar_gcm)
-rvar_model <- select(rvar_model, year, rvar_model)
-
-
-
-rvar_df <- merge(rvar_gcm, rvar_model, by = "year")
-
-
-rvar_df$tvar <- rvar_df$rvar_model + rvar_df$rvar_gcm
-
-rvar_df$pvar_model <- rvar_df$rvar_model/rvar_df$tvar
-rvar_df$pvar_gcm <- rvar_df$rvar_gcm/rvar_df$tvar
-
-library(reshape2)
-
-mlt <- pivot_longer(rvar_df, 
-                    cols = starts_with("pvar"))
-
-
-mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
-
-colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
+#### rcp 6.0 
+anomaly_model_6.0 <- anom_midcentury_6.0$mean_model
+anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-prop_ice <- ggplot(data = mlt) + 
-  geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
+#### for plot
+
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
+
+anomaly_model_6.0$uncertainty <- "Climate Model"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
+
+
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
+
+#############################################################
+
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
+
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
+
+
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
+
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
+
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+
+anom_midcentury_8.5$time <- as.character("midcentury")
+
+
+tbmean_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+  geom_split_violin() + 
   mytheme + 
-  ggtitle("Total Ice Duration")+  
-  ylab("Proportional Variance") + 
-  xlab("Year")
+  ggtitle("Mean Bottom Temperature") + 
+  labs(y = "Anomaly (Degrees C)", x = "Time Period")+ geom_hline(yintercept = 0)
 
-  
-
-
-# Schmidt stability
+tbmean_violin
 
 
-anomalies_master <- read.csv("./anomaly_calculations/schmidt_annual_anomalies.csv")
-
-anomalies_master <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp26")
-
-anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
+####################################################################################
+####################################################################################
+####################################################################################
 
 
 
+anomalies_master <- filter(anomalies, variable == "TotIceDur")
 
-rvar_gcm <- anomalies_master %>% 
-  dplyr::group_by(rcp, gcm, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -model) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = gcm, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_gcm = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
+anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
+anom_midcentury_8.5 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
 
+anom_midcentury <- rbind(anom_midcentury_2.6, anom_midcentury_6.0, anom_midcentury_8.5)
 
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
 
-rvar_model <- anomalies_master %>% 
-  dplyr::group_by(rcp, model, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -gcm) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = model, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_model = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
+anom_endcentury_2.6 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
+anom_endcentury_6.0 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp60")
+anom_endcentury_8.5 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
 
+anom_endcentury <- rbind(anom_endcentury_2.6, anom_endcentury_6.0, anom_endcentury_8.5)
 
-rvar_gcm <- select(rvar_gcm, year, rvar_gcm)
-rvar_model <- select(rvar_model, year, rvar_model)
+# par(mfrow=c(2,2))
+
+# rcp 2.6
+anomaly_model_2.6 <- anom_midcentury_2.6$mean_model
+anomaly_gcm_2.6 <- anom_midcentury_2.6$mean_gcm
 
 
-
-rvar_df <- merge(rvar_gcm, rvar_model, by = "year")
-
-
-rvar_df$tvar <- rvar_df$rvar_model + rvar_df$rvar_gcm
-
-rvar_df$pvar_model <- rvar_df$rvar_model/rvar_df$tvar
-rvar_df$pvar_gcm <- rvar_df$rvar_gcm/rvar_df$tvar
-
-library(reshape2)
-
-mlt <- pivot_longer(rvar_df, 
-                    cols = starts_with("pvar"))
-
-
-mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
-
-colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
+#### rcp 6.0 
+anomaly_model_6.0 <- anom_midcentury_6.0$mean_model
+anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
 
 
 
-schmidt_plot <- ggplot(data = mlt) + 
-  geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
-  mytheme+
-  ggtitle("Schmidt Stability")+  
-  ylab("Proportional Variance") + 
-  xlab("Year")
+#### for plot
+
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
+
+anomaly_model_6.0$uncertainty <- "Climate Model"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
 
 
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
+
+#############################################################
+
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
+
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
 
 
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
 
-# Thermocline depth
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
 
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
 
-anomalies_master <- read.csv("./anomaly_calculations/thermodepth_annual_anomalies_summer.csv")
-
-anomalies_master <- filter(anomalies_master, variable == "thermo.depth", rcp == "rcp26")
-
-anomalies_master <- select(anomalies_master, year, rcp, gcm, model, variable, value, mean, anom)
-
-
-
-
-rvar_gcm <- anomalies_master %>% 
-  dplyr::group_by(rcp, gcm, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -model) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = gcm, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_gcm = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
-
-
-
-rvar_model <- anomalies_master %>% 
-  dplyr::group_by(rcp, model, variable, year) %>% 
-  dplyr::mutate(mean_model = mean(anom, na.rm = TRUE)) %>% 
-  dplyr::select(-value, -mean, -anom, -gcm) %>% 
-  unique() %>% 
-  pivot_wider(., names_from = model, values_from = mean_model) %>% 
-  ungroup() %>% 
-  dplyr::mutate(var_model = apply(.[4:7], 1, function(x) var(x, na.rm = TRUE))) %>% 
-  dplyr::mutate(rvar_model = zoo::rollmean(var_model, 30, na.pad = TRUE, align = "right"))
-
-
-rvar_gcm <- select(rvar_gcm, year, rvar_gcm)
-rvar_model <- select(rvar_model, year, rvar_model)
-
-
-
-rvar_df <- merge(rvar_gcm, rvar_model, by = "year")
-
-
-rvar_df$tvar <- rvar_df$rvar_model + rvar_df$rvar_gcm
-
-rvar_df$pvar_model <- rvar_df$rvar_model/rvar_df$tvar
-rvar_df$pvar_gcm <- rvar_df$rvar_gcm/rvar_df$tvar
-
-library(reshape2)
-
-mlt <- pivot_longer(rvar_df, 
-                    cols = starts_with("pvar"))
-
-mlt$name <- str_replace(mlt$name, "pvar_model", "Lake Model")
-mlt$name <- str_replace(mlt$name, "pvar_gcm", "Climate Model")
-
-colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "value")
-
-
-
-
-thermodepth_plot <- ggplot(data = mlt) + 
-  geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
+ice_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+  geom_split_violin() + 
   mytheme + 
-  ggtitle("Summer Thermocline Depth")+   
-  ylab("Proportional Variance") + 
-  xlab("Year")
+  ggtitle("Total Ice Duration") + 
+  labs(y = "Anomaly (Days)", x = "Time Period")+ geom_hline(yintercept = 0)
+
+ice_violin
 
 
 
 
+####################################################################################
+####################################################################################
+####################################################################################
 
-ggarrange(tsmean_plot, btemp_plot, schmidt_plot, thermodepth_plot, strat_plot, prop_ice, 
+
+
+anomalies_master <- filter(anomalies, variable == "MixPer")
+
+anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
+anom_midcentury_8.5 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+
+anom_midcentury <- rbind(anom_midcentury_2.6, anom_midcentury_6.0, anom_midcentury_8.5)
+
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury_2.6 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
+anom_endcentury_6.0 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp60")
+anom_endcentury_8.5 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury <- rbind(anom_endcentury_2.6, anom_endcentury_6.0, anom_endcentury_8.5)
+
+# par(mfrow=c(2,2))
+
+# rcp 2.6
+anomaly_model_2.6 <- anom_midcentury_2.6$mean_model
+anomaly_gcm_2.6 <- anom_midcentury_2.6$mean_gcm
+
+
+#### rcp 6.0 
+anomaly_model_6.0 <- anom_midcentury_6.0$mean_model
+anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
+
+
+
+#### for plot
+
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
+
+anomaly_model_6.0$uncertainty <- "Climate Model"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
+
+
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
+
+#############################################################
+
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
+
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
+
+
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
+
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
+
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+
+mix_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+  geom_split_violin() + 
+  mytheme + 
+  ggtitle("Total Mixing Period") + 
+  labs(y = "Anomaly (Days)", x = "Time Period")+ geom_hline(yintercept = 0)
+
+mix_violin
+
+
+
+####################################################################################
+####################################################################################
+####################################################################################
+
+anomalies <- read.csv("./anomaly_calculations/schmidt_annual_anomalies.csv")
+
+
+anomalies_master <- filter(anomalies, variable == "schmidt.stability")
+
+anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
+anom_midcentury_8.5 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+
+anom_midcentury <- rbind(anom_midcentury_2.6, anom_midcentury_6.0, anom_midcentury_8.5)
+
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury_2.6 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
+anom_endcentury_6.0 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp60")
+anom_endcentury_8.5 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury <- rbind(anom_endcentury_2.6, anom_endcentury_6.0, anom_endcentury_8.5)
+
+# par(mfrow=c(2,2))
+
+# rcp 2.6
+anomaly_model_2.6 <- anom_midcentury_2.6$mean_model
+anomaly_gcm_2.6 <- anom_midcentury_2.6$mean_gcm
+
+
+#### rcp 6.0 
+anomaly_model_6.0 <- anom_midcentury_6.0$mean_model
+anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
+
+
+
+#### for plot
+
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
+
+anomaly_model_6.0$uncertainty <- "Climate Model"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
+
+
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
+
+#############################################################
+
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
+
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
+
+
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
+
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
+
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+
+y_expression <- expression(Anomaly~(J/m^2))
+
+schmidt_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+  geom_split_violin() + 
+  mytheme + 
+  ggtitle("Schmidt Stability") + 
+  labs(y = y_expression, x = "Time Period") + geom_hline(yintercept = 0)
+
+schmidt_violin
+
+
+
+
+####################################################################################
+####################################################################################
+####################################################################################
+
+anomalies <- read.csv("./anomaly_calculations/thermodepth_annual_anomalies_summer.csv")
+
+
+anomalies_master <- filter(anomalies, variable == "thermo.depth")
+
+anom_midcentury_2.6 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp26") 
+anom_midcentury_6.0 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp60") 
+anom_midcentury_8.5 <- anomalies_master %>% filter(year >= 2020 & year <= 2050 & rcp == "rcp85") 
+
+anom_midcentury <- rbind(anom_midcentury_2.6, anom_midcentury_6.0, anom_midcentury_8.5)
+
+anom_endcentury <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury_2.6 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp26")
+anom_endcentury_6.0 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp60")
+anom_endcentury_8.5 <- anomalies_master %>% filter(year >= 2069 & year <= 2099 & rcp == "rcp85")
+
+anom_endcentury <- rbind(anom_endcentury_2.6, anom_endcentury_6.0, anom_endcentury_8.5)
+
+# par(mfrow=c(2,2))
+
+# rcp 2.6
+anomaly_model_2.6 <- anom_midcentury_2.6$mean_model
+anomaly_gcm_2.6 <- anom_midcentury_2.6$mean_gcm
+
+
+#### rcp 6.0 
+anomaly_model_6.0 <- anom_midcentury_6.0$mean_model
+anomaly_gcm_6.0 <- anom_midcentury_6.0$mean_gcm
+
+
+
+#### for plot
+
+anomaly_model_6.0 <- as.data.frame(anom_midcentury_6.0$mean_model)
+anomaly_gcm_6.0 <- as.data.frame(anom_midcentury_6.0$mean_gcm)
+
+anomaly_model_6.0$uncertainty <- "Climate Model"
+anomaly_gcm_6.0$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0) <- c("anomaly", "Distribution")
+
+
+midcentury_6.0 <- rbind(anomaly_model_6.0, anomaly_gcm_6.0)
+
+#############################################################
+
+anomaly_model_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_model)
+anomaly_gcm_6.0_end <- as.data.frame(anom_endcentury_6.0$mean_gcm)
+
+anomaly_model_6.0_end$uncertainty <- "Climate Model"
+anomaly_gcm_6.0_end$uncertainty <- "Lake Model"
+
+colnames(anomaly_model_6.0_end) <- c("anomaly", "Distribution")
+colnames(anomaly_gcm_6.0_end) <- c("anomaly", "Distribution")
+
+
+endcentury_6.0 <- rbind(anomaly_model_6.0_end, anomaly_gcm_6.0_end)
+
+midcentury_6.0$time <- "midcentury"
+endcentury_6.0$time <- "endcentury"
+
+rcp6.0 <- rbind(midcentury_6.0, endcentury_6.0)
+
+thermo_violin <- ggplot(data = rcp6.0, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
+  geom_split_violin() + 
+  mytheme + 
+  ggtitle("Summer Thermocline Depth") + 
+  labs(y = "Anomaly (m)", x = "Time Period") + geom_hline(yintercept = 0)
+
+thermo_violin
+
+
+ggarrange(tsmean_violin, tbmean_violin, schmidt_violin, thermo_violin, stratdur_violin, ice_violin, 
           labels = c("A", "B", "C", "D", "E", "F"), 
           ncol = 2, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-ggsave('./figures/figureS11.png', dpi = 300,width = 384,height = 280, units = 'mm')
+ggsave('./figures/figureS10.png', dpi = 300,width = 384,height = 280, units = 'mm')
+
+
+
 
 
 
