@@ -340,7 +340,7 @@ prop_ice <- ggplot(data = mlt) +
 # Schmidt stability
 
 
-anomalies_master <- read.csv("./anomaly_calculations/schmidt_annual_anomalies.csv")
+anomalies_master <- read.csv("./anomaly_calculations/schmidt_annual_anomalies_summer.csv")
 
 anomalies_master <- filter(anomalies_master, variable == "schmidt.stability", rcp == "rcp85")
 
@@ -401,7 +401,7 @@ colnames(mlt) <- c("year", "rvar_gcm", "rvar_model", "tvar", "Uncertainty", "val
 schmidt_plot <- ggplot(data = mlt) + 
   geom_area(aes(x = year, y = value, fill = Uncertainty), position = "stack") + 
   mytheme+
-  ggtitle("Schmidt Stability")+  
+  ggtitle("Summer Schmidt Stability")+  
   ylab("Proportional Variance") + 
   xlab("Year")
 

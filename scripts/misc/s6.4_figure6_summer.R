@@ -455,7 +455,7 @@ mix_violin
 ####################################################################################
 ####################################################################################
 
-anomalies <- read.csv("./anomaly_calculations/schmidt_annual_anomalies.csv")
+anomalies <- read.csv("./anomaly_calculations/schmidt_annual_anomalies_summer.csv")
 
 
 anomalies_master <- filter(anomalies, variable == "schmidt.stability")
@@ -525,7 +525,7 @@ y_expression <- expression(Anomaly~(J/m^2))
 schmidt_violin <- ggplot(data = rcp8.5, mapping = aes(x = factor(time, level = level_order), y = anomaly, fill = Distribution, col = Distribution)) + 
   geom_split_violin() + 
   mytheme + 
-  ggtitle("Schmidt Stability") + 
+  ggtitle("Summer Schmidt Stability") + 
   labs(y = y_expression, x = "Time Period") + geom_hline(yintercept = 0)
 
 schmidt_violin

@@ -263,7 +263,7 @@ strat_plot
 
 ######## Schmidt Stability ###########
 
-anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/schmidt_annual_anomalies.csv"))
+anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/schmidt_annual_anomalies_summer.csv"))
 
 
 ## RCP26
@@ -321,8 +321,8 @@ schmidt_plot <- ggplot(subset(tsmean), aes(year, mean_mean_model, colour = Scena
               linetype = .1)+
   labs(y = y_expression) +
   mytheme + 
-  ylim(-45, 230) + 
-  ggtitle("Schmidt Stability") + 
+  ylim(-60, 420) + 
+  ggtitle("Summer Schmidt Stability") + 
   geom_line(y = 0, col = "black") + 
   geom_vline(xintercept = 2006, linetype = "dashed")
 
@@ -332,7 +332,7 @@ schmidt_plot
 
 ######## Thermocline Depth ###########
 
-anomalies_master <- read.csv(file.path("./anomaly_calculations/thermodepth_annual_anomalies_summer.csv"))
+anomalies_master <- read.csv(file.path(lake_directory, "/anomaly_calculations/thermodepth_annual_anomalies_summer.csv"))
 
 
 ## RCP26

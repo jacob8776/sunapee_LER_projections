@@ -53,7 +53,10 @@ paste0("GLM bias: ", bias(wideform$Obs, wideform$GLM))
 paste0("Ensemble bias: ", bias(wideform$Obs, wideform$mean))
 
 wideform <- read.csv("schmidt_cali_wideform.csv")
-
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 paste0("FLake bias: ", bias(wideform$Obs, wideform$FLake))
 paste0("GOTM bias: ", bias(wideform$Obs, wideform$GOTM))
@@ -139,6 +142,10 @@ paste0("Ensemble bias: ", bias(wideform$Obs, wideform$mean))
 
 
 wideform <- read.csv("schmidt_vali_wideform.csv")
+wideform$datetime <- as.Date(wideform$datetime)
+str(wideform)
+wideform$month <- month(wideform$datetime)
+wideform <- filter(wideform, month >= 6 & month <= 8)
 
 
 paste0("FLake bias: ", bias(wideform$Obs, wideform$FLake))
