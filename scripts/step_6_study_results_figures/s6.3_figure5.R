@@ -235,14 +235,14 @@ totstrat85 <- totstrat85 %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmean <- rbind(totstrat26, totstrat60, totstrat85)
+tstrat <- rbind(totstrat26, totstrat60, totstrat85)
 
-tsmean$Scenario <- gsub("rcp26", "RCP 2.6", tsmean$rcp)
-tsmean$Scenario <- gsub("rcp60", "RCP 6.0", tsmean$Scenario)
-tsmean$Scenario <- gsub("rcp85", "RCP 8.5", tsmean$Scenario)
+tstrat$Scenario <- gsub("rcp26", "RCP 2.6", tstrat$rcp)
+tstrat$Scenario <- gsub("rcp60", "RCP 6.0", tstrat$Scenario)
+tstrat$Scenario <- gsub("rcp85", "RCP 8.5", tstrat$Scenario)
 
 
-strat_plot <- ggplot(subset(tsmean), aes(year, mean_mean_model, colour = Scenario)) +
+strat_plot <- ggplot(subset(tstrat), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
