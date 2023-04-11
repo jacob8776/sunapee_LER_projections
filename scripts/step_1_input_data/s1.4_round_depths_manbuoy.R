@@ -3,9 +3,12 @@ library(dplyr)
 library(plyr)
 library(here)
 
-setwd(paste0(here::here(), "/LER_calibration/Data/"))
 
-manbuoy <- read.csv("manual_buoy_temp.csv")
+setwd(here())
+
+sim_folder <- getwd()
+
+manbuoy <- read.csv("./LER_inputs/manual_buoy_temp.csv")
 colnames(manbuoy) <- c("datetime", "Depth_meter", "Water_Temperature_celsius")
 unique(manbuoy$Depth_meter)
 
@@ -49,5 +52,5 @@ ggplot(manbuoy) +
   geom_point(aes(as.POSIXct(datetime), Water_Temperature_celsius, color = as.factor(Depth_meter))) +
   coord_cartesian(xlim = as.POSIXct(c("2005-01-01", "2014-01-01")))
 
-write.csv(manbuoy, "manual_buoy_temp_dpth.csv", row.names = FALSE)
+write.csv(manbuoy, "./LER_inputs/manual_buoy_temp_dpth.csv", row.names = FALSE)
 
