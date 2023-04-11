@@ -132,16 +132,17 @@ str(buoy)
 model <- lm(overlap$Temp_buoy~overlap$Temp_manual)
 
 summary(model)
+cor(overlap$Temp_buoy, overlap$Temp_manual)
 
 
-
-overlap <- ggplot(overlap, aes(y = Temp_buoy, x = Temp_manual))+ 
+overlap_fig <- ggplot(overlap, aes(y = Temp_buoy, x = Temp_manual))+ 
   geom_point()+
   geom_smooth(method="lm", col = "blue") + 
-#  stat_regline_equation(label.x = 12, label.y = 24)+
-  stat_regline_equation(label.x = 12, label.y = 24, aes(label = ..rr.label..)) + mytheme +
+  #stat_regline_equation(label.x = 12, label.y = 24, aes(label = ..rr.label..)) + 
+  mytheme +
+  geom_text(aes(x = 12, y = 22, label = "r = 0.93")) +
   ylab("Buoy temperature (ºC)") +
   xlab("Manual temperature (ºC)")
-
-ggsave('../figures/figureS1.png', dpi = 300,width = 647,height = 434, units = 'mm') 
+overlap_fig
+ggsave('../figures/figureS1.png', scale = 1.3) 
 
