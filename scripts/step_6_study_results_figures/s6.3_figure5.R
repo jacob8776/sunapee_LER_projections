@@ -305,15 +305,15 @@ schmidt85 <- schmidt85 %>%
   dplyr::mutate(sd_sd_model = sd(anom, na.rm = TRUE)) 
 
 
-tsmean <- rbind(schmidt26, schmidt60, schmidt85)
+schmidt <- rbind(schmidt26, schmidt60, schmidt85)
 
-tsmean$Scenario <- gsub("rcp26", "RCP 2.6", tsmean$rcp)
-tsmean$Scenario <- gsub("rcp60", "RCP 6.0", tsmean$Scenario)
-tsmean$Scenario <- gsub("rcp85", "RCP 8.5", tsmean$Scenario)
+schmidt$Scenario <- gsub("rcp26", "RCP 2.6", schmidt$rcp)
+schmidt$Scenario <- gsub("rcp60", "RCP 6.0", schmidt$Scenario)
+schmidt$Scenario <- gsub("rcp85", "RCP 8.5", schmidt$Scenario)
 
 y_expression <- expression(Anomaly~(J/m^2))
 
-schmidt_plot <- ggplot(subset(tsmean), aes(year, mean_mean_model, colour = Scenario)) +
+schmidt_plot <- ggplot(subset(schmidt), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
               linetype = .1)+
@@ -443,7 +443,6 @@ ice$Scenario <- gsub("rcp26", "RCP 2.6", ice$rcp)
 ice$Scenario <- gsub("rcp60", "RCP 6.0", ice$Scenario)
 ice$Scenario <- gsub("rcp85", "RCP 8.5", ice$Scenario)
 
-
 icedur <- ggplot(subset(ice), aes(year, mean_mean_model, colour = Scenario)) +
   geom_line() +
   geom_ribbon(aes(ymin = mean_mean_model-sd_sd_model, ymax=mean_mean_model+sd_sd_model, fill = Scenario), alpha = 0.2,
@@ -454,6 +453,7 @@ icedur <- ggplot(subset(ice), aes(year, mean_mean_model, colour = Scenario)) +
   ggtitle("Total Ice Duration") +
   geom_line(y = 0, col = "black") +
   geom_vline(xintercept = 2006, linetype = "dashed")
+
 
 icedur
 
