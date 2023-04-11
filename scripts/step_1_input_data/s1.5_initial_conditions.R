@@ -5,7 +5,9 @@ library(here)
 setwd(paste0(here::here(), "/LER_inputs/"))
 
 manual_buoy_temptst <- read.csv("manual_buoy_temp.csv")
+colnames(manual_buoy_temptst) <- c("datetime", "Depth_meter", "Water_Temperature_celsius")
 
+manual_buoy_temptst$datetime <- as.POSIXct(manual_buoy_temptst$datetime) - 4*60*60
 oneday <- filter(manual_buoy_temptst, datetime == "1986-07-03 12:00:00")
 
 
