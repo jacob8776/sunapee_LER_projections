@@ -5,7 +5,8 @@ library(here)
 
 setwd(paste0(here::here(), "/LER_calibration/Data/"))
 
-manbuoy <- read.csv("manual_buoy_temp_hrz.csv")
+manbuoy <- read.csv("manual_buoy_temp.csv")
+colnames(manbuoy) <- c("datetime", "Depth_meter", "Water_Temperature_celsius")
 unique(manbuoy$Depth_meter)
 
 manbuoy$floordepth <- round_any(manbuoy$Depth_meter, 1)

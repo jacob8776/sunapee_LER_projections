@@ -4,7 +4,7 @@ library(here)
 
 setwd(paste0(here::here(), "/LER_inputs/"))
 
-manual_buoy_temptst <- read.csv("manual_buoy_temptst.csv")
+manual_buoy_temptst <- read.csv("manual_buoy_temp.csv")
 
 oneday <- filter(manual_buoy_temptst, datetime == "1986-07-03 12:00:00")
 
