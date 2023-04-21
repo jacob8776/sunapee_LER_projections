@@ -26,8 +26,8 @@ setwd(paste0(here::here(), '/LER_calibration'))
 
 model <- c("FLake", "Simstrat", "GOTM", "MyLake", "GLM")
 
-
-ncdf <- "./output/ensemble_output_all_models_2022-08-16.nc"
+fils <- list.files("./cali_calcs/output", full.names = TRUE)
+ncdf <- fils[1]
 
 lst <- load_var(ncdf, "temp")
 summary(lst$Obs)
@@ -107,7 +107,7 @@ plot_heatmap <- function(ncdf = NULL, var = "temp", dim = "model", dim_index = 1
 
 plot_heatmap(ncdf, model = model) +
   scale_colour_gradientn(name = "Temperature ºC", limits = c(0, 32),
-  colours = rev(RColorBrewer::brewer.pal(11, "Spectral"))) + 
+  colours = rev(RColorBrewer::brewer.pal(11, "RdYlBu"))) + 
   theme_classic() + 
   ylab("Depth (m)") + 
   xlab("Year") 
